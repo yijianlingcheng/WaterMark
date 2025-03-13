@@ -1,0 +1,35 @@
+#index-nav {
+    margin-top: 5rem;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.margin-left-5rem {
+    margin-left: 5rem !important;
+}
+
+.margin-top-5rem {
+    margin-top: 5rem !important;
+}
+
+.margin-top-1rem {
+    margin-top: 1rem !important;
+}
+
+.watermark-p-check {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    background: green;
+    border-radius: 10px;
+}
+
+#watermark-tpl-detail-img {
+    border: outset;
+}
+
+.margin-left-0 {
+    margin-left: 0!important;
+}

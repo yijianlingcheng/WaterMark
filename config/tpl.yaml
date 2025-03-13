@@ -1,0 +1,249 @@
+tpls:
+    -
+        id: "1"
+        type: BOTTOM_LOGO_LEFT
+        bordertemplate:
+            isround: false
+            radius: 100
+            rightwidth: 100
+            leftwidth: 100
+            topheight: 100
+            bottomheight: 300
+            color:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            colors: 255,255,255,255
+        logotemplate:
+            width: 300
+            height: 300
+            margintop: 0
+            marginleft: 0
+            marginright: 0
+        wordstemplate:
+            firstfontmargintop: 120
+            secondfontmargintop: 240
+            firstfontsize: 60
+            secondfontsize: 60
+            firstfontmarginleft: 0
+            secondfontmarginleft: 0
+            firstfontmarginright: 650
+            secondfontmarginright: 650
+            fontwidth: 35
+            firstfontcolor:
+                r: 0
+                g: 0
+                b: 0
+                a: 255
+            secondfontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontcolors: 0,0,0,255
+            secondfontcolors: 128,128,128,255
+            one: Model
+            two: LensModel
+            three: FocalLength,FNumberStr,ExposureTime,ISOStr
+            four: CreateDate
+        separatetamplate:
+            exist: false
+            width: 5
+            height: 100
+            margintop: 50
+            fontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            fontcolors: 128,128,128,255
+    -
+        id: "2"
+        type: BOTTOM_LOGO_CENTER
+        bordertemplate:
+            isround: false
+            radius: 0
+            rightwidth: 100
+            leftwidth: 100
+            topheight: 100
+            bottomheight: 300
+            color:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            colors: 255,255,255,255
+        logotemplate:
+            width: 200
+            height: 200
+            margintop: 50
+            marginleft: 0
+            marginright: 1200
+        wordstemplate:
+            firstfontmargintop: 120
+            secondfontmargintop: 240
+            firstfontsize: 60
+            secondfontsize: 60
+            firstfontmarginleft: 100
+            secondfontmarginleft: 100
+            firstfontmarginright: 0
+            secondfontmarginright: 0
+            fontwidth: 35
+            firstfontcolor:
+                r: 0
+                g: 0
+                b: 0
+                a: 255
+            secondfontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontcolors: 0,0,0,255
+            secondfontcolors: 128,128,128,255
+            one: Model
+            two: LensModel
+            three: FocalLength,FNumberStr,ExposureTime,ISOStr
+            four: CreateDate
+        separatetamplate:
+            exist: true
+            width: 5
+            height: 200
+            margintop: 50
+            marginleft: 100
+            marginright: 100
+            fontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            fontcolors: 128,128,128,255
+    -
+        id: "3"
+        type: BOTTOM_LOGO_RIGHT
+        bordertemplate:
+            isround: false
+            radius: 100
+            rightwidth: 100
+            leftwidth: 100
+            topheight: 100
+            bottomheight: 300
+            color:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            colors: 255,255,255,255
+        logotemplate:
+            width: 300
+            height: 300
+            margintop: 0
+            marginleft: 0
+            marginright: 0
+        wordstemplate:
+            firstfontmargintop: 120
+            secondfontmargintop: 240
+            firstfontsize: 60
+            secondfontsize: 60
+            firstfontmarginleft: 0
+            secondfontmarginleft: 0
+            firstfontmarginright: 700
+            secondfontmarginright: 595
+            fontwidth: 35
+            firstfontcolor:
+                r: 0
+                g: 0
+                b: 0
+                a: 255
+            secondfontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontcolors: 0,0,0,255
+            secondfontcolors: 128,128,128,255
+            one: Model
+            two: LensModel
+            three: FocalLength,FNumberStr,ExposureTime,ISOStr
+            four: CreateDate
+        separatetamplate:
+            exist: false
+            width: 5
+            height: 200
+            margintop: 50
+            marginleft: 100
+            marginright: 100
+            fontcolor:
+                r: 128
+                g: 128
+                b: 128
+                a: 255
+            fontcolors: 128,128,128,255
+    -
+        id: "4"
+        type: STACK_BLUR
+        Stackblur: true
+        BlurRadius: 200
+        bordertemplate:
+            isround: true
+            radius: 40
+            rightwidth: 300
+            leftwidth: 300
+            topheight: 300
+            bottomheight: 500
+            color:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            colors: 255,255,255,255
+        logotemplate:
+            width: 533
+            height: 300
+            margintop: 100
+            marginleft: 500
+            marginright: 0
+        wordstemplate:
+            firstfontmargintop: 320
+            secondfontmargintop: 400
+            firstfontsize: 200
+            secondfontsize: 150
+            firstfontmarginleft: 0
+            secondfontmarginleft: 100
+            fontwidth: 35
+            firstfontcolor:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            secondfontcolor:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            firstfontcolors: 255,255,255,255
+            secondfontcolors: 255,255,255,255
+            one: Model
+            two: FocalLength,FNumberStr,ExposureTime,ISOStr
+        separatetamplate:
+            exist: true
+            width: 30
+            height: 200
+            margintop: 150
+            marginleft: 1500
+            marginright: 100
+            fontcolor:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            fontcolors: 255,255,255,255

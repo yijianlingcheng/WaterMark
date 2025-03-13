@@ -1,0 +1,10 @@
+{
+  "name": "WaterMark",
+  "outputfilename": "WaterMark",
+  "frontend:install": "",
+  "frontend:build": "",
+  "author": {
+    "name": "yijianlingchen",
+    "email": "yijianlingchen@outlook.com"
+  }
+}
