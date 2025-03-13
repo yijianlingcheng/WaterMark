@@ -18,4 +18,11 @@
 # vendor/
 
 # Go workspace file
-go.work
+*.log
+wails.json
+
+.vscode/
+build/bin/
+test/
+tmp/
+tools/

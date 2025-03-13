@@ -4,7 +4,6 @@ import (
 	"WaterMark/src/api"
 	"WaterMark/src/config"
 	"WaterMark/src/gui"
-	"WaterMark/src/images"
 	"WaterMark/src/log"
 	"embed"
 
@@ -21,9 +20,6 @@ func main() {
 
 	// 读取配置项
 	config.Load()
-
-	images.TestTextBrush_DrawFontOnRGBA("./test/竖图.jpg")
-	return
 
 	// 启动后端的go服务
 	go api.ServerStart()

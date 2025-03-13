@@ -301,22 +301,12 @@ func (w *WaterMark) saveImg() {
 	exif.CoverImgResolution(w.SaveImgPath, w.ExifInfo.XResolution, w.ExifInfo.YResolution)
 }
 
-func TestTextBrush_DrawFontOnRGBA(path string) {
-	testTpl("1", path)
-	testTpl("2", path)
-	testTpl("3", path)
-	testTpl("4", path)
-}
-
-func testTpl(tid string, path string) {
-
-	save := strings.Replace(path, "D:\\nikon\\source\\", "./tmp/watermark/", -1)
-	save = strings.Replace(save, ".JPG", tid+".JPG", -1)
-	save = strings.Replace(save, ".jpg", tid+".jpg", -1)
-	save = strings.Replace(save, ".jpeg", tid+".jpeg", -1)
-	save = strings.Replace(save, ".png", tid+".png", -1)
-	save = strings.Replace(save, ".PNG", tid+".PNG", -1)
-
+// ProcessWaterMark 生成水印
+//
+//	@param tid 模板id
+//	@param path 图片路径
+//	@param save 目标图片路径
+func ProcessWaterMark(tid string, path string, save string) {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(path, save, tid); err != nil {
