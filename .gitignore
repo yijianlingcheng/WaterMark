@@ -23,3 +23,5 @@ build/bin/*.exe
 build/bin/*.exe~
 test/
 tmp/
+tools/*.exe
+tools/exiftool_files/
