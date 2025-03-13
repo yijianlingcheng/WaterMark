@@ -2,6 +2,7 @@ package images
 
 import (
 	"image"
+	"sort"
 )
 
 // WordStrategy
@@ -52,12 +53,12 @@ func (b *BottomLeftWordStrategy) drawWords(w *WaterMark) {
 	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x, y), w.getWords("Two"))
 
 	// 第一行右边文字
-	x1 := w.SourceWidth - WordsT.FirstFontMarginRight
+	x1 := w.Draw.Bounds().Dx() - borderT.RightWidth - WordsT.FirstFontMarginRight
 	y = smaxy + borderT.TopHeight + WordsT.FirstFontMarginTop
 	ftextBrush.drawFontOnRGBA(w.Draw, image.Pt(x1, y), w.getWords("Three"))
 
 	// 第二行右边文字
-	x2 := w.SourceWidth - WordsT.SecondFontMarginRight
+	x2 := w.Draw.Bounds().Dx() - borderT.RightWidth - WordsT.SecondFontMarginRight
 	y = smaxy + borderT.TopHeight + WordsT.SecondFontMarginTop
 	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x2, y), w.getWords("Four"))
 }
@@ -218,6 +219,77 @@ func (simple *SimpleWordFactory) create(ext string) WordStrategy {
 		return &BottomRightWordStrategy{}
 	case "STACK_BLUR":
 		return &StackblurWordStrategy{}
+	case "BOTTOM_LOGO_LEFT_AUTO":
+		return &BottomLeftWordAutoStrategy{}
+	case "BOTTOM_LOGO_CENTER_AUTO":
+		return &BottomLeftWordAutoStrategy{}
+	case "BOTTOM_LOGO_RIGHT_AUTO":
+		return &BottomLeftWordAutoStrategy{}
+	case "STACK_BLUR_AUTO":
+		return &BottomLeftWordAutoStrategy{}
 	}
 	return nil
+}
+
+// BottomLeftWordAutoStrategy
+type BottomLeftWordAutoStrategy struct {
+	Strategy WordStrategy
+}
+
+func (b *BottomLeftWordAutoStrategy) drawWords(w *WaterMark) {
+	// 计算边距,字体
+	b.calculateLeftAutoWordsT(w)
+
+	logoT := w.WaterMarkTemplate.LogoTemplate
+	borderT := w.WaterMarkTemplate.BorderTemplate
+	WordsT := w.WaterMarkTemplate.WordsTemplate
+
+	sminx := 0
+	smaxy := w.SourceHeight
+
+	x := sminx + borderT.LeftWidth + logoT.Width + WordsT.FirstFontMarginLeft
+	y := smaxy + borderT.TopHeight + WordsT.FirstFontMarginTop
+
+	ftextBrush, _ := newTextBrush(WordsT.FirstFontFile, float64(WordsT.FirstFontSize), &image.Uniform{WordsT.FirstFontColor})
+	stextBrush, _ := newTextBrush(WordsT.SecondFontFile, float64(WordsT.SecondFontSize), &image.Uniform{WordsT.SecondFontColor})
+
+	// 第一行左边文字
+	ftextBrush.drawFontOnRGBA(w.Draw, image.Pt(x, y), w.getWords("One"))
+
+	// 第二行左边文字
+	x = sminx + borderT.LeftWidth + logoT.Width + WordsT.SecondFontMarginLeft
+	y = smaxy + borderT.TopHeight + WordsT.SecondFontMarginTop
+	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x, y), w.getWords("Two"))
+
+	// 第一行右边文字
+	x1 := w.Draw.Bounds().Dx() - borderT.RightWidth - WordsT.FirstFontMarginRight
+	y = smaxy + borderT.TopHeight + WordsT.FirstFontMarginTop
+	ftextBrush.drawFontOnRGBA(w.Draw, image.Pt(x1, y), w.getWords("Three"))
+
+	// 第二行右边文字
+	x2 := w.Draw.Bounds().Dx() - borderT.RightWidth - WordsT.SecondFontMarginRight
+	y = smaxy + borderT.TopHeight + WordsT.SecondFontMarginTop
+	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x2, y), w.getWords("Four"))
+}
+
+// calculateLeftAutoWordsT 计算字体边距,字体大小
+//
+//	@param w
+func (b *BottomLeftWordAutoStrategy) calculateLeftAutoWordsT(w *WaterMark) {
+	// 边框模板
+	borderT := w.WaterMarkTemplate.BorderTemplate
+
+	// 字体大小
+	fontSize := borderT.BottomHeight / 4
+
+	// 右边距
+	marginRightA := []int{len(w.getWords("Three")), len(w.getWords("Four"))}
+	sort.Ints(marginRightA)
+	marginRight := int(float64(marginRightA[len(marginRightA)-1]*fontSize) * 0.6)
+
+	// 上边距
+	marginTop := int(float64(borderT.BottomHeight) / 2.5)
+
+	// 对对象赋值,方便后续计算
+	w.WaterMarkTemplate.WordsTemplate = newWordsTemplate().WithFontSize(fontSize).WithMarginRight(marginRight).WithMarginTop(marginTop)
 }

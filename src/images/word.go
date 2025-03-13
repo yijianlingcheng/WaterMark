@@ -65,57 +65,67 @@ type WordsTemplate struct {
 	Four string
 }
 
-// // setDefaultWordsTemplate 默认的文字模板
-// //
-// //	@param w
-// func setDefaultWordsTemplate(w *WordsTemplate) {
-// 	w.One = "Model"
-// 	w.Two = "LensModel"
-// 	w.Three = "FocalLength,FNumberStr,ExposureTime,ISOStr"
-// 	w.Four = "CreateDate"
-// 	w.FirstFontMarginTop = 120
-// 	w.SecondFontMarginTop = 240
-// 	w.FirstFontSize = 60
-// 	w.SecondFontSize = 60
-// 	w.FirstFontMarginLeft = 300
-// 	w.SecondFontMarginLeft = 300
-// 	w.FirstFontMarginRight = 0
-// 	w.SecondFontMarginRight = 0
-// 	w.FontWidth = 35
-// 	w.FirstFontColors = "0,0,0,255"
-// 	w.FirstFontColor = strColor2RGBA(w.FirstFontColors)
-// 	w.FirstFontFile = "./frontend/src/assets/fonts/Alibaba-PuHuiTi-Bold.ttf"
-// 	w.SecondFontColors = "128,128,128,255"
-// 	w.SecondFontColor = strColor2RGBA(w.SecondFontColors)
-// 	w.SecondFontFile = "./frontend/src/assets/fonts/Alibaba-PuHuiTi-Light.ttf"
-// }
+// setDefaultWordsTemplate 默认的文字模板
+//
+//	@param w
+func setDefaultWordsTemplate(w *WordsTemplate) {
+	w.One = "Model"
+	w.Two = "LensModel"
+	w.Three = "FocalLength,FNumberStr,ExposureTime,ISOStr"
+	w.Four = "CreateDate"
+	w.FirstFontColors = "0,0,0,255"
+	w.FirstFontColor = StrColor2RGBA(w.FirstFontColors)
+	w.FirstFontFile = "./fonts/Alibaba-PuHuiTi-Bold.ttf"
+	w.SecondFontColors = "128,128,128,255"
+	w.SecondFontColor = StrColor2RGBA(w.SecondFontColors)
+	w.SecondFontFile = "./fonts/Alibaba-PuHuiTi-Light.ttf"
+}
 
-// // newWordsTemplate 构造一个文字模板
-// //
-// //	@param opts 可选参数,map结构
-// //	@return *WordsTemplate
-// func newWordsTemplate(opts ...map[string]string) *WordsTemplate {
-// 	w := WordsTemplate{}
-// 	setDefaultWordsTemplate(&w)
-// 	if len(opts) > 0 {
-// 		val := reflect.ValueOf(&w)
-// 		val = val.Elem()
-// 		for i, v := range opts[0] {
-// 			fieldVa := val.FieldByName(i)
-// 			fieldVa.Set(reflect.ValueOf(v))
-// 		}
-// 	}
-// 	return &w
-// }
+// newWordsTemplate 构造一个文字模板
+//
+//	@return *WordsTemplate
+func newWordsTemplate() *WordsTemplate {
+	w := WordsTemplate{}
+	setDefaultWordsTemplate(&w)
+	return &w
+}
 
-// // setOptions
-// //
-// //	@param opts
-// func (w *WordsTemplate) setOptions(opts map[string]string) {
-// 	val := reflect.ValueOf(&w)
-// 	val = val.Elem()
-// 	for i, v := range opts {
-// 		fieldVa := val.FieldByName(i)
-// 		fieldVa.Set(reflect.ValueOf(v))
-// 	}
-// }
+// WithFontSize 字体大小
+//
+//	@param fontSize
+//	@return *WordsTemplate
+func (t *WordsTemplate) WithFontSize(fontSize int) *WordsTemplate {
+	t.FirstFontSize = fontSize
+	t.SecondFontSize = fontSize
+	return t
+}
+
+// WithMarginRight 右边距
+//
+//	@param marginRight
+//	@return *WordsTemplate
+func (t *WordsTemplate) WithMarginRight(marginRight int) *WordsTemplate {
+	t.FirstFontMarginRight = marginRight
+	t.SecondFontMarginRight = marginRight
+	return t
+}
+
+// WithMarginLeft 左边距
+//
+//	@param marginLeft
+//	@return *WordsTemplate
+func (t *WordsTemplate) WithMarginLeft(marginLeft int) *WordsTemplate {
+	t.FirstFontMarginLeft = marginLeft
+	t.SecondFontMarginLeft = marginLeft
+	return t
+}
+
+// WithMarginTop 上边距
+//
+//	@param marginTop
+//	@return *WordsTemplate
+func (t *WordsTemplate) WithMarginTop(marginTop int) *WordsTemplate {
+	t.FirstFontMarginTop = marginTop
+	t.SecondFontMarginTop = marginTop + int(float64(t.FirstFontSize)*1.6)
+	return t
+}

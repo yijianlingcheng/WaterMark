@@ -1,19 +1,36 @@
 tpls:
     -
         id: "1"
-        type: BOTTOM_LOGO_LEFT_AUTO
-        description: "logo在底部边框最左侧,模板文字在logo右侧,文字分为上下两行。间距与字体可以自动调节"
+        type: BOTTOM_LOGO_LEFT
         bordertemplate:
-            onlybottom: false
             isround: false
-            radius: 0
+            radius: 100
+            rightwidth: 100
+            leftwidth: 100
+            topheight: 100
+            bottomheight: 300
+            color:
+                r: 255
+                g: 255
+                b: 255
+                a: 255
+            colors: 255,255,255,255
         logotemplate:
-            width: 0
-            height: 0
+            width: 300
+            height: 300
             margintop: 0
             marginleft: 0
             marginright: 0
         wordstemplate:
+            firstfontmargintop: 120
+            secondfontmargintop: 240
+            firstfontsize: 60
+            secondfontsize: 60
+            firstfontmarginleft: 0
+            secondfontmarginleft: 0
+            firstfontmarginright: 650
+            secondfontmarginright: 650
+            fontwidth: 35
             firstfontcolor:
                 r: 0
                 g: 0
@@ -45,8 +62,7 @@ tpls:
             fontcolors: 128,128,128,255
     -
         id: "2"
-        type: BOTTOM_LOGO_CENTER_AUTO
-        description: "logo在底部边框中间,模板文字在logo左右两侧,文字分为上下两行。间距与字体可以自动调节"
+        type: BOTTOM_LOGO_CENTER
         bordertemplate:
             isround: false
             radius: 0
@@ -109,8 +125,7 @@ tpls:
             fontcolors: 128,128,128,255
     -
         id: "3"
-        type: BOTTOM_LOGO_RIGHT_AUTO
-        description: "logo在底部边框右侧,模板文字在logo左侧,文字分为上下两行。间距与字体可以自动调节"
+        type: BOTTOM_LOGO_RIGHT
         bordertemplate:
             isround: false
             radius: 100
@@ -173,8 +188,7 @@ tpls:
             fontcolors: 128,128,128,255
     -
         id: "4"
-        type: STACK_BLUR_AUTO
-        description: "高斯模糊模板,logo文字与边框间距自动调节。图片宽度大于高度时:水印文字为一行;图片宽度大于高度时:水印文字为两行"
+        type: STACK_BLUR
         Stackblur: true
         BlurRadius: 200
         bordertemplate:

@@ -1,3 +1,11 @@
+// 隐藏页面元素
+function reload() {
+    $("#shutterimg-result").html("")
+    $("#shutterimg-preview-img").hide()
+    $("#shutterimg-preview-img").attr("src", "")
+    $("#shutterimg-input").val("")
+}
+
 // 显示首页
 function showHome() {
     $(".right-content").hide()
@@ -6,6 +14,7 @@ function showHome() {
 
 // 显示快门查询
 function showShutterimg() {
+    reload()
     $(".right-content").hide()
     $("#shutterimg").show()
 }
@@ -56,7 +65,7 @@ function shutterImgUpload() {
         processData : false,
         contentType : false,
         success : function (response) {
-            var li = "机械快门次数:"+response['MechanicalShutterCount']+" 快门次数:"+response['ShutterCount']
+            var li = "机器快门次数:"+response['MechanicalShutterCount']+" 快门次数:"+response['ShutterCount']
             $("#shutterimg-result").append(li)
         },
         error: function(xhr, status, error) {
@@ -108,4 +117,38 @@ function SelectDirectory(type) {
     }).finally(() => {
         
     });
+}
+
+// 批量选择图片文件
+function watermarkOpenMultipleFilesDialog() {
+    window.go.gui.App.SelectMultipleImageFile().then(result => {
+        if (result.length > 0) {
+            $("#div-selectImages").hide()
+            $("#watermarkOpenMultipleFiles").val(result)
+            var list = result.split(",");
+            for (var i = 0; i < list.length; i ++) {
+                if (i == 0) {
+                    var img = "<img class='img-list img-list-selected pointer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[i]+"&random="+Math.random() + "'>"
+                } else {
+                    var img = "<img class='img-list pointer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[i]+"&random="+Math.random() + "'>"
+                }
+                $("#watermarkShowMultipleFiles").append(img)
+            }
+            var imgContainer = "<img class='img-imagesContainer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[0]+"&random="+Math.random() + "'>"
+            $("#div-imagesContainer").append(imgContainer)
+            $("#div-templateContainer").show()
+        }
+    }).catch(err => {
+        console.log(err);
+    }).finally(() => {
+        
+    });
+}
+
+function waterMarkPreivew() {
+
+}
+
+function waterMarkExport() {
+    
 }

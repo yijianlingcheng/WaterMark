@@ -13,3 +13,7 @@ export function SelectDirectory() {
 export function SelectImageFile() {
   return window['go']['gui']['App']['SelectImageFile']();
 }
+
+export function SelectMultipleImageFile() {
+  return window['go']['gui']['App']['SelectMultipleImageFile']();
+}

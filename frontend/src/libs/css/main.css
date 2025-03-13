@@ -33,3 +33,38 @@
 .margin-left-0 {
     margin-left: 0!important;
 }
+
+.selectImages {
+    font-size: 7rem;
+    padding: 5rem 5rem;
+    border: 1px dashed #666;
+}
+
+.img-list {
+    width: 20%;
+    border: 2px #666699;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+
+.img-list-selected {
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+}
+
+.img-list:hover{
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+}
+
+.show-img-list {
+    white-space:nowrap;/*内容横向排列不换行*/ 
+    overflow-x:auto;
+    overflow-y:hidden;/*隐藏溢出部分。横向滚动条自动出现，纵向滚动条隐藏*/
+}
+
+.img-imagesContainer {
+    width: 100%;
+}
+
+#div-templateContainer {
+    display: none;
+}

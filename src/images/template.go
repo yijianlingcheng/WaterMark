@@ -40,8 +40,11 @@ type WaterMarkTemplate struct {
 	// ID
 	ID string
 
-	// Type 模板类型(BOTTOM_LOGO_LEFT,BOTTOM_LOGO_CENTER,BOTTOM_LOGO_RIGHT)
+	// Type 模板类型(BOTTOM_LOGO_LEFT_AUTO,BOTTOM_LOGO_CENTER_AUTO,BOTTOM_LOGO_RIGHT_AUTO,STACK_BLUR_AUTO)
 	Type string
+
+	// Description 模板描述
+	Description string
 
 	// BorderTemplate 边框模板
 	BorderTemplate *BorderTemplate

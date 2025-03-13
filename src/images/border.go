@@ -6,6 +6,9 @@ import (
 
 type BorderTemplate struct {
 
+	// OnlyBottom 是否只有底部边框
+	OnlyBottom bool
+
 	// IsRound  边框是否拥有圆角
 	IsRound bool
 
@@ -31,50 +34,52 @@ type BorderTemplate struct {
 	Colors string
 }
 
-// // setDefaultBorderTemplate 默认的边框模板
-// //
-// //	@param b
-// func setDefaultBorderTemplate(b *BorderTemplate) {
-// 	b.IsRound = false
-// 	b.Radius = 0
-// 	b.RightWidth = 100
-// 	b.LeftWidth = 100
-// 	b.TopHeight = 100
-// 	b.BottomHeight = 300
+// newBorderTemplate 构造一个Logo模板
+//
+//	@return *BorderTemplate
+func newBorderTemplate() *BorderTemplate {
+	return &BorderTemplate{}
+}
 
-// 	b.Colors = "255,255,255,255"
-// 	b.Color = strColor2RGBA(b.Colors)
-// }
+// WithWidth 宽度
+//
+//	@param width
+//	@return *BorderTemplate
+func (b *BorderTemplate) WithWidth(width int) *BorderTemplate {
+	leftWidth := int(width / 2)
+	b.LeftWidth = leftWidth
+	b.RightWidth = width - leftWidth
+	return b
+}
 
-// // newBorderTemplate 构造一个Logo模板
-// //
-// //	@param opts 可选参数,map结构
-// //	@return *BorderTemplate
-// func newBorderTemplate(opts ...map[string]string) *BorderTemplate {
-// 	b := BorderTemplate{}
-// 	setDefaultBorderTemplate(&b)
-// 	if len(opts) > 0 {
-// 		val := reflect.ValueOf(&b)
-// 		val = val.Elem()
-// 		for i, v := range opts[0] {
-// 			fieldVa := val.FieldByName(i)
-// 			fieldVa.Set(reflect.ValueOf(v))
-// 		}
-// 	}
-// 	return &b
-// }
+// WithHeight 高度
+//
+//	@param height
+//	@return *BorderTemplate
+func (b *BorderTemplate) WithHeight(height int) *BorderTemplate {
+	topHeight := int(height / 4)
+	b.TopHeight = topHeight
+	b.BottomHeight = height - topHeight
+	return b
+}
 
-// // setOptions
-// //
-// //	@param opts
-// func (b *BorderTemplate) setOptions(opts map[string]string) {
-// 	val := reflect.ValueOf(&b)
-// 	val = val.Elem()
-// 	for i, v := range opts {
-// 		fieldVa := val.FieldByName(i)
-// 		fieldVa.Set(reflect.ValueOf(v))
-// 	}
-// }
+// WithBottomHeight 只设置底部边框高度
+//
+//	@param height
+//	@return *
+func (b *BorderTemplate) WithBottomHeight(height int) *BorderTemplate {
+	b.BottomHeight = height
+	return b
+}
+
+// WithBoderColor 颜色
+//
+//	@param color
+//	@return *BorderTemplate
+func (b *BorderTemplate) WithBoderColor(color color.RGBA) *BorderTemplate {
+	b.Color = color
+	return b
+}
 
 // getWidth 获取边框宽度
 //

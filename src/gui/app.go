@@ -3,8 +3,10 @@ package gui
 import (
 	"WaterMark/src/log"
 	"context"
+	goruntime "runtime"
+	"strings"
 
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -21,6 +23,10 @@ func NewApp() *App {
 func (a *App) Startup(ctx context.Context) {
 	// Perform your setup here
 	a.ctx = ctx
+	// 设置主题
+	if goruntime.GOOS == "windows" {
+		wailsruntime.WindowSetDarkTheme(a.ctx)
+	}
 }
 
 // domReady is called after front-end resources have been loaded
@@ -44,7 +50,7 @@ func (a *App) Shutdown(ctx context.Context) {
 //
 //	@return string 选择的文件夹路径
 func (a *App) SelectDirectory() string {
-	result, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+	result, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		DefaultDirectory: "",
 		DefaultFilename:  "",
 		Title:            "请选择文件夹",
@@ -60,11 +66,33 @@ func (a *App) SelectDirectory() string {
 //
 //	@return string
 func (a *App) SelectImageFile() string {
-	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+	result, err := wailsruntime.OpenFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		DefaultDirectory: "",
 		DefaultFilename:  "",
 		Title:            "请选择图片",
-		Filters: []runtime.FileFilter{
+		Filters: []wailsruntime.FileFilter{
+			{
+				DisplayName: "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;)",
+				Pattern:     "*.jpg;*.JPG;*.jpeg;*.JPEG;",
+			},
+		},
+	})
+	if err != nil {
+		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
+		return ""
+	}
+	return result
+}
+
+// SelectImageFile 选择图片文件,如果没有选择,返回空字符串
+//
+//	@return string
+func (a *App) SelectMultipleImageFile() string {
+	result, err := wailsruntime.OpenMultipleFilesDialog(a.ctx, wailsruntime.OpenDialogOptions{
+		DefaultDirectory: "",
+		DefaultFilename:  "",
+		Title:            "请选择图片",
+		Filters: []wailsruntime.FileFilter{
 			{
 				DisplayName: "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;*NEF)",
 				Pattern:     "*.jpg;*.JPG;*.jpeg;*.JPEG;*NEF",
@@ -75,5 +103,5 @@ func (a *App) SelectImageFile() string {
 		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
 		return ""
 	}
-	return result
+	return strings.Join(result, ",")
 }

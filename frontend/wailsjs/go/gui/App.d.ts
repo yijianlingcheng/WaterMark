@@ -7,3 +7,5 @@ export function DomReady(arg1:context.Context):Promise<void>;
 export function SelectDirectory():Promise<string>;
 
 export function SelectImageFile():Promise<string>;
+
+export function SelectMultipleImageFile():Promise<string>;

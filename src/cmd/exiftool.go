@@ -11,7 +11,7 @@ import (
 )
 
 // extraTags exiftool工具的标签,-TAG标签指定exiftool返回的字段内容
-var extraTags = []string{"TAG", "Make", "Model", "CreateDate", "LensModel", "ExposureTime", "FNumber", "ISO", "FocalLength", "XResolution", "YResolution", "MechanicalShutterCount", "ShutterCount"}
+var extraTags = []string{"TAG", "Make", "Model", "CreateDate", "LensModel", "ExposureTime", "FNumber", "ISO", "FocalLength", "XResolution", "YResolution", "MechanicalShutterCount", "ShutterCount", "Orientation"}
 
 // extractArgs 指定exiftool工具返回json格式数据
 var extractArgs = []string{"-j"}
@@ -70,7 +70,8 @@ func analysisResults(s string) exif.Exif {
 	var maps []exif.Exif
 	json.Unmarshal([]byte(s), &maps) // exiftool -j 返回的内容是json数组,因此取index=0作为结果
 	item := maps[0]
-	item.FNumberStr = strconv.FormatFloat(item.FNumber, 'f', 1, 64) //将光圈大小保留一位小数并转换为字符串
-	item.ISOStr = fmt.Sprintf("%d", item.ISO)                       //将ISO转换为字符串
+	item.FNumberStr = strconv.FormatFloat(item.FNumber, 'f', 1, 64)  //将光圈大小保留一位小数并转换为字符串
+	item.ISOStr = fmt.Sprintf("%d", item.ISO)                        //将ISO转换为字符串
+	item.OrientationNum = exif.GetImageOrientation(item.Orientation) // 转换图片旋转角度
 	return item
 }

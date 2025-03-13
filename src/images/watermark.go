@@ -9,6 +9,7 @@ import (
 	"image/draw"
 	"strings"
 
+	"github.com/disintegration/imaging"
 	"github.com/esimov/stackblur-go"
 	"github.com/fatih/structs"
 )
@@ -102,7 +103,7 @@ func (w *WaterMark) loadSource(path string, save string, tplId string) error {
 //	@param e
 //	@return *WaterMark
 func (w *WaterMark) setExif(e exif.Exif) *WaterMark {
-	//w.ExifInfo = e
+	w.ExifInfo = e
 	w.ExifMap = structs.Map(e)
 	return w
 }
@@ -171,16 +172,45 @@ func (w *WaterMark) loadSourceImg() error {
 	if err != nil {
 		return err
 	}
-	w.SourceImage = sourceImg
-	w.SourceWidth = sourceImg.Bounds().Dx()
-	w.SourceHeight = sourceImg.Bounds().Dy()
+	if w.ExifInfo.OrientationNum > 0 {
+		var newSourceImg *image.NRGBA
+		switch w.ExifInfo.OrientationNum {
+		case 90:
+			newSourceImg = imaging.Rotate90(sourceImg) // 逆时针90
+		case 180:
+			newSourceImg = imaging.Rotate180(sourceImg) // 逆时针180
+		case 270:
+			newSourceImg = imaging.Rotate270(sourceImg) // 逆时针270度
+		default:
+			newSourceImg = imaging.Clone(sourceImg) // 无需旋转
+		}
+		w.SourceImage = newSourceImg
+		w.SourceWidth = newSourceImg.Bounds().Dx()
+		w.SourceHeight = newSourceImg.Bounds().Dy()
+	} else {
+		w.SourceImage = sourceImg
+		w.SourceWidth = sourceImg.Bounds().Dx()
+		w.SourceHeight = sourceImg.Bounds().Dy()
+	}
 	return nil
+}
+
+// beforeProcess 前置处理
+func (w *WaterMark) beforeProcess() {
+	// 只有底部边框的模式,border模板的top,left,bottom需要赋0
+	if w.WaterMarkTemplate.BorderTemplate.OnlyBottom {
+		w.WaterMarkTemplate.BorderTemplate.LeftWidth = 0
+		w.WaterMarkTemplate.BorderTemplate.RightWidth = 0
+		w.WaterMarkTemplate.BorderTemplate.TopHeight = 0
+	}
 }
 
 // drawLogo2Image 将相机logo写入图片中
 //
 //	@return *WaterMark
 func (w *WaterMark) drawLogo2Image() *WaterMark {
+	//前置处理
+	w.beforeProcess()
 
 	// 画边框
 	simpleBorderFactory := &SimpleBorderFactory{}
@@ -298,7 +328,7 @@ func (w *WaterMark) saveImg() {
 	} else {
 		saveJpegImage(w.SaveImgPath, w.Draw, w.Quality)
 	}
-	exif.CoverImgResolution(w.SaveImgPath, w.ExifInfo.XResolution, w.ExifInfo.YResolution)
+	exif.CoverImgExifInfo(w.SaveImgPath, w.ExifInfo)
 }
 
 // ProcessWaterMark 生成水印
@@ -310,10 +340,6 @@ func ProcessWaterMark(tid string, path string, save string) {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(path, save, tid); err != nil {
-		log.ErrorLogger.Println(err)
-	}
-	// 读取LOGO
-	if err := waterMark.loadLogo(); err != nil {
 		log.ErrorLogger.Println(err)
 	}
 	// 读取原始图片

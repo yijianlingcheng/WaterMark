@@ -85,15 +85,79 @@
                         <h3>水印设置</h3>
                     </div>
                     <div class="row watermark-tpl-list">
-                        <div title="鼠标点击预览" class="col watermark-tpl-item shadow p-3 mb-5 bg-white rounded pointer">
-                            <img src="./assets/images/style-1.jpeg" class="img-fluid" onclick="waterMarkShowBigImg(this)"/>
-                            <p class="watermark-p-check">默认水印</p>
+                        <div id="div-selectImages">
+                            <p class="selectImages pointer" onclick="watermarkOpenMultipleFilesDialog()">+</p>
+                            <input style="display: none;" id="watermarkOpenMultipleFiles"/>
                         </div>
-                        <div title="鼠标点击预览" class="col watermark-tpl-item pointer">
-                            <img src="./assets/images/style-1.jpeg" class="img-fluid" onclick="waterMarkShowBigImg(this)"/>
+                        <div id="div-imagesContainer" class="col-8">
+                            
                         </div>
-                        <div title="鼠标点击预览" class="col watermark-tpl-item pointer">
-                            <img src="./assets/images/style-1.jpeg" class="img-fluid" onclick="waterMarkShowBigImg(this)"/>
+                        <div id="div-templateContainer" class="col-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">选择模板</span>
+                                </div>
+                                <select id="select-template" class="form-control">
+                                    
+                                </select>
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">相机名称</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="相机名称" aria-label="相机名称" aria-describedby="basic-addon1" id="input-Model">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">镜头信息</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="镜头信息" aria-label="镜头信息" aria-describedby="basic-addon1" id="input-LensModel">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">照片参数</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-Params">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">字体大小</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-FontSize">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">上边框宽</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-TopHeight">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">左边框宽</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-LeftWidth">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">右边框宽</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-RightWidth">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">下边框宽</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-BottomHeight">
+                            </div>
+                            <div class="row margin-top-1rem margin-left-0">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-secondary" onclick="waterMarkPreivew()">预览</button>
+                                <button type="button" class="btn btn-info" onclick="waterMarkExport()">导出</button> 
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="show-img-list" id="watermarkShowMultipleFiles">
+                            
                         </div>
                     </div>
 

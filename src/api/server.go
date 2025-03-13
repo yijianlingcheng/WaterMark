@@ -17,7 +17,7 @@ func ServerStart() {
 	log.InfoLogger.Println("Server Start begin")
 
 	// release模式
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
 

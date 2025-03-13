@@ -74,43 +74,27 @@ type LogoTemplate struct {
 	MarginRight int
 }
 
-// // setDefaultLogoTemplate 默认的Logo模板
-// //
-// //	@param w
-// func setDefaultLogoTemplate(w *LogoTemplate) {
-// 	w.Width = 300
-// 	w.Height = 300
-// 	w.MarginTop = 0
-// 	w.MarginLeft = 0
-// 	w.MarginRight = 0
-// }
+// newLogoTemplate 构造一个Logo模板
+//
+//	@return *LogoTemplate
+func newLogoTemplate() *LogoTemplate {
+	return &LogoTemplate{}
+}
 
-// // newLogoTemplate 构造一个Logo模板
-// //
-// //	@param opts 可选参数,map结构
-// //	@return *LogoTemplate
-// func newLogoTemplate(opts ...map[string]string) *LogoTemplate {
-// 	l := LogoTemplate{}
-// 	setDefaultLogoTemplate(&l)
-// 	if len(opts) > 0 {
-// 		val := reflect.ValueOf(&l)
-// 		val = val.Elem()
-// 		for i, v := range opts[0] {
-// 			fieldVa := val.FieldByName(i)
-// 			fieldVa.Set(reflect.ValueOf(v))
-// 		}
-// 	}
-// 	return &l
-// }
+// WithWidth WithHeight 高度
+//
+//	@param width
+//	@return *LogoTemplate
+func (l *LogoTemplate) WithWidth(width int) *LogoTemplate {
+	l.Width = width
+	return l
+}
 
-// // setOptions
-// //
-// //	@param opts
-// func (l *LogoTemplate) setOptions(opts map[string]string) {
-// 	val := reflect.ValueOf(&l)
-// 	val = val.Elem()
-// 	for i, v := range opts {
-// 		fieldVa := val.FieldByName(i)
-// 		fieldVa.Set(reflect.ValueOf(v))
-// 	}
-// }
+// WithHeight 高度
+//
+//	@param height
+//	@return *BorderTemplate
+func (l *LogoTemplate) WithHeight(height int) *LogoTemplate {
+	l.Height = height
+	return l
+}

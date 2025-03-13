@@ -410,3 +410,15 @@ func GetDirFiles(path string) []string {
 	}
 	return r
 }
+
+// TestProcessWaterMark 测试生成水印
+func TestProcessWaterMark() {
+	dir := "./test"
+	list := GetDirFiles(dir)
+	tplId := "1" // 模板id
+	for _, file := range list {
+		path := dir + "/" + file
+		save := strings.ReplaceAll(path, dir, "./tmp/watermark")
+		ProcessWaterMark(tplId, path, save)
+	}
+}
