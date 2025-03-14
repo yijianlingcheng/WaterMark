@@ -53,7 +53,6 @@ func NewExifTool(p string) *Exiftool {
 //
 //	@return exif.Exif
 func (et *Exiftool) getExif() (exif.Exif, error) {
-
 	args := et.exiftoolBinPath + " " + strings.Join(et.runTags, " ")
 	r, err := cmdRun(args)
 	if len(err) > 0 {
