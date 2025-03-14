@@ -9,12 +9,6 @@ import (
 // exiftoolBinary exiftool可执行文件路径
 var exiftoolBinary = "exiftool"
 
-// hideCmdWindow 隐藏
-//
-//	@param cmd
-func hideCmdWindow(cmd *exec.Cmd) {
-}
-
 // Freebsd 运行 cmd命令
 //
 //	@param args 具体的参数

@@ -9,7 +9,7 @@ import (
 // exiftoolBinary exiftool可执行文件路径
 var exiftoolBinary = "exiftool"
 
-// Freebsd 运行 cmd命令
+// darwin 运行 cmd命令
 //
 //	@param args 具体的参数
 //	@return string cmd标准输出结果
