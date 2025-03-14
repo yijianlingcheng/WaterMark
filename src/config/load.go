@@ -1,9 +1,9 @@
 package config
 
 import (
-	"WaterMark/src/cmd"
 	"WaterMark/src/images"
 	"WaterMark/src/log"
+	"WaterMark/src/tool"
 	"fmt"
 
 	"github.com/fsnotify/fsnotify"
@@ -15,9 +15,9 @@ func Load() {
 	loadConfig()
 	initLogoList()
 	initTemplate()
-	cmd.InitExifCache()
 	images.InitImagesCache()
 	images.InitImagesRGBACache()
+	checkAndCreateDir()
 }
 
 // loadConfig 加载主配置文件
@@ -58,4 +58,16 @@ func initTemplate() {
 	})
 
 	images.LoadTemplate()
+}
+
+// checkAndCreateDir 检查并创建文件夹
+func checkAndCreateDir() {
+	dir := images.PreviewPath
+	if !tool.Exists(dir) {
+		tool.CreateDir(dir)
+	}
+	dir = images.SmallPreviewPath
+	if !tool.Exists(dir) {
+		tool.CreateDir(dir)
+	}
 }

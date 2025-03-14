@@ -381,15 +381,28 @@ func ProcessWaterMark(tid string, path string, save string) {
 	waterMark.saveImg()
 }
 
-var tmpPreviewPath string = "./tmp/preview/"
+// 水印预览图生成位置
+var PreviewPath string = "./tmp/preview/"
+
+// 预览小图生成位置
+var SmallPreviewPath string = "./tmp/small/"
 
 // getTmpPreviewPath 获取预览的临时目录
 //
 //	@param path
 //	@return string
 func getTmpPreviewPath(path string) string {
-	t := strings.Split(path, ".")
-	return tmpPreviewPath + "tmp." + strings.Split(path, ".")[len(t)-1]
+	t := strings.Split(path, "/")
+	return PreviewPath + t[len(t)-1]
+}
+
+// getSmallPreviewPath
+//
+//	@param path
+//	@return string
+func getSmallPreviewPath(path string) string {
+	t := strings.Split(path, "/")
+	return SmallPreviewPath + t[len(t)-1]
 }
 
 // GetPreviewWaterMark 获取水印预览信息
@@ -416,4 +429,13 @@ func GetPreviewWaterMark(e *External) map[string]string {
 	waterMark.saveImg()
 
 	return waterMark.exportData()
+}
+
+// CeateSmallPreview 生成预览小图
+//
+//	@param e
+func CeateSmallPreview(e *External) {
+	img, _ := cacheLoadImage(e.SourcePath)
+	newImg := imaging.Resize(img, img.Bounds().Dx()/10, img.Bounds().Dy()/10, imaging.Lanczos)
+	saveJpegImage(e.SavePath, newImg, 100)
 }

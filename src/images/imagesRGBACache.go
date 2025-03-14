@@ -27,13 +27,14 @@ func InitImagesRGBACache() {
 
 // cacheLoadImageRGBA 获取对象缓存
 //
+//	@param path
 //	@param x1
 //	@param y1
 //	@param x2
 //	@param y2
 //	@return *image.RGBA
-func cacheLoadImageRGBA(x1, y1, x2, y2 int) *image.RGBA {
-	str := fmt.Sprintf("%d%d%d%d", x1, y1, x2, y2)
+func cacheLoadImageRGBA(path string, x1 int, y1 int, x2 int, y2 int) *image.RGBA {
+	str := path + fmt.Sprintf("%d%d%d%d", x1, y1, x2, y2)
 	// 计算md5
 	md5 := "cacheLoadImageRGBA:" + tool.StrMD5(str)
 	// 返回缓存

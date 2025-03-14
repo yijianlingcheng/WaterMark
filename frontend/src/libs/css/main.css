@@ -45,6 +45,8 @@
     border: 2px #666699;
     padding: 0.5rem;
     margin: 0.5rem;
+    min-width: 153px;
+    min-height: 102px;
 }
 
 .img-list-selected {
@@ -68,4 +70,9 @@
 
 #div-templateContainer {
     display: none;
+}
+
+#div-imagesContainer {
+    min-width: 603px;
+    min-height: 440px;
 }

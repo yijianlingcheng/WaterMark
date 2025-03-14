@@ -29,7 +29,7 @@ func ServerStart() {
 
 	// 获取图片预览
 	router.GET("/server/getImagePreview", func(c *gin.Context) {
-		imgPath := c.Query("imgagePath")
+		imgPath := c.Query("imagePath")
 		if runtime.GOOS == "windows" {
 			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
 		}
@@ -45,7 +45,7 @@ func ServerStart() {
 
 	// 获取图片水印预览
 	router.POST("/server/getImageWaterMarkPreview", func(c *gin.Context) {
-		imgPath := c.PostForm("imgagePath")
+		imgPath := c.PostForm("imagePath")
 		tid := c.DefaultPostForm("tid", "1")
 		flag := c.DefaultPostForm("flag", "false")
 		color := c.DefaultPostForm("color", "255,255,255,255")
@@ -56,8 +56,32 @@ func ServerStart() {
 		c.JSON(http.StatusOK, r)
 	})
 
-	port := "11079"
-	router.Run(":" + port)
+	// 添加图片水印预览异步任务
+	router.POST("/server/addPreviewTask", func(c *gin.Context) {
+		images := c.PostForm("images")
+		go addPreviewTask(images)
+		c.JSON(http.StatusOK, map[string]string{})
+	})
+
+	// 添加图片压缩任务
+	router.POST("/server/addImageResizeTask", func(c *gin.Context) {
+		images := c.PostForm("images")
+		addImageResizeTask(images)
+		c.JSON(http.StatusOK, map[string]string{})
+	})
+
+	// 预览小图
+	router.GET("/server/imagePreviewSmall", func(c *gin.Context) {
+		imgPath := c.Query("imagePath")
+		if runtime.GOOS == "windows" {
+			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
+		}
+		imgPath = getSmallPreviewPath(imgPath) //把要显示的图片读取到变量中
+		file, _ := os.ReadFile(imgPath)
+		c.Writer.WriteString(string(file))
+	})
+
+	router.Run(":11079")
 }
 
 // CORSMiddleware 中间件处理跨域问题

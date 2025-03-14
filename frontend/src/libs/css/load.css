@@ -1,0 +1,102 @@
+.main-wrap {
+    background-color: rgb(128, 128, 128);
+    color: #fff;
+    height: 520px;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    width: 950px;
+}
+
+.main-wrap--white {
+  background-color: #ffffff;
+}
+
+#cssLoader1.main-wrap .child-common
+{
+    width: 8px;
+    height: 50px;
+    /*margin-right:5px;*/
+    margin-right:3px;
+    background-color: #FFF;
+    -webkit-animation: animate1 1s infinite;
+    animation: animate1 1s infinite;
+    float: left;
+}
+
+#cssLoader1.main-wrap .child1
+{
+   margin-right: 3px;
+} 
+
+#cssLoader1.main-wrap .child10
+{
+  -webkit-animation-delay: 0.9s;
+  animation-delay: 0.9s;  
+}
+
+#cssLoader1.main-wrap .child9
+{
+   -webkit-animation-delay: 0.8s;
+  animation-delay: 0.8s;  
+}
+
+#cssLoader1.main-wrap .child8
+{
+   -webkit-animation-delay: 0.7s;
+  animation-delay: 0.7s;  
+}
+
+#cssLoader1.main-wrap .child7
+{
+   -webkit-animation-delay: 0.6s;
+  animation-delay: 0.6s;  
+}
+
+#cssLoader1.main-wrap .child6
+{
+   -webkit-animation-delay: 0.5s;
+  animation-delay: 0.5s;  
+}
+
+#cssLoader1.main-wrap .child5
+{
+   -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+
+#cssLoader1.main-wrap .child4
+{
+   -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;    
+}
+
+#cssLoader1.main-wrap .child3
+{
+   -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;  
+}
+
+#cssLoader1.main-wrap .child2
+{
+   -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
+}
+
+@-webkit-keyframes animate1 {
+
+  50% {
+    -ms-transform: scaleY(0); 
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+
+  }
+}
+
+@keyframes animate1 {
+  50% {
+    -ms-transform: scaleY(0); 
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+  }
+}

@@ -18,6 +18,46 @@ function showWaterMarkProcess() {
     window.location.href = "./watermarkExport.html"
 }
 
+function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
+   
+
+// 获取请求url
+function getReqUrl(type, params) {
+    var host = "http://localhost:11079/"
+    var url = "server/getImagePreview"
+    switch (type) {
+        case "shutter":
+            url = "server/getShutterByFile"
+            break
+        case "ImagePreview":
+            url = "server/getImagePreview"
+            break
+        case "ImageResize":
+            url = "server/addImageResizeTask"
+            break
+        case "ImagePreviewSmall":
+            url = "server/imagePreviewSmall"
+            break
+        case "TplListType":
+            url = "server/getTplListType"
+            break
+        case "WaterMarkPreview":
+            url = "server/getImageWaterMarkPreview"
+            break
+        case "AddPreviewTask":
+            url = "server/addPreviewTask"
+            break
+    }
+    url = url + "?random="+Math.random()
+    if (params.length > 0) {
+        url = url + "&" + params.join("&")
+    }
+    console.log(host + url)
+    return host + url
+}
+
 // 选择图片文件
 function shutterSelectImage() {
     window.go.gui.App.SelectImageFile().then(result => {
@@ -41,7 +81,7 @@ function shutterImgUpload() {
         return false
     }
     getExifInfo(file)
-    $("#shutterimg-preview-img").attr("src", "http://localhost:11079/server/getImagePreview?imgagePath="+file+"&random="+Math.random())
+    $("#shutterimg-preview-img").attr("src", getReqUrl("ImagePreview", ["imagePath="+file]))
     $("#shutterimg-preview-img").show()
     return true
 }
@@ -52,7 +92,7 @@ function getExifInfo(file) {
     var data = new FormData();
     data.append('shutterimg', file);
     $.ajax({
-        url : "http://localhost:11079/server/getShutterByFile",
+        url : getReqUrl("shutter", []),
         type : "post",
         data : data,
         cache : false,
@@ -87,25 +127,39 @@ function SelectDirectory(type) {
 
 // 批量选择图片文件
 function watermarkOpenMultipleFilesDialog() {
-    window.go.gui.App.SelectMultipleImageFile().then(result => {
+    window.go.gui.App.SelectMultipleImageFile().then(async result => {
         if (result.length > 0) {
+            $(".watermark-tpl-list").hide()
+            $(".main-wrap").show()
+            await sleep(1)
+
+            asynchronousPreviewTask(result)
             $("#div-selectImages").hide()
             $("#watermarkOpenMultipleFiles").val(result)
             var list = result.split(",");
-            for (var i = 0; i < list.length; i ++) {
-                if (i == 0) {
-                    var img = "<img class='img-list img-list-selected pointer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[i]+"&random="+Math.random() + "'>"
-                } else {
-                    var img = "<img class='img-list pointer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[i]+"&random="+Math.random() + "'>"
-                }
-                $("#watermarkShowMultipleFiles").append(img)
-            }
-            // 设置模板参数
-            setTemplateInfo(getExifInfo(list[0]))
-            // 加载模板选项
-            loadSelectTemplate()
+            
+            // 异步添加图片裁剪,防止多图预览的时候页面崩溃
+            addImageResizeTask(list)
             // 加载预览图
             loadPreviewImage(list[0], "1", "255,255,255,255", false)
+             // 设置模板参数
+             setTemplateInfo(getExifInfo(list[0]))
+             // 加载模板选项
+             loadSelectTemplate()
+            for (var i = 0; i < list.length; i ++) {
+                var url = getReqUrl("ImagePreviewSmall", ["imagePath="+list[i]])
+                if (i == 0) {
+                    var img = "<img class='img-list img-list-selected pointer' src='" + url + "'>"
+                } else {
+                    var img = "<img class='img-list pointer lozad' src='"+ url +"'>"
+                }
+                $("#watermarkShowMultipleFiles").append(img)
+                await sleep(500);
+                
+                if (i == 0) {
+                    removeLoading()
+                }
+            }
         }
     }).catch(err => {
         console.log(err);
@@ -114,11 +168,62 @@ function watermarkOpenMultipleFilesDialog() {
     });
 }
 
+// 移除loading
+function removeLoading() {
+    $(".main-wrap").hide()
+    $(".watermark-tpl-list").show()
+}
+
+// 添加异步图片裁剪
+function addImageResizeTask(list) {
+    // 根据选择的文件异步的创建图片预览任务加速图片展示
+    var data = new FormData();
+    data.append("images", list.join(","))
+    $.ajax({
+        url : getReqUrl("ImageResize", []),
+        type : "post",
+        data : data,
+        cache : false,
+        async: false,
+        processData : false,
+        contentType : false,
+        success : function (response) {},
+        error: function(xhr, status, error) {}
+    });
+}
+
+// 添加异步任务
+function asynchronousPreviewTask(imageStr) {
+    // 根据选择的文件异步的创建图片预览任务加速图片展示
+    // 任务跳过第一张图片
+    var list = imageStr.split(",")
+    if (list.length <= 1) {
+        return
+    }
+    var images = []
+    for (var i = 1; i < list.length; i++) {
+        images[i - 1] = list[i]
+    }
+    var data = new FormData();
+    data.append("images", images.join(","))
+    $.ajax({
+        url : getReqUrl("AddPreviewTask", []),
+        type : "post",
+        data : data,
+        cache : false,
+        async: false,
+        processData : false,
+        contentType : false,
+        success : function (response) {},
+        error: function(xhr, status, error) {}
+    });
+}
+
 // 加载图片模板类型
 function loadSelectTemplate() {
     var data = new FormData();
     $.ajax({
-        url : "http://localhost:11079/server/getTplListType",
+        url : getReqUrl("TplListType", []),
         type : "get",
         data : data,
         cache : false,
@@ -140,19 +245,20 @@ function loadSelectTemplate() {
 function loadPreviewImage(file, tid, color, flag) {
     var data = new FormData();
     data.append("tid", tid)
-    data.append("imgagePath", file)
+    data.append("imagePath", file)
     data.append("color", color)
     data.append("flag", flag.toString())
     $.ajax({
-        url : "http://localhost:11079/server/getImageWaterMarkPreview",
+        url : getReqUrl("WaterMarkPreview", []),
         type : "POST",
         data : data,
         cache : false,
         processData : false,
         contentType : false,
         success : function (response) {
+            var url = getReqUrl("ImagePreview", ["imagePath="+response["SaveImgPath"]])
             // 预览图片
-            var imgContainer = "<img class='img-imagesContainer' id='img-imagesContainer' src='http://localhost:11079/server/getImagePreview?imgagePath="+response["SaveImgPath"]+"&random="+Math.random() + "'>"
+            var imgContainer = "<img class='img-imagesContainer' id='img-imagesContainer' src='"+ url+"'>"
             // 添加预览图片
             $("#div-imagesContainer").html("").append(imgContainer)
             // 预览容器显示
