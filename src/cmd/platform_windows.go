@@ -26,7 +26,6 @@ func hideCmdWindow(cmd *exec.Cmd) {
 //	@return string cmd错误输出结果
 func cmdRun(args string) (string, string) {
 	cmd := exec.Command("cmd.exe", "/C", args)
-	log.InfoLogger.Println("run cmd.exe:" + args)
 
 	hideCmdWindow(cmd)
 	var stdout, stderr bytes.Buffer

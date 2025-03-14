@@ -16,7 +16,6 @@ var exiftoolBinary = "exiftool"
 //	@return string cmd错误输出结果
 func cmdRun(args string) (string, string) {
 	cmd := exec.Command(args)
-	log.InfoLogger.Println("run cmd:" + args)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出

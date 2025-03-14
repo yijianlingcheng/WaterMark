@@ -9,14 +9,13 @@ import (
 // exiftoolBinary exiftool可执行文件路径
 var exiftoolBinary = "exiftool"
 
-// darwin 运行 cmd命令
+// cmdRun darwin 运行 cmd命令
 //
 //	@param args 具体的参数
 //	@return string cmd标准输出结果
-//	@return string cmd错误输出结果
+//	@return string cmd标准输出结果
 func cmdRun(args string) (string, string) {
-	cmd := exec.Command(args)
-	log.InfoLogger.Println("run cmd:" + args)
+	cmd := exec.Command("bash", "-c", args)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
