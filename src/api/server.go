@@ -1,7 +1,6 @@
 package api
 
 import (
-	"WaterMark/src/log"
 	"net/http"
 	"os"
 	"runtime"
@@ -12,8 +11,6 @@ import (
 
 // ServerStart api服务启动
 func ServerStart() {
-
-	log.InfoLogger.Println("Server Start begin")
 
 	// release模式
 	gin.SetMode(gin.ReleaseMode)
@@ -60,10 +57,6 @@ func ServerStart() {
 	})
 
 	port := "11079"
-
-	log.InfoLogger.Println("Server listen port:" + port)
-	log.InfoLogger.Println("Server Start success")
-
 	router.Run(":" + port)
 }
 
@@ -71,9 +64,6 @@ func ServerStart() {
 //
 //	@return gin.HandlerFunc
 func CORSMiddleware() gin.HandlerFunc {
-
-	log.InfoLogger.Println("Server set CORS policy")
-
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")

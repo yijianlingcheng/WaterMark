@@ -85,7 +85,7 @@ func newWaterMark() *WaterMark {
 //	@param tplId
 //	@return error
 func (w *WaterMark) loadSource(path string, save string, tplId string) error {
-	exifInfo, err := cmd.RunExifTool(path)
+	exifInfo, err := cmd.CacheLoadExifTool(path)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (w *WaterMark) loadLogo() error {
 		// 根据logo图片地址,logo宽高获取图片,如果对应尺寸图片不存在,则重新生成一张并返回
 		w.TransLogoImgPath = GetImageByWidthHeight(w.TransLogoImgPath, logoT.Width, logoT.Height)
 		// 加载图片
-		transLogoImg, err := loadImage(w.TransLogoImgPath)
+		transLogoImg, err := cacheLoadImage(w.TransLogoImgPath)
 		if err != nil {
 			return err
 		}
@@ -158,7 +158,7 @@ func (w *WaterMark) loadLogo() error {
 		// 根据logo图片地址,logo宽高获取图片,如果对应尺寸图片不存在,则重新生成一张并返回
 		w.LogoImgPath = GetImageByWidthHeight(w.LogoImgPath, logoT.Width, logoT.Height)
 		// 加载图片
-		logoImg, err := loadImage(w.LogoImgPath)
+		logoImg, err := cacheLoadImage(w.LogoImgPath)
 		if err != nil {
 			return err
 		}
@@ -171,7 +171,7 @@ func (w *WaterMark) loadLogo() error {
 //
 //	@return error
 func (w *WaterMark) loadSourceImg() error {
-	sourceImg, err := loadImage(w.SourceImgPath)
+	sourceImg, err := cacheLoadImage(w.SourceImgPath)
 	if err != nil {
 		return err
 	}

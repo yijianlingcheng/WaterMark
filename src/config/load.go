@@ -1,6 +1,7 @@
 package config
 
 import (
+	"WaterMark/src/cmd"
 	"WaterMark/src/images"
 	"WaterMark/src/log"
 	"fmt"
@@ -14,6 +15,8 @@ func Load() {
 	loadConfig()
 	initLogoList()
 	initTemplate()
+	images.InitImagesCache()
+	cmd.InitExifCache()
 }
 
 // loadConfig 加载主配置文件

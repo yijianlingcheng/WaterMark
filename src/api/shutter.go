@@ -11,9 +11,9 @@ import (
 //	@return exif.Exif
 func GetShutter(imgPath string, fullPathFlag bool) exif.Exif {
 	if fullPathFlag {
-		m, _ := cmd.RunExifTool(imgPath)
+		m, _ := cmd.CacheLoadExifTool(imgPath)
 		return exif.Getshutter(m)
 	}
-	m, _ := cmd.RunExifTool(cmd.GetPwdPath(imgPath))
+	m, _ := cmd.CacheLoadExifTool(cmd.GetPwdPath(imgPath))
 	return exif.Getshutter(m)
 }
