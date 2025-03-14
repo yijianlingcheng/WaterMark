@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="./libs/css/bootstrap.min.css" />
     <script src="./libs/js/jquery-3.7.1.min.js"></script>
     <script src="./libs/js/bootstrap.bundle.min.js"></script>
-    <script src="./libs/js/main.js"></script>
 </head>
 
 <body>
@@ -41,46 +40,7 @@
                   </table>
             </div>
             <div class="col-10">
-                <div id="home" class="right-content">
-                    <ul class="list-group">
-                        <li class="list-group-item">程序使用Go开发(https://golang.google.cn/)</li>
-                        <li class="list-group-item">桌面程序使用wails构建(https://wails.io/zh-Hans/docs/introduction)</li>
-                        <li class="list-group-item">照片exif信息获取使用exiftool工具(https://exiftool.org/)</li>
-                        <li class="list-group-item">后端接口服务采用gin框架(https://gin-gonic.com/zh-cn/)</li>
-                        <li class="list-group-item">页面布局使用Bootstrap v4(https://v4.bootcss.com/docs/getting-started/introduction/)</li>
-                        <li class="list-group-item">图片水印生成使用Go image,github.com/golang/freetype库，不需要额外安装扩展</li>
-                        <li class="list-group-item">文字水印使用Alibaba-PuHuiTi-Bold.ttf,Alibaba-PuHuiTi-Light.ttf字体(https://alibabafont.taobao.com/)</li>
-                        <li class="list-group-item">程序目前只支持Win10，Win11</li>
-                        <li class="list-group-item">程序源码请访问github(https://github.com/)</li>
-                    </ul>
-                </div>
-                <div id="shutterimg" class="right-content" style="display: none;">
-                    <div class="row">
-                        <h3>快门查询</h3>
-                    </div>
-                    <div class="row margin-left-5rem margin-top-5rem"><p>快门次数查看:请选择图片(上传原始照片) 👇</p></div>
-                    <div class="margin-left-5rem margin-top-1rem row">
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group" role="group" aria-label="First group">
-                                <input class="" name="shutterimg" id="shutterimg-input" type="text" disabled style="width: 25rem;"/>
-                                <button type="button" class="btn btn-secondary" onclick="shutterSelectImage()">选择图片</button>
-                                <button type="button" class="btn btn-secondary" onclick="shutterImgUpload()">查看</button>
-                            </div>
-                        </div>
-                        <!-- <form id="getshutterform">
-                            <input class="" name="shutterimg" id="shutterimg-input" type="file" autocomplete="off" accept=".jpg,.jpeg,.nef,.tiff" title=""/>
-                            <button class="btn btn-secondary" type="button" onclick="shutterImgUpload()">查看</button>
-                        </form> -->
-                    </div>
-                    <div class="margin-left-5rem row">
-                        <p id="shutterimg-toast" style="color: brown;"></p>
-                        <p id="shutterimg-result"></p>
-                    </div>
-                    <div class="margin-left-5rem row">
-                        <img id="shutterimg-preview-img" style="display: none;width: 55%;" src=""/>
-                    </div>
-                </div>
-                <div id="watermark" class="right-content" style="display: none;">
+                <div id="watermark" class="right-content">
                     <div class="row">
                         <h3>图片导出</h3>
                     </div>
@@ -142,42 +102,12 @@
                         </div>
                     </div>
                 </div>
-                <div id="watermarkprocess" class="right-content" style="display: none;">
-                    <div class="row">
-                        <h3>批量生成</h3>
-                    </div>
-                    <div class="row">
-                        <div title="" class="col-8">
-                            
-                            <img src="./assets/images/style-1.jpeg" class="img-fluid shadow p-3 mb-5 bg-white rounded pointer"/>
-                        </div>
-                        <div title="" class="col-1">
-                            
-                        </div>
-                        <div class="col-3">
-                            <div title="" class="row pointer margin-top-5rem" onclick="SelectDirectory('from')">
-                                <img src="./assets/images/profile.svg"/>
-                                <span class="">原始照片文件夹</span>
-                                <br/>
-                                <input id="watermarkprocess-span-from" placeholder="未选择" disabled/>
-
-                            </div>
-                            <div title="" class="row pointer margin-top-5rem" onclick="SelectDirectory('save')">
-                                <img src="./assets/images/profile.svg"/>
-                                <span class="">水印照片文件夹</span>
-                                <br/>
-                                <input id="watermarkprocess-span-save" placeholder="未选择" disabled/>
-                            </div>
-                            <div title="" class="row pointer margin-top-5rem">
-                                <button type="button" class="btn btn-info">确认选择</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
     
 </body>
-
+    <script src="./libs/js/main.js"></script>
+    <script src="/wails/ipc.js"></script>
+    <script src="/wails/runtime.js"></script>
 </html>

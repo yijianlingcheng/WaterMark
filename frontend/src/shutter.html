@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+    <link rel="stylesheet" href="./libs/css/main.css" />
+    <link rel="stylesheet" href="./libs/css/bootstrap.min.css" />
+    <script src="./libs/js/jquery-3.7.1.min.js"></script>
+    <script src="./libs/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" id="index-nav">
+            <div class="col-2">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th scope="col"><p class="pointer" onclick="showHome()">首页</p></th>
+                        </tr>
+                        <tr>
+                            <th scope="col"><p class="pointer" onclick="showShutterimg()">快门查询</p></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><p class="pointer" onclick="showWaterMark()">图片导出</p></th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><p class="pointer" onclick="showWaterMarkProcess()">水印生成</p></th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><p class="pointer" >版本记录</p></th>
+                        </tr>
+                        <tr>
+                            <th scope="row"><p class="pointer">说明文档</p></th>
+                        </tr>
+                    </tbody>
+                  </table>
+            </div>
+            <div class="col-10">
+                <div id="shutterimg" class="right-content">
+                    <div class="row">
+                        <h3>快门查询</h3>
+                    </div>
+                    <div class="row margin-left-5rem margin-top-5rem"><p>快门次数查看:请选择图片(上传原始照片) 👇</p></div>
+                    <div class="margin-left-5rem margin-top-1rem row">
+                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group" role="group" aria-label="First group">
+                                <input class="" name="shutterimg" id="shutterimg-input" type="text" disabled style="width: 25rem;"/>
+                                <button type="button" class="btn btn-secondary" onclick="shutterSelectImage()">选择图片</button>
+                                <button type="button" class="btn btn-secondary" onclick="shutterImgUpload()">查看</button>
+                            </div>
+                        </div>
+                        <!-- <form id="getshutterform">
+                            <input class="" name="shutterimg" id="shutterimg-input" type="file" autocomplete="off" accept=".jpg,.jpeg,.nef,.tiff" title=""/>
+                            <button class="btn btn-secondary" type="button" onclick="shutterImgUpload()">查看</button>
+                        </form> -->
+                    </div>
+                    <div class="margin-left-5rem row">
+                        <p id="shutterimg-toast" style="color: brown;"></p>
+                        <p id="shutterimg-result"></p>
+                    </div>
+                    <div class="margin-left-5rem row">
+                        <img id="shutterimg-preview-img" style="display: none;width: 55%;" src=""/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+    <script src="./libs/js/main.js"></script>
+    <script src="/wails/ipc.js"></script>
+    <script src="/wails/runtime.js"></script>
+</html>

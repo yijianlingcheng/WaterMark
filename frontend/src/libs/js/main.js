@@ -1,35 +1,21 @@
-// 隐藏页面元素
-function reload() {
-    $("#shutterimg-result").html("")
-    $("#shutterimg-preview-img").hide()
-    $("#shutterimg-preview-img").attr("src", "")
-    $("#shutterimg-input").val("")
-}
-
 // 显示首页
 function showHome() {
-    $(".right-content").hide()
-    $("#home").show()
+    window.location.href = "./index.html"
 }
 
 // 显示快门查询
 function showShutterimg() {
-    reload()
-    $(".right-content").hide()
-    $("#shutterimg").show()
+    window.location.href = "./shutter.html"
 }
 
-// 显示水印模板
+// 显示图片导出
 function showWaterMark() {
-    waterMarkBackList()
-    $(".right-content").hide()
-    $("#watermark").show()
+    window.location.href = "./watermark.html"
 }
 
 // 显示水印生成
 function showWaterMarkProcess() {
-    $(".right-content").hide()
-    $("#watermarkprocess").show()
+    window.location.href = "./watermarkExport.html"
 }
 
 // 选择图片文件
@@ -83,34 +69,6 @@ function getExifInfo(file) {
         }
     });
     return result
-}
-
-$(document).ready(function() {
-    $("div.watermark-tpl-item").mouseover(function(){
-        $("div.watermark-tpl-item").each(function(){
-            $(this).removeClass("shadow p-3 mb-5 bg-white rounded")
-        });
-        $(this).addClass("shadow p-3 mb-5 bg-white rounded")
-    });
-});
-
-// 水印模板预览
-function waterMarkShowBigImg(object) {
-    var src = $(object).attr("src")
-    $("#watermark-tpl-detail-img").attr("src", src)
-    $(".watermark-tpl-list").hide()
-    $("#watermark-tpl-detail").show()
-}
-
-// 设置默认水印
-function waterMarkSetDefault() {
-}
-
-// 返回水印模板列表
-function waterMarkBackList() {
-    $("#watermark-tpl-detail").hide()
-    $(".watermark-tpl-list").show()
-    $("#watermark-tpl-detail-img").attr("src", "")
 }
 
 // 选择文件夹
@@ -249,4 +207,7 @@ function waterMarkExport() {
     }
 }
 
-$("#input-OnlyBottomBorder").prop('indeterminate', true)
+// ready
+$(document).ready(function() {
+    $("#input-OnlyBottomBorder").prop('indeterminate', true)
+});
