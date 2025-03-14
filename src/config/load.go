@@ -15,8 +15,9 @@ func Load() {
 	loadConfig()
 	initLogoList()
 	initTemplate()
-	images.InitImagesCache()
 	cmd.InitExifCache()
+	images.InitImagesCache()
+	images.InitImagesRGBACache()
 }
 
 // loadConfig 加载主配置文件

@@ -142,8 +142,7 @@ func (b *NormalBorderAutoStrategy) drawBorder(w *WaterMark) {
 
 	// des 转化为RGBA
 	// borderRect 创建画布
-	borderRect := image.Rect(0, 0, x+borderT.getWidth(), y+borderT.getHeight())
-	w.Draw = image.NewRGBA(borderRect)
+	w.Draw = cacheLoadImageRGBA(0, 0, x+borderT.getWidth(), y+borderT.getHeight())
 
 	draw.Draw(w.Draw, w.Draw.Bounds(), &image.Uniform{borderT.Color}, image.Point{0, 0}, draw.Src)
 	// draw 填充原图
