@@ -28,7 +28,6 @@ func loadConfig() {
 		panic(fmt.Errorf("fatal error load config file: %w", err))
 	}
 
-	log.InfoLogger.Println("Load app.yaml file success")
 	viper.WatchConfig()
 
 	// viper 配置重新加载记录日志
@@ -50,7 +49,6 @@ func initTemplate() {
 		panic(fmt.Errorf("fatal error load config file: %w", err))
 	}
 
-	log.InfoLogger.Println("Load tpl.yaml file success")
 	viper.WatchConfig()
 
 	// viper 配置重新加载记录日志

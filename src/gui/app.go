@@ -44,7 +44,6 @@ func (a *App) BeforeClose(ctx context.Context) (prevent bool) {
 // shutdown is called at application termination
 func (a *App) Shutdown(ctx context.Context) {
 	// Perform your teardown here
-	log.InfoLogger.Println("Shutdown success")
 }
 
 // SelectDirectory 选择文件夹,如果没有选择,返回空字符串
