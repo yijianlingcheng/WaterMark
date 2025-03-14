@@ -15,8 +15,6 @@ func Load() {
 	loadConfig()
 	initLogoList()
 	initTemplate()
-	images.InitImagesCache()
-	images.InitImagesRGBACache()
 	checkAndCreateDir()
 }
 

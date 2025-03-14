@@ -5,25 +5,11 @@ import (
 	"WaterMark/src/tool"
 	"fmt"
 	"image"
+	"sync"
 )
 
 // imagesRGBACache
-var imagesRGBACache *ImagesRGBACache
-
-// ImagesRGBACache 缓存水印生成过程中产生的对象,加速访问
-type ImagesRGBACache struct {
-	// cache
-	caches map[string]*image.RGBA
-}
-
-// InitImagesCache 初始化图片缓存
-func InitImagesRGBACache() {
-	caches := map[string]*image.RGBA{}
-	imagesRGBACache = &ImagesRGBACache{
-		caches: caches,
-	}
-	log.InfoLogger.Println("初始化图片对象缓存成功")
-}
+var imagesRGBACache sync.Map
 
 // cacheLoadImageRGBA 获取对象缓存
 //
@@ -38,13 +24,13 @@ func cacheLoadImageRGBA(path string, x1 int, y1 int, x2 int, y2 int) *image.RGBA
 	// 计算md5
 	md5 := "cacheLoadImageRGBA:" + tool.StrMD5(str)
 	// 返回缓存
-	if cache, ok := imagesRGBACache.caches[md5]; ok {
+	if cache, ok := imagesRGBACache.Load(md5); ok {
 		log.InfoLogger.Println("读取图片对象缓存成功:" + str)
-		return cache
+		return cache.(*image.RGBA)
 	}
 	borderRect := image.Rect(x1, y1, x2, y2)
 	image := image.NewRGBA(borderRect)
-	imagesRGBACache.caches[md5] = image
+	imagesRGBACache.Store(md5, image)
 
 	log.InfoLogger.Println("设置图片对象缓存成功:" + str)
 	return image

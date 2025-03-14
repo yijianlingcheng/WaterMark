@@ -7,9 +7,10 @@ import (
 	"sync"
 )
 
-// exifCache
+// exifCache exif缓存
 var exifCache sync.Map
 
+// exifCacheErrors
 var exifCacheErrors sync.Map
 
 // cacheLoadExifTool  加载图片并缓存

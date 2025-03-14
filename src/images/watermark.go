@@ -435,6 +435,7 @@ func GetPreviewWaterMark(e *External) map[string]string {
 //
 //	@param e
 func CeateSmallPreview(e *External) {
+	// 需要实现回写exif的角度字段,解决浏览器预览角度不对的问题
 	img, _ := cacheLoadImage(e.SourcePath)
 	newImg := imaging.Resize(img, img.Bounds().Dx()/10, img.Bounds().Dy()/10, imaging.Lanczos)
 	saveJpegImage(e.SavePath, newImg, 100)

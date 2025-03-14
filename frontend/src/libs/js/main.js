@@ -129,37 +129,47 @@ function SelectDirectory(type) {
 function watermarkOpenMultipleFilesDialog() {
     window.go.gui.App.SelectMultipleImageFile().then(async result => {
         if (result.length > 0) {
+            var list = result.split(",");
+            var limit = []
+            if (list.length > 50) {
+                for (var i = 0; i < 50; i++) {
+                    limit[i] = list[i]
+                }
+            } else {
+                limit = list
+            }
+            result = limit.join(",")
             $(".watermark-tpl-list").hide()
             $(".main-wrap").show()
-            await sleep(1)
+            await sleep(1000)
 
             asynchronousPreviewTask(result)
             $("#div-selectImages").hide()
             $("#watermarkOpenMultipleFiles").val(result)
-            var list = result.split(",");
             
             // 异步添加图片裁剪,防止多图预览的时候页面崩溃
-            addImageResizeTask(list)
+            addImageResizeTask(limit)
             // 加载预览图
-            loadPreviewImage(list[0], "1", "255,255,255,255", false)
+            loadPreviewImage(limit[0], "1", "255,255,255,255", false)
              // 设置模板参数
-             setTemplateInfo(getExifInfo(list[0]))
+             setTemplateInfo(getExifInfo(limit[0]))
              // 加载模板选项
              loadSelectTemplate()
-            for (var i = 0; i < list.length; i ++) {
-                var url = getReqUrl("ImagePreviewSmall", ["imagePath="+list[i]])
+            for (var i = 0; i < limit.length; i ++) {
+                var url = getReqUrl("ImagePreviewSmall", ["imagePath="+limit[i]])
                 if (i == 0) {
                     var img = "<img class='img-list img-list-selected pointer' src='" + url + "'>"
                 } else {
                     var img = "<img class='img-list pointer lozad' src='"+ url +"'>"
                 }
                 $("#watermarkShowMultipleFiles").append(img)
-                await sleep(500);
-                
-                if (i == 0) {
-                    removeLoading()
+                if (i <= 5) {
+                    await sleep(500);
+                } else {
+                    await sleep(100);
                 }
             }
+            removeLoading()
         }
     }).catch(err => {
         console.log(err);
