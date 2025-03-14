@@ -20,6 +20,9 @@ type WaterMark struct {
 	// IsSavePng 是否保存为png格式文件(模板中使用了圆角,图片边框拥有透明度,因此需要将图片保存为png)
 	IsSavePng bool
 
+	// IsSetBorderColor 是否外部设置了边框颜色
+	IsSetBorderColor bool
+
 	// Quality 图片质量,jpeg图片在保存的时候需要指定图片质量
 	Quality int
 
@@ -195,6 +198,21 @@ func (w *WaterMark) loadSourceImg() error {
 	return nil
 }
 
+// setBorderOnlyBottom 设置模板
+//
+//	@param flag
+func (w *WaterMark) setBorderOnlyBottom(flag bool) {
+	w.WaterMarkTemplate.BorderTemplate.OnlyBottom = flag
+}
+
+// setBorderColor 设置边框颜色
+//
+//	@param color
+func (w *WaterMark) setBorderColor(color color.RGBA) {
+	w.WaterMarkTemplate.BorderTemplate.Color = color
+	w.IsSetBorderColor = true
+}
+
 // beforeProcess 前置处理
 func (w *WaterMark) beforeProcess() {
 	// 只有底部边框的模式,border模板的top,left,bottom需要赋0
@@ -331,6 +349,17 @@ func (w *WaterMark) saveImg() {
 	exif.CoverImgExifInfo(w.SaveImgPath, w.ExifInfo)
 }
 
+// exportData 导出模板信息
+//
+//	@return map
+func (w *WaterMark) exportData() map[string]string {
+	r := map[string]string{}
+	r["BorderColors"] = Color2Str(w.WaterMarkTemplate.BorderTemplate.Color)
+	r["SaveImgPath"] = w.SaveImgPath
+	r["SourceImgPath"] = w.SourceImgPath
+	return r
+}
+
 // ProcessWaterMark 生成水印
 //
 //	@param tid 模板id
@@ -350,4 +379,41 @@ func ProcessWaterMark(tid string, path string, save string) {
 	waterMark.drawLogo2Image().drawFont2Image()
 	// 保存图片
 	waterMark.saveImg()
+}
+
+var tmpPreviewPath string = "./tmp/preview/"
+
+// getTmpPreviewPath 获取预览的临时目录
+//
+//	@param path
+//	@return string
+func getTmpPreviewPath(path string) string {
+	t := strings.Split(path, ".")
+	return tmpPreviewPath + "tmp." + strings.Split(path, ".")[len(t)-1]
+}
+
+// GetPreviewWaterMark 获取水印预览信息
+//
+//	@param e
+//	@return map
+func GetPreviewWaterMark(e *External) map[string]string {
+	waterMark := newWaterMark()
+	// 加载资源
+	if err := waterMark.loadSource(e.SourcePath, e.SavePath, e.Tid); err != nil {
+		log.ErrorLogger.Println(err)
+	}
+	// 读取原始图片
+	if err := waterMark.loadSourceImg(); err != nil {
+		log.ErrorLogger.Println(err)
+	}
+	// 设置边框标识
+	waterMark.setBorderOnlyBottom(e.OnlyBottom)
+	// 设置边框颜色
+	waterMark.setBorderColor(e.Color)
+	// 生成水印
+	waterMark.drawLogo2Image().drawFont2Image()
+	// 保存图片
+	waterMark.saveImg()
+
+	return waterMark.exportData()
 }

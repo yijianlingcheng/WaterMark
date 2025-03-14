@@ -54,7 +54,15 @@ function shutterImgUpload() {
         $("#shutterimg-toast").text("请选择需要查看的文件!").fadeIn(400).delay(500).fadeOut(400); 
         return false
     }
+    getExifInfo(file)
+    $("#shutterimg-preview-img").attr("src", "http://localhost:11079/server/getImagePreview?imgagePath="+file+"&random="+Math.random())
+    $("#shutterimg-preview-img").show()
+    return true
+}
 
+// 获取exif 信息
+function getExifInfo(file) {
+    var result
     var data = new FormData();
     data.append('shutterimg', file);
     $.ajax({
@@ -62,19 +70,19 @@ function shutterImgUpload() {
         type : "post",
         data : data,
         cache : false,
+        async : false,
         processData : false,
         contentType : false,
         success : function (response) {
             var li = "机器快门次数:"+response['MechanicalShutterCount']+" 快门次数:"+response['ShutterCount']
             $("#shutterimg-result").append(li)
+            result = response
         },
         error: function(xhr, status, error) {
             $("#shutterimg-toast").text("查看失败! 原因是:" + error).fadeIn(400).delay(500).fadeOut(400); 
         }
     });
-    $("#shutterimg-preview-img").attr("src", "http://localhost:11079/server/getImagePreview?imgagePath="+file+"&random="+Math.random())
-    $("#shutterimg-preview-img").show()
-    return true
+    return result
 }
 
 $(document).ready(function() {
@@ -134,9 +142,12 @@ function watermarkOpenMultipleFilesDialog() {
                 }
                 $("#watermarkShowMultipleFiles").append(img)
             }
-            var imgContainer = "<img class='img-imagesContainer' src='http://localhost:11079/server/getImagePreview?imgagePath="+list[0]+"&random="+Math.random() + "'>"
-            $("#div-imagesContainer").append(imgContainer)
-            $("#div-templateContainer").show()
+            // 设置模板参数
+            setTemplateInfo(getExifInfo(list[0]))
+            // 加载模板选项
+            loadSelectTemplate()
+            // 加载预览图
+            loadPreviewImage(list[0], "1", "255,255,255,255", false)
         }
     }).catch(err => {
         console.log(err);
@@ -145,10 +156,97 @@ function watermarkOpenMultipleFilesDialog() {
     });
 }
 
+// 加载图片模板类型
+function loadSelectTemplate() {
+    var data = new FormData();
+    $.ajax({
+        url : "http://localhost:11079/server/getTplListType",
+        type : "get",
+        data : data,
+        cache : false,
+        processData : false,
+        contentType : false,
+        success : function (response) {
+            for (var i in response) {
+                var li = "<option value="+ i +">"+ response[i] +"</option>"
+                $("#select-template").append(li)   
+            }
+        },
+        error: function(xhr, status, error) {
+            
+        }
+    });
+}
+
+// 加载实际生成的预览图
+function loadPreviewImage(file, tid, color, flag) {
+    var data = new FormData();
+    data.append("tid", tid)
+    data.append("imgagePath", file)
+    data.append("color", color)
+    data.append("flag", flag.toString())
+    $.ajax({
+        url : "http://localhost:11079/server/getImageWaterMarkPreview",
+        type : "POST",
+        data : data,
+        cache : false,
+        processData : false,
+        contentType : false,
+        success : function (response) {
+            // 预览图片
+            var imgContainer = "<img class='img-imagesContainer' id='img-imagesContainer' src='http://localhost:11079/server/getImagePreview?imgagePath="+response["SaveImgPath"]+"&random="+Math.random() + "'>"
+            // 添加预览图片
+            $("#div-imagesContainer").html("").append(imgContainer)
+            // 预览容器显示
+            $("#div-templateContainer").show()
+            // 设置预览参数
+            $("#input-Color").val(response["BorderColors"])
+            // 保存预览的源文件
+            $("#input-PreviewImageFile").val(file)
+        },
+        error: function(xhr, status, error) {
+            
+        }
+    });
+}
+
+// 填充图片预览信息
+function setTemplateInfo(exifInfo) {
+    var param = exifInfo.FocalLength + " " + exifInfo.FNumberStr + " " + exifInfo.ExposureTime + " " + exifInfo.ISOStr
+    $("#input-Model").val(exifInfo.Model)
+    $("#input-LensModel").val(exifInfo.LensModel)
+    $("#input-Params").val(param)
+}
+
+// 手动点击预览图片
 function waterMarkPreivew() {
+    var File = $("#input-PreviewImageFile").val()
+    var Model = $("#input-Model").val()
+    var LensModel = $("#input-LensModel").val()
+    var Param = $("#input-Params").val()
+    var Color = $("#input-Color").val()
+    var OnlyBottomFlag = $("#input-OnlyBottomBorder:checked").val() === "on"
 
+    loadPreviewImage(File, "1", Color, OnlyBottomFlag)
 }
 
+// 图片导出,js下载存在问题,准备改成Go实现
 function waterMarkExport() {
-    
+    var imgName = "watermark.jpg"
+    var src = $("#img-imagesContainer").attr("src")
+    var image = new Image();
+    image.src = src;
+    image.setAttribute("crossOrigin", "anonymous");
+    image.onload = function() {
+        let c = document.createElement("canvas");
+        c.width = image.width;
+        c.height = image.height;
+        c.getContext("2d").drawImage(image, 0, 0, image.width, image.height);
+        var a = document.createElement("a"); 
+        a.download = imgName;
+        a.href = c.toDataURL("image/jpg");
+        a.click();
+    }
 }
+
+$("#input-OnlyBottomBorder").prop('indeterminate', true)

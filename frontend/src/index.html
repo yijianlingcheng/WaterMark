@@ -82,12 +82,13 @@
                 </div>
                 <div id="watermark" class="right-content" style="display: none;">
                     <div class="row">
-                        <h3>水印设置</h3>
+                        <h3>图片导出</h3>
                     </div>
                     <div class="row watermark-tpl-list">
                         <div id="div-selectImages">
                             <p class="selectImages pointer" onclick="watermarkOpenMultipleFilesDialog()">+</p>
                             <input style="display: none;" id="watermarkOpenMultipleFiles"/>
+                            <input style="display: none;" id="input-PreviewImageFile"/>
                         </div>
                         <div id="div-imagesContainer" class="col-8">
                             
@@ -121,33 +122,13 @@
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">字体大小</span>
+                                    <span class="input-group-text" id="basic-addon1">边框颜色</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-FontSize">
+                                <input type="text" class="form-control" placeholder="边框颜色" aria-label="边框颜色" aria-describedby="basic-addon1" id="input-Color">
                             </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">上边框宽</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-TopHeight">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">左边框宽</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-LeftWidth">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">右边框宽</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-RightWidth">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">下边框宽</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="照片参数" aria-label="照片参数" aria-describedby="basic-addon1" id="input-BottomHeight">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="input-OnlyBottomBorder">
+                                <label class="custom-control-label" for="input-OnlyBottomBorder">是否需要去除上-右-左边框</label>
                             </div>
                             <div class="row margin-top-1rem margin-left-0">
                                 <div class="btn-group" role="group" aria-label="Basic example">
@@ -160,35 +141,10 @@
                             
                         </div>
                     </div>
-
-                    <div class="row" id="watermark-tpl-detail" style="display: none;">
-                        <div class="col-9">
-                            <div title="" class="row">
-                                <img src="" data="xxxx" id="watermark-tpl-detail-img" class="img-fluid"/>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="alert alert-warning row" role="alert">
-                                图片的外边框效果是为了增强图片预览效果，实际不存在!
-                            </div>
-                            <ul class="list-group">
-                                <li class="list-group-item">左上右边框:100px白色填充</li>
-                                <li class="list-group-item">下边框:300px白色填充</li>
-                                <li class="list-group-item">水印字体:60px,黑色</li>
-                                <li class="list-group-item">水印信息:logo,型号,镜头,焦距,光圈,快门,ios,拍照时间</li>
-                            </ul>
-                            <div class="row margin-top-1rem margin-left-0">
-                                <button type="button" class="btn btn-info" onclick="waterMarkSetDefault()">设为默认水印</button>  
-                            </div>
-                            <div class="row margin-top-1rem margin-left-0">
-                                <button type="button" class="btn btn-secondary" onclick="waterMarkBackList()">返回模板列表</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div id="watermarkprocess" class="right-content" style="display: none;">
                     <div class="row">
-                        <h3>水印生成</h3>
+                        <h3>批量生成</h3>
                     </div>
                     <div class="row">
                         <div title="" class="col-8">

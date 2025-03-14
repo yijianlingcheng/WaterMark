@@ -2,7 +2,6 @@ package api
 
 import (
 	"WaterMark/src/log"
-	"WaterMark/src/tool"
 	"net/http"
 	"os"
 	"runtime"
@@ -26,14 +25,8 @@ func ServerStart() {
 
 	// 获取快门次数
 	router.POST("/server/getShutterByFile", func(c *gin.Context) {
-
-		log.InfoLogger.Println("req Server api /server/getShutterByFile")
-
 		imgPath := c.PostForm("shutterimg")
 		r := GetShutter(imgPath, true)
-
-		log.InfoLogger.Println("res Server api /server/getShutterByFile:" + tool.ExifToJson(r))
-
 		c.JSON(http.StatusOK, r)
 	})
 
@@ -45,6 +38,25 @@ func ServerStart() {
 		}
 		file, _ := os.ReadFile(imgPath) //把要显示的图片读取到变量中
 		c.Writer.WriteString(string(file))
+	})
+
+	// 获取图片模板列表类型
+	router.GET("/server/getTplListType", func(c *gin.Context) {
+		r := getTplListType()
+		c.JSON(http.StatusOK, r)
+	})
+
+	// 获取图片水印预览
+	router.POST("/server/getImageWaterMarkPreview", func(c *gin.Context) {
+		imgPath := c.PostForm("imgagePath")
+		tid := c.DefaultPostForm("tid", "1")
+		flag := c.DefaultPostForm("flag", "false")
+		color := c.DefaultPostForm("color", "255,255,255,255")
+		if runtime.GOOS == "windows" {
+			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
+		}
+		r := getImageWaterMarkPreview(tid, imgPath, color, flag == "true")
+		c.JSON(http.StatusOK, r)
 	})
 
 	port := "11079"

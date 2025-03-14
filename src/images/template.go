@@ -14,6 +14,13 @@ func LoadTemplate() {
 	viper.UnmarshalKey("tpls", &tpls)
 }
 
+// GetTemplates 获取模板列表
+//
+//	@return []WaterMarkTemplate
+func GetTemplates() []WaterMarkTemplate {
+	return tpls
+}
+
 // findTemplate 查找模板
 //
 //	@param id

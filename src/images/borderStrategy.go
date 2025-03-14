@@ -154,8 +154,10 @@ func (b *NormalBorderAutoStrategy) drawBorder(w *WaterMark) {
 //
 //	@param w
 func (b *NormalBorderAutoStrategy) calculateLeftAutoBorderT(w *WaterMark) {
-
 	boderColor := color.RGBA{255, 255, 255, 255}
+	if w.IsSetBorderColor {
+		boderColor = w.WaterMarkTemplate.BorderTemplate.Color
+	}
 	ratio := 0.05
 	boderWidth := int((float64(w.SourceWidth) * ratio) / 2)
 	boderHeight := int((float64(w.SourceHeight) * ratio) / 2)

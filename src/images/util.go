@@ -197,6 +197,18 @@ func StrColor2RGBA(s string) color.RGBA {
 	return color.RGBA{uint8(r0), uint8(r1), uint8(r2), uint8(r3)}
 }
 
+// Color2Str color.RGBA转成字符串
+//
+//	@param color
+//	@return string
+func Color2Str(color color.RGBA) string {
+	r := fmt.Sprint(color.R)
+	g := fmt.Sprint(color.G)
+	b := fmt.Sprint(color.B)
+	a := fmt.Sprint(color.A)
+	return r + "," + g + "," + b + "," + a
+}
+
 // GetImageByWidthHeight 获取指定宽高的图片
 //
 //	@param p
