@@ -198,6 +198,16 @@ func (w *WaterMark) loadSourceImg() error {
 	return nil
 }
 
+// exportExternal 导入外部数据
+//
+//	@param e
+func (w *WaterMark) exportExternal(e *External) {
+	// 设置边框标识
+	w.setBorderOnlyBottom(e.OnlyBottom)
+	// 设置边框颜色
+	w.setBorderColor(e.Color)
+}
+
 // setBorderOnlyBottom 设置模板
 //
 //	@param flag
@@ -360,12 +370,25 @@ func (w *WaterMark) exportData() map[string]string {
 	return r
 }
 
+// exportErrorData exportData 导出错误的模板信息
+//
+//	@param err
+//	@return map
+func (w *WaterMark) exportErrorData(err error) map[string]string {
+	r := map[string]string{}
+	r["BorderColors"] = ""
+	r["SaveImgPath"] = ""
+	r["SourceImgPath"] = ""
+	r["error"] = err.Error()
+	return r
+}
+
 // ProcessWaterMark 生成水印
 //
 //	@param tid 模板id
 //	@param path 图片路径
 //	@param save 目标图片路径
-func ProcessWaterMark(tid string, path string, save string) {
+func processWaterMark(tid string, path string, save string) {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(path, save, tid); err != nil {
@@ -405,24 +428,24 @@ func getSmallPreviewPath(path string) string {
 	return SmallPreviewPath + t[len(t)-1]
 }
 
-// GetPreviewWaterMark 获取水印预览信息
+// CreatePreviewWaterMark 生成水印预览图片
 //
 //	@param e
 //	@return map
-func GetPreviewWaterMark(e *External) map[string]string {
+func CreatePreviewWaterMark(e *External) map[string]string {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(e.SourcePath, e.SavePath, e.Tid); err != nil {
 		log.ErrorLogger.Println(err)
+		return waterMark.exportErrorData(err)
 	}
 	// 读取原始图片
 	if err := waterMark.loadSourceImg(); err != nil {
 		log.ErrorLogger.Println(err)
+		return waterMark.exportErrorData(err)
 	}
-	// 设置边框标识
-	waterMark.setBorderOnlyBottom(e.OnlyBottom)
-	// 设置边框颜色
-	waterMark.setBorderColor(e.Color)
+	// 导入外部数据
+	waterMark.exportExternal(e)
 	// 生成水印
 	waterMark.drawLogo2Image().drawFont2Image()
 	// 保存图片
@@ -431,10 +454,10 @@ func GetPreviewWaterMark(e *External) map[string]string {
 	return waterMark.exportData()
 }
 
-// CeateSmallPreview 生成预览小图
+// CreateSmallPreview 生成预览小图
 //
 //	@param e
-func CeateSmallPreview(e *External) {
+func CreateSmallPreview(e *External) {
 	// 需要实现回写exif的角度字段,解决浏览器预览角度不对的问题
 	img, _ := cacheLoadImage(e.SourcePath)
 	newImg := imaging.Resize(img, img.Bounds().Dx()/10, img.Bounds().Dy()/10, imaging.Lanczos)

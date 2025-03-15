@@ -49,12 +49,14 @@ function getReqUrl(type, params) {
         case "AddPreviewTask":
             url = "server/addPreviewTask"
             break
+        case "Download":
+            url = "server/downloadFile"
+            break
     }
     url = url + "?random="+Math.random()
     if (params.length > 0) {
         url = url + "&" + params.join("&")
     }
-    console.log(host + url)
     return host + url
 }
 
@@ -141,7 +143,7 @@ function watermarkOpenMultipleFilesDialog() {
             result = limit.join(",")
             $(".watermark-tpl-list").hide()
             $(".main-wrap").show()
-            await sleep(1000)
+            await sleep(100)
 
             asynchronousPreviewTask(result)
             $("#div-selectImages").hide()
@@ -151,10 +153,10 @@ function watermarkOpenMultipleFilesDialog() {
             addImageResizeTask(limit)
             // 加载预览图
             loadPreviewImage(limit[0], "1", "255,255,255,255", false)
-             // 设置模板参数
-             setTemplateInfo(getExifInfo(limit[0]))
-             // 加载模板选项
-             loadSelectTemplate()
+            // 设置模板参数
+            setTemplateInfo(getExifInfo(limit[0]))
+            // 加载模板选项
+            loadSelectTemplate()
             for (var i = 0; i < limit.length; i ++) {
                 var url = getReqUrl("ImagePreviewSmall", ["imagePath="+limit[i]])
                 if (i == 0) {
@@ -276,7 +278,9 @@ function loadPreviewImage(file, tid, color, flag) {
             // 设置预览参数
             $("#input-Color").val(response["BorderColors"])
             // 保存预览的源文件
-            $("#input-PreviewImageFile").val(file)
+            $("#input-PreviewSourceImageFile").val(file)
+            // 保存预览的目标文件
+            $("#input-PreviewImageFile").val(response["SaveImgPath"])
         },
         error: function(xhr, status, error) {
             
@@ -294,7 +298,7 @@ function setTemplateInfo(exifInfo) {
 
 // 手动点击预览图片
 function waterMarkPreivew() {
-    var File = $("#input-PreviewImageFile").val()
+    var File = $("#input-PreviewSourceImageFile").val()
     var Model = $("#input-Model").val()
     var LensModel = $("#input-LensModel").val()
     var Param = $("#input-Params").val()
@@ -304,23 +308,31 @@ function waterMarkPreivew() {
     loadPreviewImage(File, "1", Color, OnlyBottomFlag)
 }
 
-// 图片导出,js下载存在问题,准备改成Go实现
+// 图片导出
 function waterMarkExport() {
-    var imgName = "watermark.jpg"
-    var src = $("#img-imagesContainer").attr("src")
-    var image = new Image();
-    image.src = src;
-    image.setAttribute("crossOrigin", "anonymous");
-    image.onload = function() {
-        let c = document.createElement("canvas");
-        c.width = image.width;
-        c.height = image.height;
-        c.getContext("2d").drawImage(image, 0, 0, image.width, image.height);
-        var a = document.createElement("a"); 
-        a.download = imgName;
-        a.href = c.toDataURL("image/jpg");
-        a.click();
-    }
+    window.go.gui.App.ShowDownloadImageDialog().then(async result => {
+        if (result === "Yes") {
+            var File = $("#input-PreviewSourceImageFile").val()
+            var PreviewFile = $("#input-PreviewImageFile").val()
+            var data = new FormData
+            data.append("source", File)
+            data.append("preview", PreviewFile)
+            $.ajax({
+                url : getReqUrl("Download", []),
+                type : "POST",
+                data : data,
+                cache : false,
+                processData : false,
+                contentType : false,
+                success : function (response) {
+                    
+                },
+                error: function(xhr, status, error) {
+                    
+                }
+            });
+        }
+    }).catch(err => {}).finally(() => {});
 }
 
 // ready

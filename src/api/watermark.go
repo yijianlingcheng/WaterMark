@@ -3,7 +3,7 @@ package api
 import (
 	"WaterMark/src/cmd"
 	"WaterMark/src/images"
-	"runtime"
+	"WaterMark/src/tool"
 	"strings"
 	"sync"
 )
@@ -29,8 +29,7 @@ func getTplListType() map[string]string {
 func getImageWaterMarkPreview(tid string, path string, color string, onlyBottomBorder bool) map[string]string {
 	e := images.NewExternal()
 	e.WithBoderColor(color).WithOnlyBottomFlag(onlyBottomBorder).WithPath(path).WithTid(tid)
-
-	r := images.GetPreviewWaterMark(e)
+	r := images.CreatePreviewWaterMark(e)
 	r["SaveImgPath"] = cmd.GetPwdPath(strings.TrimLeft(r["SaveImgPath"], "."))
 	return r
 }
@@ -41,20 +40,14 @@ func getImageWaterMarkPreview(tid string, path string, color string, onlyBottomB
 func addPreviewTask(imageStrs string) {
 	tpls := images.GetTemplates()
 	imageList := strings.Split(imageStrs, ",")
-
-	limit := len(imageList)
 	g := images.NewWorkerlimit(images.MAX_WORKER_NUM)
 	var wg = sync.WaitGroup{}
-	for i := range limit {
+	for i := range imageList {
 		wg.Add(1)
-		imgPath := imageList[i]
-		if runtime.GOOS == "windows" {
-			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
-		}
+		imgPath := tool.ReplaceDir(imageList[i])
 		goFunc := func() {
-			e := images.NewExternal()
-			e.WithDefaultBoderColor().WithPath(imgPath).WithTid(tpls[0].ID)
-			images.GetPreviewWaterMark(e)
+			e := images.NewExternal().WithDefaultBoderColor().WithPath(imgPath).WithTid(tpls[0].ID)
+			images.CreatePreviewWaterMark(e)
 			wg.Done()
 		}
 		g.Worker(goFunc)
@@ -67,19 +60,14 @@ func addPreviewTask(imageStrs string) {
 //	@param imageStrs
 func addImageResizeTask(imageStrs string) {
 	imageList := strings.Split(imageStrs, ",")
-
-	limit := len(imageList)
 	g := images.NewWorkerlimit(images.MAX_WORKER_NUM)
 	var wg = sync.WaitGroup{}
-	for i := range limit {
+	for i := range imageList {
 		wg.Add(1)
-		imgPath := imageList[i]
-		if runtime.GOOS == "windows" {
-			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
-		}
+		imgPath := tool.ReplaceDir(imageList[i])
 		goFunc := func() {
 			e := images.NewExternal().WithSmallPreviewPath(imgPath)
-			images.CeateSmallPreview(e)
+			images.CreateSmallPreview(e)
 			wg.Done()
 		}
 		g.Worker(goFunc)
@@ -94,4 +82,20 @@ func addImageResizeTask(imageStrs string) {
 func getSmallPreviewPath(imgPath string) string {
 	e := images.NewExternal().WithSmallPreviewPath(imgPath)
 	return e.SavePath
+}
+
+// downloadFile 下载文件
+//
+//	@param sourcePath
+//	@param previewPath
+//	@return error
+func downloadFile(sourcePath, previewPath string) error {
+	sourcePath = tool.ReplaceDir(sourcePath)
+	previewPath = tool.ReplaceDir(previewPath)
+
+	t := strings.Split(sourcePath, ".")
+	t[len(t)-2] = t[len(t)-2] + "_watermark"
+
+	newSourcePath := strings.Join(t, ".")
+	return tool.CopyFile(previewPath, newSourcePath, 4*1024)
 }

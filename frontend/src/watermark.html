@@ -61,6 +61,7 @@
                         <div id="div-selectImages">
                             <p class="selectImages pointer" onclick="watermarkOpenMultipleFilesDialog()">+</p>
                             <input style="display: none;" id="watermarkOpenMultipleFiles"/>
+                            <input style="display: none;" id="input-PreviewSourceImageFile"/>
                             <input style="display: none;" id="input-PreviewImageFile"/>
                         </div>
                         <div id="div-imagesContainer" class="col-8">
@@ -105,9 +106,10 @@
                             </div>
                             <div class="row margin-top-1rem margin-left-0">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-secondary" onclick="waterMarkPreivew()">预览</button>
-                                <button type="button" class="btn btn-info" onclick="waterMarkExport()">导出</button> 
-                                  </div>
+                                    <button type="button" class="btn btn-dark" onclick="waterMarkPreivew()">预览</button>
+                                    <button type="button" class="btn btn-dark" onclick="waterMarkExport()">下载</button>
+                                    <button type="button" class="btn btn-dark" onclick="waterMarkExport()">下载全部图片</button> 
+                                </div>
                             </div>
                         </div>
                         <div class="show-img-list" id="watermarkShowMultipleFiles">

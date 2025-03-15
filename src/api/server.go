@@ -60,14 +60,14 @@ func ServerStart() {
 	router.POST("/server/addPreviewTask", func(c *gin.Context) {
 		images := c.PostForm("images")
 		go addPreviewTask(images)
-		c.JSON(http.StatusOK, map[string]string{})
+		c.JSON(http.StatusOK, "")
 	})
 
 	// 添加图片压缩任务
 	router.POST("/server/addImageResizeTask", func(c *gin.Context) {
 		images := c.PostForm("images")
 		addImageResizeTask(images)
-		c.JSON(http.StatusOK, map[string]string{})
+		c.JSON(http.StatusOK, "")
 	})
 
 	// 预览小图
@@ -79,6 +79,14 @@ func ServerStart() {
 		imgPath = getSmallPreviewPath(imgPath) //把要显示的图片读取到变量中
 		file, _ := os.ReadFile(imgPath)
 		c.Writer.WriteString(string(file))
+	})
+
+	// 下载文件
+	router.POST("/server/downloadFile", func(c *gin.Context) {
+		source := c.PostForm("source")
+		preview := c.PostForm("preview")
+		r := downloadFile(source, preview)
+		c.JSON(http.StatusOK, r)
 	})
 
 	router.Run(":11079")

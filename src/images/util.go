@@ -253,7 +253,7 @@ func ChangePngColor(o string, s string, oldColor color.RGBA, newColor color.RGBA
 	}
 
 	// 执行转换与抗锯齿处理
-	result := ConvertColorWithAA(img, config)
+	result := convertColorWithAA(img, config)
 
 	// 保存结果
 	output, _ := os.Create(s)
@@ -269,12 +269,12 @@ type ColorConvertConfig struct {
 	AntiAliasLevel int
 }
 
-// ConvertColorWithAA 核心处理函数
+// convertColorWithAA 核心处理函数
 //
 //	@param src
 //	@param cfg
 //	@return *image.RGBA
-func ConvertColorWithAA(src image.Image, cfg ColorConvertConfig) *image.RGBA {
+func convertColorWithAA(src image.Image, cfg ColorConvertConfig) *image.RGBA {
 	// Step 1: 超采样提升精度
 	supersampled := imaging.Resize(src,
 		src.Bounds().Dx()*cfg.AntiAliasLevel,
@@ -431,6 +431,6 @@ func TestProcessWaterMark() {
 	for _, file := range list {
 		path := dir + "/" + file
 		save := strings.ReplaceAll(path, dir, "./tmp/watermark")
-		ProcessWaterMark(tplId, path, save)
+		processWaterMark(tplId, path, save)
 	}
 }

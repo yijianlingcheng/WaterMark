@@ -3,7 +3,6 @@ package gui
 import (
 	"WaterMark/src/log"
 	"context"
-	goruntime "runtime"
 	"strings"
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -24,9 +23,9 @@ func (a *App) Startup(ctx context.Context) {
 	// Perform your setup here
 	a.ctx = ctx
 	// 设置主题
-	if goruntime.GOOS == "windows" {
-		wailsruntime.WindowSetDarkTheme(a.ctx)
-	}
+	// if goruntime.GOOS == "windows" {
+	// 	wailsruntime.WindowSetDarkTheme(a.ctx)
+	// }
 }
 
 // domReady is called after front-end resources have been loaded
@@ -104,4 +103,20 @@ func (a *App) SelectMultipleImageFile() string {
 		return ""
 	}
 	return strings.Join(result, ",")
+}
+
+// ShowDownloadImageDialog 下载提示确认弹窗
+//
+//	@return string
+func (a *App) ShowDownloadImageDialog() string {
+	selection, err := wailsruntime.MessageDialog(a.ctx, wailsruntime.MessageDialogOptions{
+		Type:    wailsruntime.QuestionDialog,
+		Title:   "确认下载",
+		Message: "请确认是否要将当前预览的图片下载至本地?",
+	})
+	if err != nil {
+		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
+		return "No"
+	}
+	return selection
 }
