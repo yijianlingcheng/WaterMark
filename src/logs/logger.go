@@ -37,6 +37,6 @@ func init() {
 	// api
 	file, err = os.OpenFile(API_LOG, FILE_FlAG, FILE_MODE)
 	if err == nil {
-		API = log.New(file, "", log.Ldate)
+		API = log.New(file, "API:", log.Ldate|log.Ltime)
 	}
 }
