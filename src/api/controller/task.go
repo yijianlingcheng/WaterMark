@@ -36,7 +36,9 @@ func previewWaterMarkTask(imageList []string, tid string) {
 		imgPath := tool.ReplaceDir(imageList[i])
 		goFunc := func() {
 			e := images.NewExternal().WithDefaultBoderColor().WithPath(imgPath).WithTid(tid)
-			images.CreatePreviewWaterMark(e)
+			r := images.CreatePreviewWaterMark(e)
+			// 新增缓存
+			imageInfoCacheSet(imgPath, r)
 			wg.Done()
 		}
 		g.Worker(goFunc)

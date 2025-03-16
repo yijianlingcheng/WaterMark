@@ -21,11 +21,10 @@ function showWaterMarkProcess() {
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
-   
 
 // 获取请求url
 function getReqUrl(type, params) {
-    var host = "http://localhost:11079/"
+    var host = SERVER_HOST
     var url = "server/getImagePreview"
     switch (type) {
         case "shutter":
@@ -51,6 +50,9 @@ function getReqUrl(type, params) {
             break
         case "Download":
             url = "server/downloadFile"
+            break
+        case "ChangeImagePath":
+            url = "server/changeImagePath"
             break
     }
     url = url + "?random="+Math.random()
@@ -143,7 +145,7 @@ function watermarkOpenMultipleFilesDialog() {
             result = limit.join(",")
             $(".watermark-tpl-list").hide()
             $(".main-wrap").show()
-            await sleep(100)
+            await sleep(100) // 休眠一定时间展示loading动画
 
             asynchronousPreviewTask(result)
             $("#div-selectImages").hide()
@@ -153,23 +155,17 @@ function watermarkOpenMultipleFilesDialog() {
             addImageResizeTask(limit)
             // 加载预览图
             loadPreviewImage(limit[0], {})
-            // 设置模板参数
-            setTemplateInfo(getExifInfo(limit[0]))
             // 加载模板选项
             loadSelectTemplate()
             for (var i = 0; i < limit.length; i ++) {
                 var url = getReqUrl("ImagePreviewSmall", ["imagePath="+limit[i]])
                 if (i == 0) {
-                    var img = "<img class='img-list img-list-selected pointer' src='" + url + "'>"
+                    var img = "<img class='img-list img-list-selected pointer' data-src='"+ limit[i] +"' src='" + url + "' onclick='changePreviewImage(this)'>"
                 } else {
-                    var img = "<img class='img-list pointer lozad' src='"+ url +"'>"
+                    var img = "<img class='img-list pointer lozad' data-src='"+ limit[i] +"' src='"+ url +"' onclick='changePreviewImage(this)'>"
                 }
                 $("#watermarkShowMultipleFiles").append(img)
-                if (i <= 5) {
-                    await sleep(500);
-                } else {
-                    await sleep(100);
-                }
+                await sleep(100);
             }
             removeLoading()
         }
@@ -263,6 +259,7 @@ function loadPreviewImage(file, params) {
         data.append("tid", defaultTid)
         data.append("borderColor", defaultTBorderColor)
         data.append("flag", "false")
+        data.append("type", "create")
     } else {
         for (var i in params) {
             if (i == "flag") {
@@ -273,7 +270,6 @@ function loadPreviewImage(file, params) {
         }
     }
     data.append("imagePath", file)
-    console.log(data)
     $.ajax({
         url : getReqUrl("WaterMarkPreview", []),
         type : "POST",
@@ -297,6 +293,15 @@ function loadPreviewImage(file, params) {
             $("#input-PreviewSourceImageFile").val(file)
             // 保存预览的目标文件
             $("#input-PreviewImageFile").val(response["SaveImgPath"])
+
+            if (response["model"] === undefined) {
+                setTemplateInfo(getExifInfo(file))
+            } else {
+                // 如果是load,需要加载
+                $("#input-Model").val(response["model"])
+                $("#input-LensModel").val(response["lensModel"])
+                $("#input-Params").val(response["words"])
+            }
         },
         error: function(xhr, status, error) {
             
@@ -332,7 +337,8 @@ function waterMarkPreivew() {
         "model": Model,
         "lensModel": LensModel,
         "firstWordsColor": FirstBorderColor,
-        "secondBorderColor": SecondBorderColor
+        "secondBorderColor": SecondBorderColor,
+        "type": "create"
     })
 }
 
@@ -360,7 +366,40 @@ function waterMarkExport() {
     });
 }
 
+// 切换预览图片
+function changePreviewImage(obj) {
+    // 重置模板选择
+    $("#input-Template").prop("selectedIndex", 0);
+    // 获取新的预览文件
+    var filePath = $(obj).attr("data-src")
+    // 更新预览区域
+    var tid = $("#input-Template").val()
+    console.log(tid)
+    loadPreviewImage(filePath, {
+        "tid": tid, 
+        "flag" : false,
+        "type": "load"
+    })
+    $(".img-list").each(function() {
+        $(this).removeClass("img-list-selected")
+    });
+    $(obj).addClass("img-list-selected")
+}
+
 // ready
 $(document).ready(function() {
     $("#input-OnlyBottomBorder").prop('indeterminate', true)
+    initServerUrl()
 });
+
+// api地址
+var SERVER_HOST
+function initServerUrl() {
+    window.go.gui.App.GetServerUrl().then(async result => {
+        SERVER_HOST = result
+    }).catch(err => {
+        console.log(err);
+    }).finally(() => {
+        
+    });
+}

@@ -3,8 +3,10 @@ package gui
 import (
 	. "WaterMark/src/logs"
 	"context"
+	"fmt"
 	"strings"
 
+	"github.com/spf13/viper"
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -119,4 +121,13 @@ func (a *App) ShowDownloadImageDialog() string {
 		return "No"
 	}
 	return selection
+}
+
+// GetServerUrl 获取服务器地址
+//
+//	@return string
+func (a *App) GetServerUrl() string {
+	server := "http://localhost%s/"
+	server = fmt.Sprintf(server, viper.GetString("server.address"))
+	return server
 }

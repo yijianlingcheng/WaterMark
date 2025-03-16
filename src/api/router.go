@@ -34,4 +34,7 @@ func loadRouters(router *gin.Engine) {
 
 	// 下载文件
 	router.POST("/server/downloadFile", controller.DownloadFile)
+
+	// 转换文件路径
+	router.POST("/server/changeImagePath", controller.ChangeImagePath)
 }

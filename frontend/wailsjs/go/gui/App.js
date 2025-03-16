@@ -6,6 +6,10 @@ export function DomReady(arg1) {
   return window['go']['gui']['App']['DomReady'](arg1);
 }
 
+export function GetServerUrl() {
+  return window['go']['gui']['App']['GetServerUrl']();
+}
+
 export function SelectDirectory() {
   return window['go']['gui']['App']['SelectDirectory']();
 }

@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"os"
 	"strings"
 
 	"github.com/disintegration/imaging"
@@ -412,14 +413,18 @@ func (w *WaterMark) saveImg() {
 //
 //	@return map
 func (w *WaterMark) exportData() map[string]string {
+	pwd_, _ := os.Getwd()
+	pwd := strings.ReplaceAll(pwd_, "\\", "/")
 	r := map[string]string{}
+
+	r["SaveImgPath"] = pwd + strings.TrimLeft(w.SaveImgPath, ".")
 	r["BorderColors"] = Color2Str(w.WT.BorderT.Color)
-	r["SaveImgPath"] = w.SaveImgPath
 	r["SourceImgPath"] = w.SourceImgPath
 	r["FirstBorderColor"] = w.WT.WordsT.FirstFontColors
 	r["SecondBorderColor"] = w.WT.WordsT.SecondFontColors
 	r["FirstFontColor"] = w.WT.WordsT.FirstFontColors
 	r["SecondFontColor"] = w.WT.WordsT.SecondFontColors
+
 	return r
 }
 

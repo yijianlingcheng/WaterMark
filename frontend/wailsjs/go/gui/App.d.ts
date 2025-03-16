@@ -4,6 +4,8 @@ import {context} from '../models';
 
 export function DomReady(arg1:context.Context):Promise<void>;
 
+export function GetServerUrl():Promise<string>;
+
 export function SelectDirectory():Promise<string>;
 
 export function SelectImageFile():Promise<string>;
