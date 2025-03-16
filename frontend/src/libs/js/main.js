@@ -297,7 +297,9 @@ function loadPreviewImage(file, params) {
             $("#input-PreviewSourceImageFile").val(file)
             // 保存预览的目标文件
             $("#input-PreviewImageFile").val(response["SaveImgPath"])
-
+            if (response["flag"] === "true") {
+                $("#input-OnlyBottomBorder").prop('checked', true);
+            }
             if (response["model"] === undefined) {
                 setTemplateInfo(getExifInfo(file))
             } else {
@@ -361,7 +363,7 @@ function waterMarkExport() {
         processData : false,
         contentType : false,
         success : function (response) {
-            $(".toast-body").html(response["path"])
+            $(".toast-body").html("保存地址:" + response["path"])
             $('.toast').toast("show")
         },
         error: function(xhr, status, error) {
@@ -374,11 +376,11 @@ function waterMarkExport() {
 function changePreviewImage(obj) {
     // 重置模板选择
     $("#input-Template").prop("selectedIndex", 0);
+    $("#input-OnlyBottomBorder").prop('checked', false);
     // 获取新的预览文件
     var filePath = $(obj).attr("data-src")
     // 更新预览区域
     var tid = $("#input-Template").val()
-    console.log(tid)
     loadPreviewImage(filePath, {
         "tid": tid, 
         "flag" : false,
@@ -392,7 +394,6 @@ function changePreviewImage(obj) {
 
 // ready
 $(document).ready(function() {
-    $("#input-OnlyBottomBorder").prop('indeterminate', true)
     initServerUrl()
 });
 
