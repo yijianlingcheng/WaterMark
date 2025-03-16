@@ -14,8 +14,8 @@ var (
 
 const (
 	LOG_DIR   = "./logs"
-	RUN_LOG   = LOG_DIR + "./run.log"
-	API_LOG   = LOG_DIR + "./api.log"
+	RUN_LOG   = LOG_DIR + "/run.log"
+	API_LOG   = LOG_DIR + "/api.log"
 	FILE_FlAG = os.O_CREATE | os.O_WRONLY | os.O_APPEND
 	FILE_MODE = 0666
 	LOG_FLAG  = log.Ldate | log.Ltime | log.Lshortfile

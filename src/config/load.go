@@ -23,10 +23,10 @@ const (
 
 // Load 加载配置
 func Load() {
+	checkAndCreateDir()
 	loadConfig()
 	initLogoList()
 	initTemplate()
-	checkAndCreateDir()
 }
 
 // loadConfig 加载主配置文件
