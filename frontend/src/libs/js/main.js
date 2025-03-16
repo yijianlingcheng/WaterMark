@@ -349,9 +349,14 @@ function waterMarkPreivew() {
 }
 
 // 图片导出
-function waterMarkExport() {
-    var File = $("#input-PreviewSourceImageFile").val()
-    var PreviewFile = $("#input-PreviewImageFile").val()
+function waterMarkExport(sourcePath, savePath) {
+    if (sourcePath !== undefined && savePath !== undefined) {
+        var File = sourcePath
+        var PreviewFile = savePath
+    } else {
+        var File = $("#input-PreviewSourceImageFile").val()
+        var PreviewFile = $("#input-PreviewImageFile").val()
+    }
     var data = new FormData
     data.append("source", File)
     data.append("preview", PreviewFile)
@@ -370,6 +375,29 @@ function waterMarkExport() {
             
         }
     });
+}
+
+// 全部下载
+function waterMarkExportAll() {
+    $(".img-list").each(function() {
+        var File = $(this).attr("data-src")
+        var data = new FormData
+        data.append("imagePath", File)
+        $.ajax({
+            url : getReqUrl("ChangeImagePath", []),
+            type : "POST",
+            data : data,
+            cache : false,
+            processData : false,
+            contentType : false,
+            success : function (response) {
+                waterMarkExport(File, response["path"])
+            },
+            error: function(xhr, status, error) {
+                
+            }
+        });
+    })
 }
 
 // 切换预览图片

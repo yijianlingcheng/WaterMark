@@ -114,12 +114,14 @@ func ImagePreviewSmall(ctx *gin.Context) {
 func ChangeImagePath(ctx *gin.Context) {
 	c := Container(ctx)
 
-	imgPath := c.Query("imagePath")
+	imgPath := c.PostForm("imagePath")
+	pwd, _ := os.Getwd()
 	if runtime.GOOS == "windows" {
+		pwd = strings.ReplaceAll(pwd, "\\", "/")
 		imgPath = strings.ReplaceAll(imgPath, "\\", "/")
 	}
 	e := images.NewExternal().WithPath(imgPath)
 	c.JSON(gin.H{
-		"path": e.SavePath,
+		"path": pwd + strings.TrimLeft(e.SavePath, "."),
 	})
 }
