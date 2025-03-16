@@ -104,8 +104,12 @@ function getExifInfo(file) {
         processData : false,
         contentType : false,
         success : function (response) {
-            var li = "机器快门次数:"+response['MechanicalShutterCount']+" 快门次数:"+response['ShutterCount']
-            $("#shutterimg-result").append(li)
+            if (response['ShutterCount'] == 0 && response['MechanicalShutterCount'] == 0) {
+                $("#shutterimg-toast").text("查看失败! 请确认选择的图片保存有exif信息").fadeIn(400).delay(500).fadeOut(400); 
+            } else {
+                var li = "机器快门次数:"+response['MechanicalShutterCount']+" 快门次数:"+response['ShutterCount']
+                $("#shutterimg-result").append(li)
+            }
             result = response
         },
         error: function(xhr, status, error) {
