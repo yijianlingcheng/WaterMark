@@ -3,7 +3,7 @@ package images
 import (
 	"WaterMark/src/cmd"
 	"WaterMark/src/exif"
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"errors"
 	"image"
 	"image/color"
@@ -23,6 +23,12 @@ type WaterMark struct {
 
 	// IsSetBorderColor 是否外部设置了边框颜色
 	IsSetBorderColor bool
+
+	// HasExternalWords 是否设置了外部文字水印内容
+	HasExternalWords bool
+
+	// IsSetFontColor 是否设置了外部文字水印颜色
+	IsSetFontColor bool
 
 	// Quality 图片质量,jpeg图片在保存的时候需要指定图片质量
 	Quality int
@@ -62,6 +68,9 @@ type WaterMark struct {
 
 	// ExifMap
 	ExifMap map[string]any
+
+	// ExternalWords 外部文字水印参数
+	ExternalWords map[string]string
 
 	// WT 水印模板
 	WT *WaterMarkTemplate
@@ -180,6 +189,7 @@ func (w *WaterMark) loadSourceImg() error {
 	if err != nil {
 		return err
 	}
+	// 考虑在此处增加缓存,减少图片操作
 	if w.ExifInfo.OrientationNum > 0 {
 		var newSourceImg *image.NRGBA
 		switch w.ExifInfo.OrientationNum {
@@ -211,21 +221,51 @@ func (w *WaterMark) exportExternal(e *External) {
 	w.setBorderOnlyBottom(e.OnlyBottom)
 	// 设置边框颜色
 	w.setBorderColor(e.BorderColor)
+	// 设置字体颜色
+	if e.SetWordsColor {
+		w.setWordsColor(e.FirstWordsColor, e.SecondBorderColor)
+	}
+	if e.SetWords {
+		w.setWords(e.Model, e.LensModel, e.Words)
+	}
 }
 
-// setBorderOnlyBottom 设置模板
+// setBorderOnlyBottom 导入外部边框设置
 //
 //	@param flag
 func (w *WaterMark) setBorderOnlyBottom(flag bool) {
 	w.WT.BorderT.OnlyBottom = flag
 }
 
-// setBorderColor 设置边框颜色
+// setBorderColor 导入外部水印边框颜色
 //
 //	@param color
 func (w *WaterMark) setBorderColor(color color.RGBA) {
 	w.WT.BorderT.Color = color
 	w.IsSetBorderColor = true
+}
+
+// setWordsColor 导入外部文字水印颜色
+//
+//	@param firstWordsColor
+//	@param secondBorderColor
+func (w *WaterMark) setWordsColor(firstWordsColor, secondBorderColor color.RGBA) {
+	w.WT.WordsT.FirstFontColor = firstWordsColor
+	w.WT.WordsT.SecondFontColor = secondBorderColor
+	w.IsSetFontColor = true
+}
+
+// setWords 导入外部参数文字
+//
+//	@param model
+//	@param lensModel
+//	@param words
+func (w *WaterMark) setWords(model, lensModel, words string) {
+	w.HasExternalWords = true
+	w.ExternalWords = map[string]string{}
+	w.ExternalWords["One"] = model
+	w.ExternalWords["Two"] = lensModel
+	w.ExternalWords["Three"] = words
 }
 
 // beforeProcess 前置处理
@@ -323,15 +363,19 @@ func abs(x int) int {
 //	@param t
 //	@return string
 func (w *WaterMark) getWords(t string) string {
-	tpl := structs.Map(w.WT.WordsT)
-	if v, ok := tpl[t]; ok {
-		str := v.(string)
-		list := strings.Split(str, ",")
-		r := []string{}
-		for _, item := range list {
-			r = append(r, w.ExifMap[item].(string))
+	if w.HasExternalWords && t != "Four" {
+		return w.ExternalWords[t]
+	} else {
+		tpl := structs.Map(w.WT.WordsT)
+		if v, ok := tpl[t]; ok {
+			str := v.(string)
+			list := strings.Split(str, ",")
+			r := []string{}
+			for _, item := range list {
+				r = append(r, w.ExifMap[item].(string))
+			}
+			return strings.Join(r, " ")
 		}
-		return strings.Join(r, " ")
 	}
 	return ""
 }
@@ -372,6 +416,10 @@ func (w *WaterMark) exportData() map[string]string {
 	r["BorderColors"] = Color2Str(w.WT.BorderT.Color)
 	r["SaveImgPath"] = w.SaveImgPath
 	r["SourceImgPath"] = w.SourceImgPath
+	r["FirstBorderColor"] = w.WT.WordsT.FirstFontColors
+	r["SecondBorderColor"] = w.WT.WordsT.SecondFontColors
+	r["FirstFontColor"] = w.WT.WordsT.FirstFontColors
+	r["SecondFontColor"] = w.WT.WordsT.SecondFontColors
 	return r
 }
 
@@ -388,26 +436,26 @@ func (w *WaterMark) exportErrorData(err error) map[string]string {
 	return r
 }
 
-// ProcessWaterMark 生成水印
-//
-//	@param tid 模板id
-//	@param path 图片路径
-//	@param save 目标图片路径
-func processWaterMark(tid string, path string, save string) {
-	waterMark := newWaterMark()
-	// 加载资源
-	if err := waterMark.loadSource(path, save, tid); err != nil {
-		Errors.Println(err)
-	}
-	// 读取原始图片
-	if err := waterMark.loadSourceImg(); err != nil {
-		Errors.Println(err)
-	}
-	// 生成水印
-	waterMark.drawLogo2Image().drawFont2Image()
-	// 保存图片
-	waterMark.saveImg()
-}
+// // ProcessWaterMark 生成水印
+// //
+// //	@param tid 模板id
+// //	@param path 图片路径
+// //	@param save 目标图片路径
+// func processWaterMark(tid string, path string, save string) {
+// 	waterMark := newWaterMark()
+// 	// 加载资源
+// 	if err := waterMark.loadSource(path, save, tid); err != nil {
+// 		Errors.Println(err)
+// 	}
+// 	// 读取原始图片
+// 	if err := waterMark.loadSourceImg(); err != nil {
+// 		Errors.Println(err)
+// 	}
+// 	// 生成水印
+// 	waterMark.drawLogo2Image().drawFont2Image()
+// 	// 保存图片
+// 	waterMark.saveImg()
+// }
 
 // 水印预览图生成位置
 var PreviewPath string
@@ -441,12 +489,12 @@ func CreatePreviewWaterMark(e *External) map[string]string {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(e.SourcePath, e.SavePath, e.Tid); err != nil {
-		Errors.Println(err)
+		logs.Errors.Println(err)
 		return waterMark.exportErrorData(err)
 	}
 	// 读取原始图片
 	if err := waterMark.loadSourceImg(); err != nil {
-		Errors.Println(err)
+		logs.Errors.Println(err)
 		return waterMark.exportErrorData(err)
 	}
 	waterMark.exportExternal(e)

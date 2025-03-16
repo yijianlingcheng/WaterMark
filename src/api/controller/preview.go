@@ -31,15 +31,38 @@ func GetImageWaterMarkPreview(ctx *gin.Context) {
 	c := Container(ctx)
 	imgPath := c.PostForm("imagePath")
 	tid := c.DefaultPostForm("tid", "1")
+
 	flag := c.DefaultPostForm("flag", "false")
-	color := c.DefaultPostForm("color", "255,255,255,255")
+	onlyBottomBorder := flag == "true"
+
+	borderColor := c.DefaultPostForm("borderColor", "255,255,255,255")
+	words := c.DefaultPostForm("words", "")
+	model := c.DefaultPostForm("model", "")
+	lensModel := c.DefaultPostForm("lensModel", "")
+	firstWordsColor := c.DefaultPostForm("firstWordsColor", "")
+	secondBorderColor := c.DefaultPostForm("secondBorderColor", "")
+
 	if runtime.GOOS == "windows" {
 		imgPath = strings.ReplaceAll(imgPath, "\\", "/")
 	}
 
-	onlyBottomBorder := flag == "true"
 	e := images.NewExternal()
-	e.WithBoderColor(color).WithOnlyBottomFlag(onlyBottomBorder).WithPath(imgPath).WithTid(tid)
+	e.WithBoderColor(borderColor).WithOnlyBottomFlag(onlyBottomBorder).WithPath(imgPath).WithTid(tid)
+	if len(words) > 0 {
+		e.WithWords(words)
+	}
+	if len(model) > 0 {
+		e.WithModel(model)
+	}
+	if len(lensModel) > 0 {
+		e.WithLensModel(lensModel)
+	}
+	if len(firstWordsColor) > 0 {
+		e.WithFirstWordsColor(firstWordsColor)
+	}
+	if len(secondBorderColor) > 0 {
+		e.WithSecondBorderColor(secondBorderColor)
+	}
 	r := images.CreatePreviewWaterMark(e)
 	r["SaveImgPath"] = cmd.GetPwdPath(strings.TrimLeft(r["SaveImgPath"], "."))
 

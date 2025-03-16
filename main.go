@@ -31,9 +31,9 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:             "水印",
 		Width:             1270,
-		Height:            768,
+		Height:            800,
 		MinWidth:          1270,
-		MinHeight:         768,
+		MinHeight:         800,
 		DisableResize:     false,
 		Fullscreen:        false,
 		Frameless:         false,

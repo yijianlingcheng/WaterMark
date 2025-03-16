@@ -290,6 +290,13 @@ func (b *bottomLeftWordAuto) calculateLeftAutoWordsT(w *WaterMark) {
 	// 上边距
 	marginTop := int(float64(borderT.BottomHeight) / 2.5)
 
+	oldWordsT := w.WT.WordsT
 	// 对对象赋值,方便后续计算
 	w.WT.WordsT = newWordsTemplate().WithFontSize(fontSize).WithMarginRight(marginRight).WithMarginTop(marginTop)
+	if w.IsSetFontColor {
+		w.WT.WordsT.FirstFontColor = oldWordsT.FirstFontColor
+		w.WT.WordsT.FirstFontColors = Color2Str(oldWordsT.FirstFontColor)
+		w.WT.WordsT.SecondFontColor = oldWordsT.SecondFontColor
+		w.WT.WordsT.SecondFontColors = Color2Str(oldWordsT.SecondFontColor)
+	}
 }

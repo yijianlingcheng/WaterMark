@@ -6,12 +6,21 @@ import (
 
 // External 外部数据,由接口导入,注入到水印模板中控制水印图生成
 type External struct {
-	OnlyBottom   bool
-	BorderColor  color.RGBA
-	Tid          string
-	BorderColors string
-	SourcePath   string
-	SavePath     string
+	OnlyBottom         bool
+	SetWordsColor      bool
+	SetWords           bool
+	BorderColor        color.RGBA
+	Tid                string
+	BorderColors       string
+	SourcePath         string
+	SavePath           string
+	Words              string
+	LensModel          string
+	Model              string
+	FirstWordsColors   string
+	FirstWordsColor    color.RGBA
+	SecondBorderColors string
+	SecondBorderColor  color.RGBA
 }
 
 // newExternal
@@ -76,5 +85,57 @@ func (e *External) WithSmallPreviewPath(path string) *External {
 //	@return *External
 func (e *External) WithOnlyBottomFlag(flag bool) *External {
 	e.OnlyBottom = flag
+	return e
+}
+
+// WithWords 指定模板文字
+//
+//	@param words
+//	@return *External
+func (e *External) WithWords(words string) *External {
+	e.SetWords = true
+	e.Words = words
+	return e
+}
+
+// WithModel 指定相机名称
+//
+//	@param model
+//	@return *External
+func (e *External) WithModel(model string) *External {
+	e.SetWords = true
+	e.Model = model
+	return e
+}
+
+// WithLensModel 指定镜头名称
+//
+//	@param lensModel
+//	@return *External
+func (e *External) WithLensModel(lensModel string) *External {
+	e.SetWords = true
+	e.LensModel = lensModel
+	return e
+}
+
+// WithFirstWordsColor 指定第一行文字颜色
+//
+//	@param firstWordsColor
+//	@return *External
+func (e *External) WithFirstWordsColor(firstWordsColor string) *External {
+	e.SetWordsColor = true
+	e.FirstWordsColors = firstWordsColor
+	e.FirstWordsColor = StrColor2RGBA(firstWordsColor)
+	return e
+}
+
+// WithSecondBorderColor 指定第二行文字颜色
+//
+//	@param secondBorderColor
+//	@return *External
+func (e *External) WithSecondBorderColor(secondBorderColor string) *External {
+	e.SetWordsColor = true
+	e.SecondBorderColors = secondBorderColor
+	e.SecondBorderColor = StrColor2RGBA(secondBorderColor)
 	return e
 }

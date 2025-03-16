@@ -152,7 +152,7 @@ function watermarkOpenMultipleFilesDialog() {
             // 异步添加图片裁剪,防止多图预览的时候页面崩溃
             addImageResizeTask(limit)
             // 加载预览图
-            loadPreviewImage(limit[0], "1", "255,255,255,255", false)
+            loadPreviewImage(limit[0], {})
             // 设置模板参数
             setTemplateInfo(getExifInfo(limit[0]))
             // 加载模板选项
@@ -244,7 +244,7 @@ function loadSelectTemplate() {
         success : function (response) {
             for (var i in response) {
                 var li = "<option value="+ i +">"+ response[i] +"</option>"
-                $("#select-template").append(li)   
+                $("#input-Template").append(li)   
             }
         },
         error: function(xhr, status, error) {
@@ -254,12 +254,26 @@ function loadSelectTemplate() {
 }
 
 // 加载实际生成的预览图
-function loadPreviewImage(file, tid, color, flag) {
+function loadPreviewImage(file, params) {
     var data = new FormData();
-    data.append("tid", tid)
+    isEmpty = Object.keys(params).length === 0;
+    if (isEmpty) {
+        var defaultTid = "1"
+        var defaultTBorderColor = "255,255,255,255"
+        data.append("tid", defaultTid)
+        data.append("borderColor", defaultTBorderColor)
+        data.append("flag", "false")
+    } else {
+        for (var i in params) {
+            if (i == "flag") {
+                data.append("flag", params[i].toString())
+            } else {
+                data.append(i, params[i])
+            }
+        }
+    }
     data.append("imagePath", file)
-    data.append("color", color)
-    data.append("flag", flag.toString())
+    console.log(data)
     $.ajax({
         url : getReqUrl("WaterMarkPreview", []),
         type : "POST",
@@ -277,6 +291,8 @@ function loadPreviewImage(file, tid, color, flag) {
             $("#div-templateContainer").show()
             // 设置预览参数
             $("#input-Color").val(response["BorderColors"])
+            $("#input-FirstBorderColor").val(response["FirstBorderColor"])
+            $("#input-SecondBorderColor").val(response["SecondBorderColor"])
             // 保存预览的源文件
             $("#input-PreviewSourceImageFile").val(file)
             // 保存预览的目标文件
@@ -299,13 +315,25 @@ function setTemplateInfo(exifInfo) {
 // 手动点击预览图片
 function waterMarkPreivew() {
     var File = $("#input-PreviewSourceImageFile").val()
+    var Tid = $("#input-Template").val()
     var Model = $("#input-Model").val()
     var LensModel = $("#input-LensModel").val()
     var Param = $("#input-Params").val()
     var Color = $("#input-Color").val()
+    var FirstBorderColor = $("#input-FirstBorderColor").val()
+    var SecondBorderColor = $("#input-SecondBorderColor").val()
     var OnlyBottomFlag = $("#input-OnlyBottomBorder:checked").val() === "on"
 
-    loadPreviewImage(File, "1", Color, OnlyBottomFlag)
+    loadPreviewImage(File, {
+        "tid": Tid, 
+        "borderColor": Color, 
+        "flag" : OnlyBottomFlag,
+        "words": Param,
+        "model": Model,
+        "lensModel": LensModel,
+        "firstWordsColor": FirstBorderColor,
+        "secondBorderColor": SecondBorderColor
+    })
 }
 
 // 图片导出

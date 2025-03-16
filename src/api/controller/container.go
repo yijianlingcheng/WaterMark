@@ -1,7 +1,7 @@
 package controller
 
 import (
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,9 +20,9 @@ func Container(ctx *gin.Context) *Server {
 	server := &Server{
 		ctx: ctx,
 	}
-	ctx.Request.ParseMultipartForm(32 << 20) // 32 << 20 是ParseMultipartForm的默认参数
 	if ctx.Request.Method != "GET" {
-		API.Println(ctx.Request.Method, ctx.Request.URL, "请求参数", ctx.Request.Form)
+		ctx.Request.ParseMultipartForm(32 << 20) // 32 << 20 是ParseMultipartForm的默认参数
+		logs.API.Println(ctx.Request.Method, ctx.Request.URL, "请求参数", ctx.Request.Form)
 	}
 	return server
 }
@@ -31,6 +31,7 @@ func Container(ctx *gin.Context) *Server {
 //
 //	@param obj
 func (c *Server) JSON(obj any) {
+	logs.API.Println(c.ctx.Request.Method, c.ctx.Request.URL, "接口返回", obj)
 	c.ctx.JSON(http.StatusOK, obj)
 }
 

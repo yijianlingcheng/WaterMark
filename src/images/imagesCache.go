@@ -1,7 +1,7 @@
 package images
 
 import (
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"WaterMark/src/tool"
 	"image"
 	"sync"
@@ -28,7 +28,7 @@ func cacheLoadImage(path string) (image.Image, error) {
 
 	// 返回缓存
 	if cache, ok := imagesCache.Load(md5); ok {
-		Info.Println("读取图片缓存成功:" + path)
+		logs.Info.Println("读取图片缓存成功:" + path)
 		return cache.(image.Image), nil
 	}
 
@@ -39,6 +39,6 @@ func cacheLoadImage(path string) (image.Image, error) {
 	}
 	imagesCache.Store(md5, image)
 
-	Info.Println("写入图片缓存成功:" + path)
+	logs.Info.Println("写入图片缓存成功:" + path)
 	return image, nil
 }

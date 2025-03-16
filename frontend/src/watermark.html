@@ -42,15 +42,15 @@
                         <tr>
                             <th scope="row"><p class="pointer" onclick="showWaterMark()">图片导出</p></th>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <th scope="row"><p class="pointer" onclick="showWaterMarkProcess()">水印生成</p></th>
-                        </tr>
-                        <tr>
+                        </tr> -->
+                        <!-- <tr>
                             <th scope="row"><p class="pointer" >版本记录</p></th>
                         </tr>
                         <tr>
                             <th scope="row"><p class="pointer">说明文档</p></th>
-                        </tr>
+                        </tr> -->
                     </tbody>
                   </table>
             </div>
@@ -86,7 +86,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">选择模板</span>
                                 </div>
-                                <select id="select-template" class="form-control">
+                                <select id="input-Template" class="form-control">
                                     
                                 </select>
                             </div>
@@ -113,6 +113,18 @@
                                     <span class="input-group-text" id="basic-addon1">边框颜色</span>
                                 </div>
                                 <input type="text" class="form-control" placeholder="边框颜色" aria-label="边框颜色" aria-describedby="basic-addon1" id="input-Color">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">第一行字体颜色</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="第一行字体颜色" aria-label="第一行字体颜色" aria-describedby="basic-addon1" id="input-FirstBorderColor">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">第二行字体颜色</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="第二行字体颜色" aria-label="第二行字体颜色" aria-describedby="basic-addon1" id="input-SecondBorderColor">
                             </div>
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="input-OnlyBottomBorder">

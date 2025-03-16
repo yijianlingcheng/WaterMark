@@ -1,7 +1,7 @@
 package images
 
 import (
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"bytes"
 	"errors"
 	"fmt"
@@ -102,7 +102,7 @@ func loadImage(path string) (img image.Image, err error) {
 
 	r, err := os.Open(path)
 	if err != nil {
-		Errors.Println(path + "文件打开失败:" + err.Error())
+		logs.Errors.Println(path + "文件打开失败:" + err.Error())
 		return nil, err
 	}
 	defer r.Close()
@@ -110,14 +110,14 @@ func loadImage(path string) (img image.Image, err error) {
 	buff := make([]byte, 512)
 	_, err = r.Read(buff)
 	if err != nil {
-		Errors.Println(path + "文件读取失败:" + err.Error())
+		logs.Errors.Println(path + "文件读取失败:" + err.Error())
 		return nil, err
 	}
 	filetype := http.DetectContentType(buff) //根据http库获取文件类型
 
 	io, err := os.Open(path)
 	if err != nil {
-		Errors.Println(path + "文件打开失败:" + err.Error())
+		logs.Errors.Println(path + "文件打开失败:" + err.Error())
 		return nil, err
 	}
 	defer io.Close()
@@ -126,17 +126,17 @@ func loadImage(path string) (img image.Image, err error) {
 	case "image/jpeg", "image/jpg":
 		img, err = jpeg.Decode(io)
 		if err != nil {
-			Errors.Println(path + "jpeg.Decode 失败:" + err.Error())
+			logs.Errors.Println(path + "jpeg.Decode 失败:" + err.Error())
 			return nil, err
 		}
 	case "image/png":
 		img, err = png.Decode(io)
 		if err != nil {
-			Errors.Println(path + "png.Decode 失败:" + err.Error())
+			logs.Errors.Println(path + "png.Decode 失败:" + err.Error())
 			return nil, err
 		}
 	default:
-		Errors.Println(path + "文件不是支持的格式")
+		logs.Errors.Println(path + "文件不是支持的格式")
 		return nil, errors.New("文件不是支持的格式")
 	}
 	return img, nil
@@ -151,13 +151,13 @@ func loadImage(path string) (img image.Image, err error) {
 func saveJpegImage(path string, m image.Image, q int) error {
 	io, err := os.Create(path)
 	if err != nil {
-		Errors.Println(path + "创建文件出错:" + err.Error())
+		logs.Errors.Println(path + "创建文件出错:" + err.Error())
 		return err
 	}
 	defer io.Close()
 	err = jpeg.Encode(io, m, &jpeg.Options{Quality: q})
 	if err != nil {
-		Errors.Println(path + "图片保存失败:" + err.Error())
+		logs.Errors.Println(path + "图片保存失败:" + err.Error())
 		return err
 	}
 	return nil
@@ -171,13 +171,13 @@ func saveJpegImage(path string, m image.Image, q int) error {
 func savePngImage(path string, m image.Image) error {
 	io, err := os.Create(path)
 	if err != nil {
-		Errors.Println(path + "创建文件出错:" + err.Error())
+		logs.Errors.Println(path + "创建文件出错:" + err.Error())
 		return err
 	}
 	defer io.Close()
 	err = png.Encode(io, m)
 	if err != nil {
-		Errors.Println(path + "图片保存失败:" + err.Error())
+		logs.Errors.Println(path + "图片保存失败:" + err.Error())
 		return err
 	}
 	return nil
@@ -423,14 +423,14 @@ func GetDirFiles(path string) []string {
 	return r
 }
 
-// TestProcessWaterMark 测试生成水印
-func TestProcessWaterMark() {
-	dir := "./test"
-	list := GetDirFiles(dir)
-	tplId := "1" // 模板id
-	for _, file := range list {
-		path := dir + "/" + file
-		save := strings.ReplaceAll(path, dir, "./tmp/watermark")
-		processWaterMark(tplId, path, save)
-	}
-}
+// // TestProcessWaterMark 测试生成水印
+// func TestProcessWaterMark() {
+// 	dir := "./test"
+// 	list := GetDirFiles(dir)
+// 	tplId := "1" // 模板id
+// 	for _, file := range list {
+// 		path := dir + "/" + file
+// 		save := strings.ReplaceAll(path, dir, "./tmp/watermark")
+// 		processWaterMark(tplId, path, save)
+// 	}
+// }
