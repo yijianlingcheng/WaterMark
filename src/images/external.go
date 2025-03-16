@@ -4,14 +4,14 @@ import (
 	"image/color"
 )
 
-// External 外部数据
+// External 外部数据,由接口导入,注入到水印模板中控制水印图生成
 type External struct {
-	OnlyBottom bool
-	Color      color.RGBA
-	Tid        string
-	Colors     string
-	SourcePath string
-	SavePath   string
+	OnlyBottom   bool
+	BorderColor  color.RGBA
+	Tid          string
+	BorderColors string
+	SourcePath   string
+	SavePath     string
 }
 
 // newExternal
@@ -21,13 +21,13 @@ func NewExternal() *External {
 	return &External{}
 }
 
-// WithBoderColor
+// WithBoderColor 指定边框颜色
 //
 //	@param color
 //	@return *External
 func (e *External) WithBoderColor(color string) *External {
-	e.Colors = color
-	e.Color = StrColor2RGBA(color)
+	e.BorderColors = color
+	e.BorderColor = StrColor2RGBA(color)
 	return e
 }
 
@@ -36,12 +36,12 @@ func (e *External) WithBoderColor(color string) *External {
 //	@return *External
 func (e *External) WithDefaultBoderColor() *External {
 	color := "255,255,255,255"
-	e.Colors = color
-	e.Color = StrColor2RGBA(color)
+	e.BorderColors = color
+	e.BorderColor = StrColor2RGBA(color)
 	return e
 }
 
-// WithTid
+// WithTid 指定使用的模板id
 //
 //	@param tid
 //	@return *External
@@ -50,16 +50,7 @@ func (e *External) WithTid(tid string) *External {
 	return e
 }
 
-// WithTid
-//
-//	@param tid
-//	@return *External
-func (e *External) WithDefaultTid(tid string) *External {
-	e.Tid = tid
-	return e
-}
-
-// WithPath
+// WithPath 指定原始图片,预览图片路径(带水印)
 //
 //	@param path
 //	@return *External
@@ -69,7 +60,7 @@ func (e *External) WithPath(path string) *External {
 	return e
 }
 
-// WithSmallPreviewPath
+// WithSmallPreviewPath 指定原始图片路径,预览小图的路径(不带水印)
 //
 //	@param path
 //	@return *External
@@ -79,7 +70,7 @@ func (e *External) WithSmallPreviewPath(path string) *External {
 	return e
 }
 
-// WithOnlyBottomFlag
+// WithOnlyBottomFlag 指定标识
 //
 //	@param flag
 //	@return *External

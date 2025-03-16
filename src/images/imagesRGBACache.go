@@ -1,7 +1,7 @@
 package images
 
 import (
-	"WaterMark/src/log"
+	. "WaterMark/src/logs"
 	"WaterMark/src/tool"
 	"fmt"
 	"image"
@@ -25,13 +25,13 @@ func cacheLoadImageRGBA(path string, x1 int, y1 int, x2 int, y2 int) *image.RGBA
 	md5 := "cacheLoadImageRGBA:" + tool.StrMD5(str)
 	// 返回缓存
 	if cache, ok := imagesRGBACache.Load(md5); ok {
-		log.InfoLogger.Println("读取图片对象缓存成功:" + str)
+		Info.Println("读取图片对象缓存成功:" + str)
 		return cache.(*image.RGBA)
 	}
 	borderRect := image.Rect(x1, y1, x2, y2)
 	image := image.NewRGBA(borderRect)
 	imagesRGBACache.Store(md5, image)
 
-	log.InfoLogger.Println("设置图片对象缓存成功:" + str)
+	Info.Println("设置图片对象缓存成功:" + str)
 	return image
 }

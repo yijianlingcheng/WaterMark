@@ -5,25 +5,25 @@ import (
 	"sort"
 )
 
-// WordStrategy
-type WordStrategy interface {
+// wordStrategy
+type wordStrategy interface {
 	drawWords(w *WaterMark)
 }
 
-// BottomLeftWordStrategy
-type BottomLeftWordStrategy struct {
-	Strategy WordStrategy
+// bottomLeftWord
+type bottomLeftWord struct {
+	Strategy wordStrategy
 }
 
 // drawWord implements WordStrategy.
 //
 //	@param w
-func (b *BottomLeftWordStrategy) drawWords(w *WaterMark) {
+func (b *bottomLeftWord) drawWords(w *WaterMark) {
 
-	logoT := w.WaterMarkTemplate.LogoTemplate
-	borderT := w.WaterMarkTemplate.BorderTemplate
-	WordsT := w.WaterMarkTemplate.WordsTemplate
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	logoT := w.WT.LogoT
+	borderT := w.WT.BorderT
+	WordsT := w.WT.WordsT
+	SepT := w.WT.SeparateT
 
 	sminx := 0
 	smaxy := w.SourceHeight
@@ -63,20 +63,20 @@ func (b *BottomLeftWordStrategy) drawWords(w *WaterMark) {
 	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x2, y), w.getWords("Four"))
 }
 
-// BottomCenterWordStrategy
-type BottomCenterWordStrategy struct {
-	Strategy WordStrategy
+// bottomCenterWord
+type bottomCenterWord struct {
+	Strategy wordStrategy
 }
 
 // drawWord implements WordStrategy.
 //
 //	@param w
-func (b *BottomCenterWordStrategy) drawWords(w *WaterMark) {
+func (b *bottomCenterWord) drawWords(w *WaterMark) {
 
-	logoT := w.WaterMarkTemplate.LogoTemplate
-	borderT := w.WaterMarkTemplate.BorderTemplate
-	WordsT := w.WaterMarkTemplate.WordsTemplate
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	logoT := w.WT.LogoT
+	borderT := w.WT.BorderT
+	WordsT := w.WT.WordsT
+	SepT := w.WT.SeparateT
 
 	sminx := 0
 	smaxy := w.SourceHeight
@@ -111,20 +111,20 @@ func (b *BottomCenterWordStrategy) drawWords(w *WaterMark) {
 	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x, y), w.getWords("Four"))
 }
 
-// BottomRightWordStrategy
-type BottomRightWordStrategy struct {
-	Strategy WordStrategy
+// bottomRightWord
+type bottomRightWord struct {
+	Strategy wordStrategy
 }
 
 // drawWord implements WordStrategy.
 //
 //	@param w
-func (b *BottomRightWordStrategy) drawWords(w *WaterMark) {
+func (b *bottomRightWord) drawWords(w *WaterMark) {
 
-	logoT := w.WaterMarkTemplate.LogoTemplate
-	borderT := w.WaterMarkTemplate.BorderTemplate
-	WordsT := w.WaterMarkTemplate.WordsTemplate
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	logoT := w.WT.LogoT
+	borderT := w.WT.BorderT
+	WordsT := w.WT.WordsT
+	SepT := w.WT.SeparateT
 
 	sminx := 0
 	smaxy := w.SourceHeight
@@ -165,19 +165,19 @@ func (b *BottomRightWordStrategy) drawWords(w *WaterMark) {
 	stextBrush.drawFontOnRGBA(w.Draw, image.Pt(x, y), w.getWords("Four"))
 }
 
-// StackblurWordStrategy
-type StackblurWordStrategy struct {
-	Strategy WordStrategy
+// stackblurWord
+type stackblurWord struct {
+	Strategy wordStrategy
 }
 
 // drawWords
 //
 //	@param w
-func (b *StackblurWordStrategy) drawWords(w *WaterMark) {
-	logoT := w.WaterMarkTemplate.LogoTemplate
-	borderT := w.WaterMarkTemplate.BorderTemplate
-	WordsT := w.WaterMarkTemplate.WordsTemplate
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+func (b *stackblurWord) drawWords(w *WaterMark) {
+	logoT := w.WT.LogoT
+	borderT := w.WT.BorderT
+	WordsT := w.WT.WordsT
+	SepT := w.WT.SeparateT
 
 	sminx := 0
 	smaxy := w.Draw.Bounds().Dy()
@@ -208,41 +208,41 @@ type SimpleWordFactory struct {
 // create
 //
 //	@param ext
-//	@return WordStrategy
-func (simple *SimpleWordFactory) create(ext string) WordStrategy {
+//	@return wordStrategy
+func (simple *SimpleWordFactory) create(ext string) wordStrategy {
 	switch ext {
 	case "BOTTOM_LOGO_LEFT":
-		return &BottomLeftWordStrategy{}
+		return &bottomLeftWord{}
 	case "BOTTOM_LOGO_CENTER":
-		return &BottomCenterWordStrategy{}
+		return &bottomCenterWord{}
 	case "BOTTOM_LOGO_RIGHT":
-		return &BottomRightWordStrategy{}
+		return &bottomRightWord{}
 	case "STACK_BLUR":
-		return &StackblurWordStrategy{}
+		return &stackblurWord{}
 	case "BOTTOM_LOGO_LEFT_AUTO":
-		return &BottomLeftWordAutoStrategy{}
+		return &bottomLeftWordAuto{}
 	case "BOTTOM_LOGO_CENTER_AUTO":
-		return &BottomLeftWordAutoStrategy{}
+		return &bottomLeftWordAuto{}
 	case "BOTTOM_LOGO_RIGHT_AUTO":
-		return &BottomLeftWordAutoStrategy{}
+		return &bottomLeftWordAuto{}
 	case "STACK_BLUR_AUTO":
-		return &BottomLeftWordAutoStrategy{}
+		return &bottomLeftWordAuto{}
 	}
 	return nil
 }
 
-// BottomLeftWordAutoStrategy
-type BottomLeftWordAutoStrategy struct {
-	Strategy WordStrategy
+// bottomLeftWordAuto
+type bottomLeftWordAuto struct {
+	Strategy wordStrategy
 }
 
-func (b *BottomLeftWordAutoStrategy) drawWords(w *WaterMark) {
+func (b *bottomLeftWordAuto) drawWords(w *WaterMark) {
 	// 计算边距,字体
 	b.calculateLeftAutoWordsT(w)
 
-	logoT := w.WaterMarkTemplate.LogoTemplate
-	borderT := w.WaterMarkTemplate.BorderTemplate
-	WordsT := w.WaterMarkTemplate.WordsTemplate
+	logoT := w.WT.LogoT
+	borderT := w.WT.BorderT
+	WordsT := w.WT.WordsT
 
 	sminx := 0
 	smaxy := w.SourceHeight
@@ -275,9 +275,9 @@ func (b *BottomLeftWordAutoStrategy) drawWords(w *WaterMark) {
 // calculateLeftAutoWordsT 计算字体边距,字体大小
 //
 //	@param w
-func (b *BottomLeftWordAutoStrategy) calculateLeftAutoWordsT(w *WaterMark) {
+func (b *bottomLeftWordAuto) calculateLeftAutoWordsT(w *WaterMark) {
 	// 边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 
 	// 字体大小
 	fontSize := borderT.BottomHeight / 4
@@ -291,5 +291,5 @@ func (b *BottomLeftWordAutoStrategy) calculateLeftAutoWordsT(w *WaterMark) {
 	marginTop := int(float64(borderT.BottomHeight) / 2.5)
 
 	// 对对象赋值,方便后续计算
-	w.WaterMarkTemplate.WordsTemplate = newWordsTemplate().WithFontSize(fontSize).WithMarginRight(marginRight).WithMarginTop(marginTop)
+	w.WT.WordsT = newWordsTemplate().WithFontSize(fontSize).WithMarginRight(marginRight).WithMarginTop(marginTop)
 }

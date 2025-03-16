@@ -310,29 +310,26 @@ function waterMarkPreivew() {
 
 // 图片导出
 function waterMarkExport() {
-    window.go.gui.App.ShowDownloadImageDialog().then(async result => {
-        if (result === "Yes") {
-            var File = $("#input-PreviewSourceImageFile").val()
-            var PreviewFile = $("#input-PreviewImageFile").val()
-            var data = new FormData
-            data.append("source", File)
-            data.append("preview", PreviewFile)
-            $.ajax({
-                url : getReqUrl("Download", []),
-                type : "POST",
-                data : data,
-                cache : false,
-                processData : false,
-                contentType : false,
-                success : function (response) {
-                    
-                },
-                error: function(xhr, status, error) {
-                    
-                }
-            });
+    var File = $("#input-PreviewSourceImageFile").val()
+    var PreviewFile = $("#input-PreviewImageFile").val()
+    var data = new FormData
+    data.append("source", File)
+    data.append("preview", PreviewFile)
+    $.ajax({
+        url : getReqUrl("Download", []),
+        type : "POST",
+        data : data,
+        cache : false,
+        processData : false,
+        contentType : false,
+        success : function (response) {
+            $(".toast-body").html(response["path"])
+            $('.toast').toast("show")
+        },
+        error: function(xhr, status, error) {
+            
         }
-    }).catch(err => {}).finally(() => {});
+    });
 }
 
 // ready

@@ -1,3 +1,5 @@
+server:
+  address: ":11079"
 logos:
   - 
    id: "NIKON"

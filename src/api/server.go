@@ -1,12 +1,12 @@
 package api
 
 import (
-	"net/http"
-	"os"
-	"runtime"
-	"strings"
+	"WaterMark/src/logs"
+	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 // ServerStart api服务启动
@@ -14,82 +14,25 @@ func ServerStart() {
 
 	// release模式
 	gin.SetMode(gin.ReleaseMode)
+	gin.DisableConsoleColor()
 
+	// 指定日志输出文件
+	gin.DefaultWriter = logs.API.Writer()
+
+	// router
 	router := gin.Default()
+
+	// 格式化日志
+	router.Use(gin.LoggerWithFormatter(LogFormat))
 
 	// 设置跨域
 	router.Use(CORSMiddleware())
 
-	// 获取快门次数
-	router.POST("/server/getShutterByFile", func(c *gin.Context) {
-		imgPath := c.PostForm("shutterimg")
-		r := GetShutter(imgPath, true)
-		c.JSON(http.StatusOK, r)
-	})
+	// 加载路由
+	loadRouters(router)
 
-	// 获取图片预览
-	router.GET("/server/getImagePreview", func(c *gin.Context) {
-		imgPath := c.Query("imagePath")
-		if runtime.GOOS == "windows" {
-			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
-		}
-		file, _ := os.ReadFile(imgPath) //把要显示的图片读取到变量中
-		c.Writer.WriteString(string(file))
-	})
-
-	// 获取图片模板列表类型
-	router.GET("/server/getTplListType", func(c *gin.Context) {
-		r := getTplListType()
-		c.JSON(http.StatusOK, r)
-	})
-
-	// 获取图片水印预览
-	router.POST("/server/getImageWaterMarkPreview", func(c *gin.Context) {
-		imgPath := c.PostForm("imagePath")
-		tid := c.DefaultPostForm("tid", "1")
-		flag := c.DefaultPostForm("flag", "false")
-		color := c.DefaultPostForm("color", "255,255,255,255")
-		if runtime.GOOS == "windows" {
-			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
-		}
-		r := getImageWaterMarkPreview(tid, imgPath, color, flag == "true")
-		c.JSON(http.StatusOK, r)
-	})
-
-	// 添加图片水印预览异步任务
-	router.POST("/server/addPreviewTask", func(c *gin.Context) {
-		images := c.PostForm("images")
-		go addPreviewTask(images)
-		c.JSON(http.StatusOK, "")
-	})
-
-	// 添加图片压缩任务
-	router.POST("/server/addImageResizeTask", func(c *gin.Context) {
-		images := c.PostForm("images")
-		addImageResizeTask(images)
-		c.JSON(http.StatusOK, "")
-	})
-
-	// 预览小图
-	router.GET("/server/imagePreviewSmall", func(c *gin.Context) {
-		imgPath := c.Query("imagePath")
-		if runtime.GOOS == "windows" {
-			imgPath = strings.ReplaceAll(imgPath, "\\", "/")
-		}
-		imgPath = getSmallPreviewPath(imgPath) //把要显示的图片读取到变量中
-		file, _ := os.ReadFile(imgPath)
-		c.Writer.WriteString(string(file))
-	})
-
-	// 下载文件
-	router.POST("/server/downloadFile", func(c *gin.Context) {
-		source := c.PostForm("source")
-		preview := c.PostForm("preview")
-		r := downloadFile(source, preview)
-		c.JSON(http.StatusOK, r)
-	})
-
-	router.Run(":11079")
+	// 监听地址并运行
+	router.Run(viper.GetString("server.address"))
 }
 
 // CORSMiddleware 中间件处理跨域问题
@@ -108,4 +51,22 @@ func CORSMiddleware() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+// LogFormat 格式化日志输出格式
+//
+//	@param param
+//	@return string
+func LogFormat(param gin.LogFormatterParams) string {
+	return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+		param.ClientIP,
+		param.TimeStamp.Format(time.RFC3339Nano),
+		param.Method,
+		param.Path,
+		param.Request.Proto,
+		param.StatusCode,
+		param.Latency,
+		param.Request.UserAgent(),
+		param.ErrorMessage,
+	)
 }

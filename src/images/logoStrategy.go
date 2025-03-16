@@ -5,24 +5,24 @@ import (
 	"image/draw"
 )
 
-// LogoStrategy
-type LogoStrategy interface {
+// logoStrategy
+type logoStrategy interface {
 	drawLogo(w *WaterMark)
 }
 
-// BottomLeftLogoStrategy logo 在底部的左边
-type BottomLeftLogoStrategy struct {
-	Strategy LogoStrategy
+// bottomLeft logo在底部的左侧
+type bottomLeft struct {
+	Strategy logoStrategy
 }
 
-// drawLogo implements LogoStrategy.
+// drawLogo
 //
 //	@param w
-func (b *BottomLeftLogoStrategy) drawLogo(w *WaterMark) {
+func (b *bottomLeft) drawLogo(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// 读取LOGO
 	w.loadLogo()
 
@@ -31,19 +31,19 @@ func (b *BottomLeftLogoStrategy) drawLogo(w *WaterMark) {
 	draw.Draw(w.Draw, image.Rectangle{Min: image.Point{X: watermarkX, Y: watermarkY}, Max: image.Point{X: watermarkX + logoT.Width, Y: watermarkY + logoT.Height}}, w.LogoImage, image.Point{0, 0}, draw.Over)
 }
 
-// BottomCenterLogoStrategy logo 在底部的中间
-type BottomCenterLogoStrategy struct {
-	Strategy LogoStrategy
+// bottomCenter logo在底部的中部
+type bottomCenter struct {
+	Strategy logoStrategy
 }
 
 // drawLogo implements LogoStrategy.
 //
 //	@param w
-func (b *BottomCenterLogoStrategy) drawLogo(w *WaterMark) {
+func (b *bottomCenter) drawLogo(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// 读取LOGO
 	w.loadLogo()
 
@@ -52,19 +52,19 @@ func (b *BottomCenterLogoStrategy) drawLogo(w *WaterMark) {
 	draw.Draw(w.Draw, image.Rectangle{Min: image.Point{X: watermarkX, Y: watermarkY}, Max: image.Point{X: watermarkX + logoT.Width, Y: watermarkY + logoT.Height}}, w.LogoImage, image.Point{0, 0}, draw.Over)
 }
 
-// BottomRightLogoStrategy logo 在底部的右边
-type BottomRightLogoStrategy struct {
-	Strategy LogoStrategy
+// bottomRight logo在底部的右侧
+type bottomRight struct {
+	Strategy logoStrategy
 }
 
-// drawLogo implements LogoStrategy.
+// drawLogo
 //
 //	@param w
-func (b *BottomRightLogoStrategy) drawLogo(w *WaterMark) {
+func (b *bottomRight) drawLogo(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// 读取LOGO
 	w.loadLogo()
 
@@ -73,19 +73,19 @@ func (b *BottomRightLogoStrategy) drawLogo(w *WaterMark) {
 	draw.Draw(w.Draw, image.Rectangle{Min: image.Point{X: watermarkX, Y: watermarkY}, Max: image.Point{X: watermarkX + logoT.Width, Y: watermarkY + logoT.Height}}, w.LogoImage, image.Point{0, 0}, draw.Over)
 }
 
-// StackblurLogoStrategy
-type StackblurLogoStrategy struct {
-	Strategy LogoStrategy
+// stackblurL 高斯模糊logo模板
+type stackblurL struct {
+	Strategy logoStrategy
 }
 
-// drawLogo implements LogoStrategy.
+// drawLogo
 //
 //	@param w
-func (b *StackblurLogoStrategy) drawLogo(w *WaterMark) {
+func (b *stackblurL) drawLogo(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// 读取LOGO
 	w.loadLogo()
 
@@ -102,44 +102,44 @@ type SimpleLogoFactory struct {
 // create
 //
 //	@param t
-//	@return LogoStrategy
-func (simple *SimpleLogoFactory) create(t string) LogoStrategy {
+//	@return logoStrategy
+func (simple *SimpleLogoFactory) create(t string) logoStrategy {
 	switch t {
 	case "BOTTOM_LOGO_LEFT":
-		return &BottomLeftLogoStrategy{}
+		return &bottomLeft{}
 	case "BOTTOM_LOGO_CENTER":
-		return &BottomCenterLogoStrategy{}
+		return &bottomCenter{}
 	case "BOTTOM_LOGO_RIGHT":
-		return &BottomRightLogoStrategy{}
+		return &bottomRight{}
 	case "STACK_BLUR":
-		return &StackblurLogoStrategy{}
+		return &stackblurL{}
 	case "BOTTOM_LOGO_LEFT_AUTO":
-		return &BottomLeftLogoAutoStrategy{}
+		return &bottomLeftAuto{}
 	case "BOTTOM_LOGO_CENTER_AUTO":
-		return &BottomLeftLogoAutoStrategy{}
+		return &bottomLeftAuto{}
 	case "BOTTOM_LOGO_RIGHT_AUTO":
-		return &BottomLeftLogoAutoStrategy{}
+		return &bottomLeftAuto{}
 	case "STACK_BLUR_AUTO":
-		return &BottomLeftLogoAutoStrategy{}
+		return &bottomLeftAuto{}
 	}
 	return nil
 }
 
-// BottomLeftLogoAutoStrategy
-type BottomLeftLogoAutoStrategy struct {
-	Strategy LogoStrategy
+// bottomLeftAuto logo在底部左侧,logo大小自动计算
+type bottomLeftAuto struct {
+	Strategy logoStrategy
 }
 
 // drawLogo
 //
 //	@param w
-func (b *BottomLeftLogoAutoStrategy) drawLogo(w *WaterMark) {
+func (b *bottomLeftAuto) drawLogo(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 
 	// logoT 获取logo模板
-	w.WaterMarkTemplate.LogoTemplate = newLogoTemplate().WithWidth(borderT.BottomHeight).WithHeight(borderT.BottomHeight)
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	w.WT.LogoT = newLogoTemplate().WithWidth(borderT.BottomHeight).WithHeight(borderT.BottomHeight)
+	logoT := w.WT.LogoT
 	// 读取LOGO
 	w.loadLogo()
 

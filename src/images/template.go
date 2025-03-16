@@ -53,17 +53,17 @@ type WaterMarkTemplate struct {
 	// Description 模板描述
 	Description string
 
-	// BorderTemplate 边框模板
-	BorderTemplate *BorderTemplate
+	// BT  边框模板
+	BorderT *borderTemplate
 
-	// LogoTemplate logo模板
-	LogoTemplate *LogoTemplate
+	// LogoT logo模板
+	LogoT *logoTemplate
 
-	// WordsTemplate 文字模板
-	WordsTemplate *WordsTemplate
+	// WordsT 文字模板
+	WordsT *wordsTemplate
 
-	// SeparateTamplate 分隔符模板
-	SeparateTamplate *SeparateTamplate
+	// SeparateT 分隔符模板
+	SeparateT *separateTamplate
 }
 
 // // newWaterMarkTemplate 初始化一个水印模板

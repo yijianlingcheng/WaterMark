@@ -4,7 +4,7 @@ import (
 	"WaterMark/src/api"
 	"WaterMark/src/config"
 	"WaterMark/src/gui"
-	"WaterMark/src/log"
+	. "WaterMark/src/logs"
 	"embed"
 
 	"github.com/wailsapp/wails/v2"
@@ -62,6 +62,6 @@ func main() {
 		},
 	})
 	if err != nil {
-		log.ErrorLogger.Println(err)
+		Errors.Println(err)
 	}
 }

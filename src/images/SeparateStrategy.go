@@ -4,27 +4,27 @@ import (
 	"image"
 )
 
-// SeparateStrategy
-type SeparateStrategy interface {
+// separateStrategy
+type separateStrategy interface {
 	drawSeparate(w *WaterMark)
 }
 
-// BottomLeftSeparateStrategy
-type BottomLeftSeparateStrategy struct {
-	Strategy SeparateStrategy
+// bottomLeftSep
+type bottomLeftSep struct {
+	Strategy separateStrategy
 }
 
 // drawSeparate implements SeparateStrategy.
 //
 //	@param w
-func (b *BottomLeftSeparateStrategy) drawSeparate(w *WaterMark) {
+func (b *bottomLeftSep) drawSeparate(w *WaterMark) {
 
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// SepT 获取分隔符模板
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	SepT := w.WT.SeparateT
 
 	// 竖线画分隔符
 	x := borderT.LeftWidth + logoT.Width + SepT.MarginLeft
@@ -36,21 +36,21 @@ func (b *BottomLeftSeparateStrategy) drawSeparate(w *WaterMark) {
 	}
 }
 
-// BottomCenterSeparateStrategy
-type BottomCenterSeparateStrategy struct {
-	Strategy SeparateStrategy
+// bottomCenterSep
+type bottomCenterSep struct {
+	Strategy separateStrategy
 }
 
 // drawSeparate implements SeparateStrategy.
 //
 //	@param w
-func (b *BottomCenterSeparateStrategy) drawSeparate(w *WaterMark) {
+func (b *bottomCenterSep) drawSeparate(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// SepT 获取分隔符模板
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	SepT := w.WT.SeparateT
 
 	// 竖线画分隔符
 	x := w.Draw.Bounds().Dx() - borderT.RightWidth - logoT.MarginRight + logoT.Width + SepT.MarginLeft
@@ -62,21 +62,21 @@ func (b *BottomCenterSeparateStrategy) drawSeparate(w *WaterMark) {
 	}
 }
 
-// BottomRightSeparateStrategy
-type BottomRightSeparateStrategy struct {
-	Strategy SeparateStrategy
+// bottomRightSep
+type bottomRightSep struct {
+	Strategy separateStrategy
 }
 
 // drawSeparate implements SeparateStrategy.
 //
 //	@param w
-func (b *BottomRightSeparateStrategy) drawSeparate(w *WaterMark) {
+func (b *bottomRightSep) drawSeparate(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// SepT 获取分隔符模板
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	SepT := w.WT.SeparateT
 
 	// 竖线画分隔符
 	x := w.Draw.Bounds().Dx() - borderT.RightWidth - logoT.Width - logoT.MarginLeft - SepT.MarginRight
@@ -88,21 +88,21 @@ func (b *BottomRightSeparateStrategy) drawSeparate(w *WaterMark) {
 	}
 }
 
-// StackblurSeparateStrategy
-type StackblurSeparateStrategy struct {
-	Strategy SeparateStrategy
+// stackblurSep
+type stackblurSep struct {
+	Strategy separateStrategy
 }
 
 // drawSeparate drawLogo implements.
 //
 //	@param w
-func (b *StackblurSeparateStrategy) drawSeparate(w *WaterMark) {
+func (b *stackblurSep) drawSeparate(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 	// logoT 获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 	// SepT 获取分隔符模板
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	SepT := w.WT.SeparateT
 
 	// 竖线画分隔符
 	x := borderT.LeftWidth + logoT.MarginLeft + logoT.Width + SepT.MarginLeft
@@ -122,16 +122,16 @@ type SimpleSeparateFactory struct {
 //
 //	@param ext
 //	@return SeparateStrategy
-func (simple *SimpleSeparateFactory) create(ext string) SeparateStrategy {
+func (simple *SimpleSeparateFactory) create(ext string) separateStrategy {
 	switch ext {
 	case "BOTTOM_LOGO_LEFT":
-		return &BottomLeftSeparateStrategy{}
+		return &bottomLeftSep{}
 	case "BOTTOM_LOGO_CENTER":
-		return &BottomCenterSeparateStrategy{}
+		return &bottomCenterSep{}
 	case "BOTTOM_LOGO_RIGHT":
-		return &BottomRightSeparateStrategy{}
+		return &bottomRightSep{}
 	case "STACK_BLUR":
-		return &StackblurSeparateStrategy{}
+		return &stackblurSep{}
 	}
 	return nil
 }

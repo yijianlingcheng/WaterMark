@@ -4,8 +4,8 @@ import (
 	"image/color"
 )
 
-// WordsTemplate 文字模板,一共四个位置,字段由exif的字段组成,多个使用,进行分割
-type WordsTemplate struct {
+// wordsTemplate 文字模板,一共四个位置,字段由exif的字段组成,多个使用,进行分割
+type wordsTemplate struct {
 
 	// FirstFontMarginTop 水印第一行文字距离原始图片高度
 	FirstFontMarginTop int
@@ -68,7 +68,7 @@ type WordsTemplate struct {
 // setDefaultWordsTemplate 默认的文字模板
 //
 //	@param w
-func setDefaultWordsTemplate(w *WordsTemplate) {
+func setDefaultWordsTemplate(w *wordsTemplate) {
 	w.One = "Model"
 	w.Two = "LensModel"
 	w.Three = "FocalLength,FNumberStr,ExposureTime,ISOStr"
@@ -83,9 +83,9 @@ func setDefaultWordsTemplate(w *WordsTemplate) {
 
 // newWordsTemplate 构造一个文字模板
 //
-//	@return *WordsTemplate
-func newWordsTemplate() *WordsTemplate {
-	w := WordsTemplate{}
+//	@return *wordsTemplate
+func newWordsTemplate() *wordsTemplate {
+	w := wordsTemplate{}
 	setDefaultWordsTemplate(&w)
 	return &w
 }
@@ -93,8 +93,8 @@ func newWordsTemplate() *WordsTemplate {
 // WithFontSize 字体大小
 //
 //	@param fontSize
-//	@return *WordsTemplate
-func (t *WordsTemplate) WithFontSize(fontSize int) *WordsTemplate {
+//	@return *wordsTemplate
+func (t *wordsTemplate) WithFontSize(fontSize int) *wordsTemplate {
 	t.FirstFontSize = fontSize
 	t.SecondFontSize = fontSize
 	return t
@@ -103,8 +103,8 @@ func (t *WordsTemplate) WithFontSize(fontSize int) *WordsTemplate {
 // WithMarginRight 右边距
 //
 //	@param marginRight
-//	@return *WordsTemplate
-func (t *WordsTemplate) WithMarginRight(marginRight int) *WordsTemplate {
+//	@return *wordsTemplate
+func (t *wordsTemplate) WithMarginRight(marginRight int) *wordsTemplate {
 	t.FirstFontMarginRight = marginRight
 	t.SecondFontMarginRight = marginRight
 	return t
@@ -113,8 +113,8 @@ func (t *WordsTemplate) WithMarginRight(marginRight int) *WordsTemplate {
 // WithMarginLeft 左边距
 //
 //	@param marginLeft
-//	@return *WordsTemplate
-func (t *WordsTemplate) WithMarginLeft(marginLeft int) *WordsTemplate {
+//	@return *wordsTemplate
+func (t *wordsTemplate) WithMarginLeft(marginLeft int) *wordsTemplate {
 	t.FirstFontMarginLeft = marginLeft
 	t.SecondFontMarginLeft = marginLeft
 	return t
@@ -123,8 +123,8 @@ func (t *WordsTemplate) WithMarginLeft(marginLeft int) *WordsTemplate {
 // WithMarginTop 上边距
 //
 //	@param marginTop
-//	@return *WordsTemplate
-func (t *WordsTemplate) WithMarginTop(marginTop int) *WordsTemplate {
+//	@return *wordsTemplate
+func (t *wordsTemplate) WithMarginTop(marginTop int) *wordsTemplate {
 	t.FirstFontMarginTop = marginTop
 	t.SecondFontMarginTop = marginTop + int(float64(t.FirstFontSize)*1.6)
 	return t

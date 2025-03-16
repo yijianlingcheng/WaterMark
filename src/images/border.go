@@ -4,7 +4,8 @@ import (
 	"image/color"
 )
 
-type BorderTemplate struct {
+// borderTemplate 边框模板
+type borderTemplate struct {
 
 	// OnlyBottom 是否只有底部边框
 	OnlyBottom bool
@@ -34,29 +35,29 @@ type BorderTemplate struct {
 	Colors string
 }
 
-// newBorderTemplate 构造一个Logo模板
+// newBorderTemplate 构造一个边框模板
 //
-//	@return *BorderTemplate
-func newBorderTemplate() *BorderTemplate {
-	return &BorderTemplate{}
+//	@return *borderTemplate
+func newBorderTemplate() *borderTemplate {
+	return &borderTemplate{}
 }
 
-// WithWidth 宽度
+// WithWidth 指定宽度
 //
 //	@param width
-//	@return *BorderTemplate
-func (b *BorderTemplate) WithWidth(width int) *BorderTemplate {
+//	@return *borderTemplate
+func (b *borderTemplate) WithWidth(width int) *borderTemplate {
 	leftWidth := int(width / 2)
 	b.LeftWidth = leftWidth
 	b.RightWidth = width - leftWidth
 	return b
 }
 
-// WithHeight 高度
+// WithHeight 指定高度
 //
 //	@param height
-//	@return *BorderTemplate
-func (b *BorderTemplate) WithHeight(height int) *BorderTemplate {
+//	@return *borderTemplate
+func (b *borderTemplate) WithHeight(height int) *borderTemplate {
 	topHeight := int(height / 4)
 	b.TopHeight = topHeight
 	b.BottomHeight = height - topHeight
@@ -66,17 +67,17 @@ func (b *BorderTemplate) WithHeight(height int) *BorderTemplate {
 // WithBottomHeight 只设置底部边框高度
 //
 //	@param height
-//	@return *
-func (b *BorderTemplate) WithBottomHeight(height int) *BorderTemplate {
+//	@return *borderTemplate
+func (b *borderTemplate) WithBottomHeight(height int) *borderTemplate {
 	b.BottomHeight = height
 	return b
 }
 
-// WithBoderColor 颜色
+// WithBoderColor 指定边框颜色颜色
 //
 //	@param color
-//	@return *BorderTemplate
-func (b *BorderTemplate) WithBoderColor(color color.RGBA) *BorderTemplate {
+//	@return *borderTemplate
+func (b *borderTemplate) WithBoderColor(color color.RGBA) *borderTemplate {
 	b.Color = color
 	return b
 }
@@ -84,13 +85,13 @@ func (b *BorderTemplate) WithBoderColor(color color.RGBA) *BorderTemplate {
 // getWidth 获取边框宽度
 //
 //	@return int
-func (b *BorderTemplate) getWidth() int {
+func (b *borderTemplate) getWidth() int {
 	return b.LeftWidth + b.RightWidth
 }
 
 // getHeight 获取边框高度
 //
 //	@return int
-func (b *BorderTemplate) getHeight() int {
+func (b *borderTemplate) getHeight() int {
 	return b.TopHeight + b.BottomHeight
 }

@@ -3,7 +3,8 @@ package images
 import (
 	"WaterMark/src/cmd"
 	"WaterMark/src/exif"
-	"WaterMark/src/log"
+	. "WaterMark/src/logs"
+	"errors"
 	"image"
 	"image/color"
 	"image/draw"
@@ -62,8 +63,8 @@ type WaterMark struct {
 	// ExifMap
 	ExifMap map[string]any
 
-	// WaterMarkTemplate 水印模板
-	WaterMarkTemplate *WaterMarkTemplate
+	// WT 水印模板
+	WT *WaterMarkTemplate
 }
 
 // setPngFlag 保存的图片需要是png格式
@@ -97,6 +98,10 @@ func (w *WaterMark) loadSource(path string, save string, tplId string) error {
 	if err != nil {
 		return err
 	}
+	if tpl.BorderT == nil || tpl.LogoT == nil || tpl.SeparateT == nil || tpl.WordsT == nil {
+		err := "模板自动实例化失败,部分对象为空.模板ID:" + tplId
+		return errors.New(err)
+	}
 	w.setImgOptions(logoPath, translogoPath, path, save).setExif(exifInfo).loadTemplate(tpl)
 	return nil
 }
@@ -116,8 +121,8 @@ func (w *WaterMark) setExif(e exif.Exif) *WaterMark {
 //	@param t
 //	@return *WaterMark
 func (w *WaterMark) loadTemplate(t WaterMarkTemplate) *WaterMark {
-	w.WaterMarkTemplate = newEmptyWaterMarkTemplate()
-	w.WaterMarkTemplate = &t
+	w.WT = newEmptyWaterMarkTemplate()
+	w.WT = &t
 	return w
 }
 
@@ -142,10 +147,10 @@ func (w *WaterMark) setImgOptions(logo1 string, logo2, source string, save strin
 func (w *WaterMark) loadLogo() error {
 
 	//获取logo模板
-	logoT := w.WaterMarkTemplate.LogoTemplate
+	logoT := w.WT.LogoT
 
 	// 是高斯模糊模板,使用特殊的透明LOGO
-	if w.WaterMarkTemplate.Stackblur {
+	if w.WT.Stackblur {
 		// 根据logo图片地址,logo宽高获取图片,如果对应尺寸图片不存在,则重新生成一张并返回
 		w.TransLogoImgPath = GetImageByWidthHeight(w.TransLogoImgPath, logoT.Width, logoT.Height)
 		// 加载图片
@@ -205,31 +210,31 @@ func (w *WaterMark) exportExternal(e *External) {
 	// 设置边框标识
 	w.setBorderOnlyBottom(e.OnlyBottom)
 	// 设置边框颜色
-	w.setBorderColor(e.Color)
+	w.setBorderColor(e.BorderColor)
 }
 
 // setBorderOnlyBottom 设置模板
 //
 //	@param flag
 func (w *WaterMark) setBorderOnlyBottom(flag bool) {
-	w.WaterMarkTemplate.BorderTemplate.OnlyBottom = flag
+	w.WT.BorderT.OnlyBottom = flag
 }
 
 // setBorderColor 设置边框颜色
 //
 //	@param color
 func (w *WaterMark) setBorderColor(color color.RGBA) {
-	w.WaterMarkTemplate.BorderTemplate.Color = color
+	w.WT.BorderT.Color = color
 	w.IsSetBorderColor = true
 }
 
 // beforeProcess 前置处理
 func (w *WaterMark) beforeProcess() {
 	// 只有底部边框的模式,border模板的top,left,bottom需要赋0
-	if w.WaterMarkTemplate.BorderTemplate.OnlyBottom {
-		w.WaterMarkTemplate.BorderTemplate.LeftWidth = 0
-		w.WaterMarkTemplate.BorderTemplate.RightWidth = 0
-		w.WaterMarkTemplate.BorderTemplate.TopHeight = 0
+	if w.WT.BorderT.OnlyBottom {
+		w.WT.BorderT.LeftWidth = 0
+		w.WT.BorderT.RightWidth = 0
+		w.WT.BorderT.TopHeight = 0
 	}
 }
 
@@ -242,20 +247,20 @@ func (w *WaterMark) drawLogo2Image() *WaterMark {
 
 	// 画边框
 	simpleBorderFactory := &SimpleBorderFactory{}
-	borderStrategy := simpleBorderFactory.create(w.WaterMarkTemplate.Type)
+	borderStrategy := simpleBorderFactory.create(w.WT.Type)
 	borderStrategy.drawBorder(w)
 
 	// 填充logo,此处需要判断水印模板的类型
 	// 画logo
 	simpleLogoFactory := &SimpleLogoFactory{}
-	logoStrategy := simpleLogoFactory.create(w.WaterMarkTemplate.Type)
+	logoStrategy := simpleLogoFactory.create(w.WT.Type)
 	logoStrategy.drawLogo(w)
 
 	// 画分隔符
-	SepT := w.WaterMarkTemplate.SeparateTamplate
+	SepT := w.WT.SeparateT
 	if SepT.Exist {
 		simpleSeparateFactory := &SimpleSeparateFactory{}
-		separateFactory := simpleSeparateFactory.create(w.WaterMarkTemplate.Type)
+		separateFactory := simpleSeparateFactory.create(w.WT.Type)
 		separateFactory.drawSeparate(w)
 	}
 	return w
@@ -318,7 +323,7 @@ func abs(x int) int {
 //	@param t
 //	@return string
 func (w *WaterMark) getWords(t string) string {
-	tpl := structs.Map(w.WaterMarkTemplate.WordsTemplate)
+	tpl := structs.Map(w.WT.WordsT)
 	if v, ok := tpl[t]; ok {
 		str := v.(string)
 		list := strings.Split(str, ",")
@@ -336,16 +341,16 @@ func (w *WaterMark) getWords(t string) string {
 //	@return *WaterMark
 func (w *WaterMark) drawFont2Image() *WaterMark {
 	simpleWordFactory := &SimpleWordFactory{}
-	wordFactory := simpleWordFactory.create(w.WaterMarkTemplate.Type)
+	wordFactory := simpleWordFactory.create(w.WT.Type)
 	wordFactory.drawWords(w)
 	return w
 }
 
 // stackblur 高斯模糊,先对图片进行高斯模糊处理,在生成小图片覆盖在原图上并添加水印
 func (w *WaterMark) stackblur() *image.NRGBA {
-	// return imaging.Blur(w.SourceImage, float64(w.WaterMarkTemplate.BlurRadius))
+	// return imaging.Blur(w.SourceImage, float64(w.WT.BlurRadius))
 	// 使用stackblur.Process进行高斯模糊,比imaging.Blur消耗低
-	t, _ := stackblur.Process(w.SourceImage, uint32(w.WaterMarkTemplate.BlurRadius))
+	t, _ := stackblur.Process(w.SourceImage, uint32(w.WT.BlurRadius))
 	return t
 }
 
@@ -364,7 +369,7 @@ func (w *WaterMark) saveImg() {
 //	@return map
 func (w *WaterMark) exportData() map[string]string {
 	r := map[string]string{}
-	r["BorderColors"] = Color2Str(w.WaterMarkTemplate.BorderTemplate.Color)
+	r["BorderColors"] = Color2Str(w.WT.BorderT.Color)
 	r["SaveImgPath"] = w.SaveImgPath
 	r["SourceImgPath"] = w.SourceImgPath
 	return r
@@ -392,11 +397,11 @@ func processWaterMark(tid string, path string, save string) {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(path, save, tid); err != nil {
-		log.ErrorLogger.Println(err)
+		Errors.Println(err)
 	}
 	// 读取原始图片
 	if err := waterMark.loadSourceImg(); err != nil {
-		log.ErrorLogger.Println(err)
+		Errors.Println(err)
 	}
 	// 生成水印
 	waterMark.drawLogo2Image().drawFont2Image()
@@ -405,10 +410,10 @@ func processWaterMark(tid string, path string, save string) {
 }
 
 // 水印预览图生成位置
-var PreviewPath string = "./tmp/preview/"
+var PreviewPath string
 
 // 预览小图生成位置
-var SmallPreviewPath string = "./tmp/small/"
+var SmallPreviewPath string
 
 // getTmpPreviewPath 获取预览的临时目录
 //
@@ -436,15 +441,14 @@ func CreatePreviewWaterMark(e *External) map[string]string {
 	waterMark := newWaterMark()
 	// 加载资源
 	if err := waterMark.loadSource(e.SourcePath, e.SavePath, e.Tid); err != nil {
-		log.ErrorLogger.Println(err)
+		Errors.Println(err)
 		return waterMark.exportErrorData(err)
 	}
 	// 读取原始图片
 	if err := waterMark.loadSourceImg(); err != nil {
-		log.ErrorLogger.Println(err)
+		Errors.Println(err)
 		return waterMark.exportErrorData(err)
 	}
-	// 导入外部数据
 	waterMark.exportExternal(e)
 	// 生成水印
 	waterMark.drawLogo2Image().drawFont2Image()

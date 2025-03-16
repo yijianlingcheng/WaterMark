@@ -5,27 +5,26 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"os"
 
 	"github.com/disintegration/imaging"
 )
 
-// BorderStrategy
-type BorderStrategy interface {
+// borderStrategy
+type borderStrategy interface {
 	drawBorder(w *WaterMark)
 }
 
-// NormalBorderStrategy  普通的边框样式
-type NormalBorderStrategy struct {
-	Strategy BorderStrategy
+// normal 普通边框样式,需要解析完整的边框模板信息
+type normal struct {
+	Strategy borderStrategy
 }
 
-// drawBorder implements BorderStrategy.
+// drawBorder 画边框
 //
 //	@param w
-func (b *NormalBorderStrategy) drawBorder(w *WaterMark) {
+func (b *normal) drawBorder(w *WaterMark) {
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 
 	x := w.SourceWidth + borderT.getWidth()
 	y := w.SourceHeight + borderT.getHeight()
@@ -52,15 +51,15 @@ func (b *NormalBorderStrategy) drawBorder(w *WaterMark) {
 	draw.Draw(w.Draw, w.SourceImage.Bounds().Add(image.Point{borderT.LeftWidth, borderT.TopHeight}), w.SourceImage, image.Point{0, 0}, draw.Over)
 }
 
-// StackblurBorderStrategy 高斯模糊边框
-type StackblurBorderStrategy struct {
-	Strategy BorderStrategy
+// stackblurB 高斯模糊边框,需要解析全部的模板参数
+type stackblurB struct {
+	Strategy borderStrategy
 }
 
-// drawBorder implements BorderStrategy.
+// drawBorder 画边框
 //
 //	@param w
-func (b *StackblurBorderStrategy) drawBorder(w *WaterMark) {
+func (b *stackblurB) drawBorder(w *WaterMark) {
 	// 先将原图进行高斯模糊处理
 	sourceImg := w.stackblur()
 
@@ -73,7 +72,7 @@ func (b *StackblurBorderStrategy) drawBorder(w *WaterMark) {
 	w.Draw = image.NewRGBA(borderRect)
 
 	// borderT 获取边框模板
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 
 	if borderT.IsRound {
 		// 图片有圆角,需要使用png格式进行保存
@@ -107,30 +106,30 @@ type SimpleBorderFactory struct {
 // create
 //
 //	@param t
-//	@return BorderStrategy
-func (simple *SimpleBorderFactory) create(t string) BorderStrategy {
+//	@return borderStrategy
+func (simple *SimpleBorderFactory) create(t string) borderStrategy {
 	switch t {
 	case "BOTTOM_LOGO_LEFT", "BOTTOM_LOGO_CENTER", "BOTTOM_LOGO_RIGHT": // 这个使用比较繁琐,需要自己去模板进行调整
-		return &NormalBorderStrategy{}
+		return &normal{}
 	case "STACK_BLUR": // 这个使用比较繁琐,需要自己去模板进行调整
-		return &StackblurBorderStrategy{}
+		return &stackblurB{}
 	case "BOTTOM_LOGO_LEFT_AUTO", "BOTTOM_LOGO_CENTER_AUTO", "BOTTOM_LOGO_RIGHT_AUTO": // 普通自动模式.不需要指定边框的宽高
-		return &NormalBorderAutoStrategy{}
+		return &normalAuto{}
 	case "STACK_BLUR_AUTO":
-		return &StackblurBorderAutoStrategy{}
+		return &stackblurAuto{}
 	}
 	return nil
 }
 
-// NormalBorderAutoStrategy 普通自动边框样式
-type NormalBorderAutoStrategy struct {
-	Strategy BorderStrategy
+// normalAuto 自动边框样式,边框宽高自动计算生成
+type normalAuto struct {
+	Strategy borderStrategy
 }
 
-// drawBorder
+// drawBorder 画边框
 //
 //	@param w
-func (b *NormalBorderAutoStrategy) drawBorder(w *WaterMark) {
+func (b *normalAuto) drawBorder(w *WaterMark) {
 	// 计算边框
 	b.calculateLeftAutoBorderT(w)
 
@@ -138,7 +137,7 @@ func (b *NormalBorderAutoStrategy) drawBorder(w *WaterMark) {
 	x := w.SourceWidth
 	y := w.SourceHeight
 
-	borderT := w.WaterMarkTemplate.BorderTemplate
+	borderT := w.WT.BorderT
 
 	// des 转化为RGBA
 	// borderRect 创建画布
@@ -152,12 +151,12 @@ func (b *NormalBorderAutoStrategy) drawBorder(w *WaterMark) {
 // calculateLeftAutoBorderT 计算边框的边距
 //
 //	@param w
-func (b *NormalBorderAutoStrategy) calculateLeftAutoBorderT(w *WaterMark) {
+func (b *normalAuto) calculateLeftAutoBorderT(w *WaterMark) {
 	boderColor := color.RGBA{255, 255, 255, 255}
 	if w.IsSetBorderColor {
-		boderColor = w.WaterMarkTemplate.BorderTemplate.Color
+		boderColor = w.WT.BorderT.Color
 	}
-	ratio := 0.05
+	ratio := 0.05 // 比例
 	boderWidth := int((float64(w.SourceWidth) * ratio) / 2)
 	boderHeight := int((float64(w.SourceHeight) * ratio) / 2)
 
@@ -167,23 +166,22 @@ func (b *NormalBorderAutoStrategy) calculateLeftAutoBorderT(w *WaterMark) {
 	} else {
 		boderWidth = boderHeight
 	}
-	if w.WaterMarkTemplate.BorderTemplate.OnlyBottom {
-		w.WaterMarkTemplate.BorderTemplate = newBorderTemplate().WithBottomHeight(boderHeight * 3).WithBoderColor(boderColor)
+	if w.WT.BorderT.OnlyBottom {
+		w.WT.BorderT = newBorderTemplate().WithBottomHeight(boderHeight * 3).WithBoderColor(boderColor)
 	} else {
-		w.WaterMarkTemplate.BorderTemplate = newBorderTemplate().WithWidth(boderWidth * 2).WithHeight(boderHeight * 4).WithBoderColor(boderColor)
+		w.WT.BorderT = newBorderTemplate().WithWidth(boderWidth * 2).WithHeight(boderHeight * 4).WithBoderColor(boderColor)
 	}
 
 }
 
-// StackblurBorderAutoStrategy 高斯模糊自动边框
-type StackblurBorderAutoStrategy struct {
-	Strategy BorderStrategy
+// stackblurAuto 高斯模糊自动边框
+type stackblurAuto struct {
+	Strategy borderStrategy
 }
 
 // drawBorder
 //
 //	@param w
-func (b *StackblurBorderAutoStrategy) drawBorder(w *WaterMark) {
-	fmt.Println("StackblurBorderAutoStrategy drawBorder")
-	os.Exit(0)
+func (b *stackblurAuto) drawBorder(w *WaterMark) {
+	fmt.Println("stackblurAuto drawBorder")
 }

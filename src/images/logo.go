@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// LogoList app.yaml文件中的logos配置项
-type LogoList struct {
+// logoList app.yaml文件中的logos配置项
+type logoListT struct {
 	Logos []Logo
 }
 
@@ -21,10 +21,10 @@ type Logo struct {
 }
 
 // logoList
-var logoList LogoList
+var logoList logoListT
 
-// LoadLogoList 加载logo列表,将app.yaml配置中的logos序列化到结构体中,方便程序进行获取
-func LoadLogoList() {
+// LoadlogoList 加载logo列表,将app.yaml配置中的logos序列化到结构体中,方便程序进行获取
+func LoadlogoList() {
 	viper.Unmarshal(&logoList)
 }
 
@@ -55,8 +55,8 @@ func getLogoPath(str string) (string, string, error) {
 	return cmd.GetPwdPath(r1), cmd.GetPwdPath(r2), nil
 }
 
-// LogoTemplate logo模板
-type LogoTemplate struct {
+// logoTemplate logo模板
+type logoTemplate struct {
 
 	// LogoWidth logo宽度
 	Width int
@@ -76,16 +76,16 @@ type LogoTemplate struct {
 
 // newLogoTemplate 构造一个Logo模板
 //
-//	@return *LogoTemplate
-func newLogoTemplate() *LogoTemplate {
-	return &LogoTemplate{}
+//	@return *logoTemplate
+func newLogoTemplate() *logoTemplate {
+	return &logoTemplate{}
 }
 
 // WithWidth WithHeight 高度
 //
 //	@param width
 //	@return *LogoTemplate
-func (l *LogoTemplate) WithWidth(width int) *LogoTemplate {
+func (l *logoTemplate) WithWidth(width int) *logoTemplate {
 	l.Width = width
 	return l
 }
@@ -94,7 +94,7 @@ func (l *LogoTemplate) WithWidth(width int) *LogoTemplate {
 //
 //	@param height
 //	@return *BorderTemplate
-func (l *LogoTemplate) WithHeight(height int) *LogoTemplate {
+func (l *logoTemplate) WithHeight(height int) *logoTemplate {
 	l.Height = height
 	return l
 }

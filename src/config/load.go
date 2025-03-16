@@ -2,12 +2,23 @@ package config
 
 import (
 	"WaterMark/src/images"
-	"WaterMark/src/log"
+	. "WaterMark/src/logs"
 	"WaterMark/src/tool"
 	"fmt"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+)
+
+const (
+	// 临时目录
+	TEMP_DIR = "./tmp"
+
+	// 预览图存放路径
+	PREVIEW_PATH = TEMP_DIR + "/preview/"
+
+	// 预览缩略图存放路径
+	SMALL_PREVIEW_PATH = TEMP_DIR + "/small/"
 )
 
 // Load 加载配置
@@ -31,13 +42,13 @@ func loadConfig() {
 
 	// viper 配置重新加载记录日志
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.InfoLogger.Println("Config app.yaml file updated")
+		Info.Println("Config app.yaml file updated")
 	})
 }
 
 // initLogoList 初始化logolist
 func initLogoList() {
-	images.LoadLogoList()
+	images.LoadlogoList()
 }
 
 // initTemplate 加载模板配置文件
@@ -52,7 +63,7 @@ func initTemplate() {
 
 	// viper 配置重新加载记录日志
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.InfoLogger.Println("Config tpl.yaml file updated")
+		Info.Println("Config tpl.yaml file updated")
 	})
 
 	images.LoadTemplate()
@@ -60,12 +71,13 @@ func initTemplate() {
 
 // checkAndCreateDir 检查并创建文件夹
 func checkAndCreateDir() {
-	dir := images.PreviewPath
-	if !tool.Exists(dir) {
-		tool.CreateDir(dir)
+	if !tool.Exists(PREVIEW_PATH) {
+		tool.CreateDir(PREVIEW_PATH)
 	}
-	dir = images.SmallPreviewPath
-	if !tool.Exists(dir) {
-		tool.CreateDir(dir)
+	if !tool.Exists(SMALL_PREVIEW_PATH) {
+		tool.CreateDir(SMALL_PREVIEW_PATH)
 	}
+	// 初始化图片存放路径
+	images.PreviewPath = PREVIEW_PATH
+	images.SmallPreviewPath = SMALL_PREVIEW_PATH
 }

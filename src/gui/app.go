@@ -1,7 +1,7 @@
 package gui
 
 import (
-	"WaterMark/src/log"
+	. "WaterMark/src/logs"
 	"context"
 	"strings"
 
@@ -55,7 +55,7 @@ func (a *App) SelectDirectory() string {
 		Title:            "请选择文件夹",
 	})
 	if err != nil {
-		log.ErrorLogger.Println("SelectDirectory error:" + err.Error())
+		Errors.Println("SelectDirectory error:" + err.Error())
 		return ""
 	}
 	return result
@@ -77,7 +77,7 @@ func (a *App) SelectImageFile() string {
 		},
 	})
 	if err != nil {
-		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
+		Errors.Println("SelectImageFile error:" + err.Error())
 		return ""
 	}
 	return result
@@ -99,7 +99,7 @@ func (a *App) SelectMultipleImageFile() string {
 		},
 	})
 	if err != nil {
-		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
+		Errors.Println("SelectImageFile error:" + err.Error())
 		return ""
 	}
 	return strings.Join(result, ",")
@@ -115,7 +115,7 @@ func (a *App) ShowDownloadImageDialog() string {
 		Message: "请确认是否要将当前预览的图片下载至本地?",
 	})
 	if err != nil {
-		log.ErrorLogger.Println("SelectImageFile error:" + err.Error())
+		Errors.Println("SelectImageFile error:" + err.Error())
 		return "No"
 	}
 	return selection
