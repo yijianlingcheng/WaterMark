@@ -21,7 +21,3 @@ export function SelectImageFile() {
 export function SelectMultipleImageFile() {
   return window['go']['gui']['App']['SelectMultipleImageFile']();
 }
-
-export function ShowDownloadImageDialog() {
-  return window['go']['gui']['App']['ShowDownloadImageDialog']();
-}

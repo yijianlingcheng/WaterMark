@@ -2,30 +2,17 @@ package cmd
 
 import (
 	"WaterMark/src/exif"
-	"os"
+	"WaterMark/src/paths"
 	"runtime"
-	"strings"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
-var pwd string //当前路径
-
-// init,设置pwd
-func init() {
-	pwd_, _ := os.Getwd()
-	pwd = strings.ReplaceAll(pwd_, "\\", "/")
+// InitToolPath 初始化工具目录
+func InitToolPath() {
 	if runtime.GOOS == "windows" {
-		exiftoolBinary = pwd + exiftoolBinary
+		exiftoolBinary = paths.GetPwdPath(exiftoolBinary)
 	}
-}
-
-// GetPwdPath 返回内部路径
-//
-//	@param p 文件路径
-//	@return string
-func GetPwdPath(p string) string {
-	return pwd + p
 }
 
 // RunExifTool 运行exiftool工具,执行的时候通过hideCmdWindow隐藏cmd窗口

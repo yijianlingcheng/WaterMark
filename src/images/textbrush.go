@@ -2,6 +2,7 @@ package images
 
 import (
 	"WaterMark/src/logs"
+	"WaterMark/src/paths"
 	"image"
 	"os"
 
@@ -31,6 +32,7 @@ type textBrush struct {
 //	@return *textBrush
 //	@return error
 func newTextBrush(FontFilePath string, FontSize float64, FontColor *image.Uniform) (*textBrush, error) {
+	FontFilePath = paths.GetPwdPath(FontFilePath)
 	fontFile, err := os.ReadFile(FontFilePath)
 	if err != nil {
 		logs.Errors.Println(FontFilePath + "文件打开失败:" + err.Error())

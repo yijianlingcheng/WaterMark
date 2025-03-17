@@ -151,14 +151,15 @@ function watermarkOpenMultipleFilesDialog() {
             $(".main-wrap").show()
             await sleep(100) // 休眠一定时间展示loading动画
 
+            // 加载预览图
+            loadPreviewImage(limit[0], {})
+            // 异步添加任务
             asynchronousPreviewTask(result)
             $("#div-selectImages").hide()
             $("#watermarkOpenMultipleFiles").val(result)
             
             // 异步添加图片裁剪,防止多图预览的时候页面崩溃
             addImageResizeTask(limit)
-            // 加载预览图
-            loadPreviewImage(limit[0], {})
             // 加载模板选项
             loadSelectTemplate()
             for (var i = 0; i < limit.length; i ++) {
@@ -280,13 +281,14 @@ function loadPreviewImage(file, params) {
         data : data,
         cache : false,
         processData : false,
+        async: false,
         contentType : false,
         success : function (response) {
             var url = getReqUrl("ImagePreview", ["imagePath="+response["SaveImgPath"]])
             // 预览图片
             var imgContainer = "<img class='img-imagesContainer' id='img-imagesContainer' src='"+ url+"'>"
             // 添加预览图片
-            $("#div-imagesContainer").html("").append(imgContainer)
+            $("#div-imagesContainer").html(imgContainer)
             // 预览容器显示
             $("#div-templateContainer").show()
             // 设置预览参数

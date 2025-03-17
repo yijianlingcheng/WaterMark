@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"WaterMark/src/exif"
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"WaterMark/src/tool"
 	"sync"
 )
@@ -28,18 +28,18 @@ func CacheLoadExifTool(path string) (exif.Exif, error) {
 
 	// 返回缓存
 	if cache, ok := exifCache.Load(md5); ok {
-		Info.Println("读取exif缓存成功:" + path)
+		logs.Info.Println("读取exif缓存成功:" + path)
 		return cache.(exif.Exif), nil
 	}
 
 	exifInfo, err := RunExifTool(path)
 	if err != nil {
 		exifCacheErrors.Store(md5, err)
-		Errors.Println("获取exif信息失败:" + path)
+		logs.Errors.Println("获取exif信息失败:" + path)
 		return exif.Exif{}, err
 	}
 	exifCache.Store(md5, exifInfo)
 
-	Info.Println("写入exif缓存成功:" + path)
+	logs.Info.Println("写入exif缓存成功:" + path)
 	return exifInfo, nil
 }

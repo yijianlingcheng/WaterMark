@@ -24,8 +24,8 @@ tpls:
                 g: 128
                 b: 128
                 a: 255
-            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
-            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontfile: /fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: /fonts/Alibaba-PuHuiTi-Light.ttf
             firstfontcolors: 0,0,0,255
             secondfontcolors: 128,128,128,255
             one: Model
@@ -86,8 +86,8 @@ tpls:
                 g: 128
                 b: 128
                 a: 255
-            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
-            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontfile: /fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: /fonts/Alibaba-PuHuiTi-Light.ttf
             firstfontcolors: 0,0,0,255
             secondfontcolors: 128,128,128,255
             one: Model
@@ -150,8 +150,8 @@ tpls:
                 g: 128
                 b: 128
                 a: 255
-            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
-            secondfontfile: ./fonts/Alibaba-PuHuiTi-Light.ttf
+            firstfontfile: /fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: /fonts/Alibaba-PuHuiTi-Light.ttf
             firstfontcolors: 0,0,0,255
             secondfontcolors: 128,128,128,255
             one: Model
@@ -214,8 +214,8 @@ tpls:
                 g: 255
                 b: 255
                 a: 255
-            firstfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
-            secondfontfile: ./fonts/Alibaba-PuHuiTi-Bold.ttf
+            firstfontfile: /fonts/Alibaba-PuHuiTi-Bold.ttf
+            secondfontfile: /fonts/Alibaba-PuHuiTi-Bold.ttf
             firstfontcolors: 255,255,255,255
             secondfontcolors: 255,255,255,255
             one: Model

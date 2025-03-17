@@ -11,5 +11,3 @@ export function SelectDirectory():Promise<string>;
 export function SelectImageFile():Promise<string>;
 
 export function SelectMultipleImageFile():Promise<string>;
-
-export function ShowDownloadImageDialog():Promise<string>;

@@ -1,7 +1,7 @@
 package images
 
 import (
-	"WaterMark/src/cmd"
+	"WaterMark/src/paths"
 	"errors"
 	"strings"
 
@@ -52,7 +52,7 @@ func getLogoPath(str string) (string, string, error) {
 	if r1 == "" {
 		return r1, r2, errors.New(str + "不支持的Logo,请前往app.yaml文件添加")
 	}
-	return cmd.GetPwdPath(r1), cmd.GetPwdPath(r2), nil
+	return paths.GetPwdPath(r1), paths.GetPwdPath(r2), nil
 }
 
 // logoTemplate logo模板

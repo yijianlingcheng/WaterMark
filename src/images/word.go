@@ -75,10 +75,10 @@ func setDefaultWordsTemplate(w *wordsTemplate) {
 	w.Four = "CreateDate"
 	w.FirstFontColors = "0,0,0,255"
 	w.FirstFontColor = StrColor2RGBA(w.FirstFontColors)
-	w.FirstFontFile = "./fonts/Alibaba-PuHuiTi-Bold.ttf"
+	w.FirstFontFile = "/fonts/Alibaba-PuHuiTi-Bold.ttf"
 	w.SecondFontColors = "128,128,128,255"
 	w.SecondFontColor = StrColor2RGBA(w.SecondFontColors)
-	w.SecondFontFile = "./fonts/Alibaba-PuHuiTi-Light.ttf"
+	w.SecondFontFile = "/fonts/Alibaba-PuHuiTi-Light.ttf"
 }
 
 // newWordsTemplate 构造一个文字模板

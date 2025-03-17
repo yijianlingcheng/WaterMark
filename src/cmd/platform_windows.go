@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	. "WaterMark/src/logs"
+	"WaterMark/src/logs"
 	"bytes"
 	"os/exec"
 	"syscall"
@@ -36,9 +36,9 @@ func cmdRun(args string) (string, string) {
 	outStr, errStr := stdout.String(), stderr.String()
 
 	if err != nil {
-		errStr = err.Error() + errStr + pwd + ":" + args
+		errStr = err.Error() + errStr + ":" + args
 		data := []byte(errStr)
-		Errors.Println(convertByte2Str(data, GB18030))
+		logs.Errors.Println(convertByte2Str(data, GB18030))
 	}
 	return outStr, errStr
 }

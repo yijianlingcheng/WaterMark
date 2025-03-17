@@ -2,6 +2,7 @@ package controller
 
 import (
 	"WaterMark/src/images"
+	"io"
 	"os"
 	"runtime"
 	"strings"
@@ -19,8 +20,9 @@ func GetImagePreview(ctx *gin.Context) {
 	if runtime.GOOS == "windows" {
 		imgPath = strings.ReplaceAll(imgPath, "\\", "/")
 	}
-	file, _ := os.ReadFile(imgPath) //把要显示的图片读取到变量中
-	c.ctx.Writer.WriteString(string(file))
+	file, _ := os.Open(imgPath)
+	defer file.Close()
+	io.Copy(ctx.Writer, file)
 }
 
 // GetImageWaterMarkPreview
@@ -104,8 +106,9 @@ func ImagePreviewSmall(ctx *gin.Context) {
 	}
 
 	e := images.NewExternal().WithSmallPreviewPath(imgPath)
-	file, _ := os.ReadFile(e.SavePath)
-	c.ctx.Writer.WriteString(string(file))
+	file, _ := os.Open(e.SavePath)
+	defer file.Close()
+	io.Copy(ctx.Writer, file)
 }
 
 // ChangeImagePath 将原始文件路径转换成水印预览图路径
@@ -115,13 +118,11 @@ func ChangeImagePath(ctx *gin.Context) {
 	c := Container(ctx)
 
 	imgPath := c.PostForm("imagePath")
-	pwd, _ := os.Getwd()
 	if runtime.GOOS == "windows" {
-		pwd = strings.ReplaceAll(pwd, "\\", "/")
 		imgPath = strings.ReplaceAll(imgPath, "\\", "/")
 	}
 	e := images.NewExternal().WithPath(imgPath)
 	c.JSON(gin.H{
-		"path": pwd + strings.TrimLeft(e.SavePath, "."),
+		"path": e.SavePath,
 	})
 }

@@ -24,7 +24,7 @@ func cmdRun(args string) (string, string) {
 	err := cmd.Run()
 	outStr, errStr := stdout.String(), stderr.String()
 	if err != nil {
-		errStr = err.Error() + errStr + pwd + ":" + args
+		errStr = err.Error() + errStr + ":" + args
 		data := []byte(errStr)
 		logs.Errors.Println(convertByte2Str(data, GB18030))
 	}

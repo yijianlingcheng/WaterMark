@@ -1,9 +1,11 @@
 package gui
 
 import (
-	. "WaterMark/src/logs"
+	"WaterMark/src/images"
+	"WaterMark/src/logs"
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -44,7 +46,9 @@ func (a *App) BeforeClose(ctx context.Context) (prevent bool) {
 
 // shutdown is called at application termination
 func (a *App) Shutdown(ctx context.Context) {
-	// Perform your teardown here
+	// 删除这两个临时目录,防止文件占用过大
+	os.RemoveAll(images.PreviewPath)
+	os.RemoveAll(images.SmallPreviewPath)
 }
 
 // SelectDirectory 选择文件夹,如果没有选择,返回空字符串
@@ -57,7 +61,7 @@ func (a *App) SelectDirectory() string {
 		Title:            "请选择文件夹",
 	})
 	if err != nil {
-		Errors.Println("SelectDirectory error:" + err.Error())
+		logs.Errors.Println("SelectDirectory error:" + err.Error())
 		return ""
 	}
 	return result
@@ -79,7 +83,7 @@ func (a *App) SelectImageFile() string {
 		},
 	})
 	if err != nil {
-		Errors.Println("SelectImageFile error:" + err.Error())
+		logs.Errors.Println("SelectImageFile error:" + err.Error())
 		return ""
 	}
 	return result
@@ -101,26 +105,10 @@ func (a *App) SelectMultipleImageFile() string {
 		},
 	})
 	if err != nil {
-		Errors.Println("SelectImageFile error:" + err.Error())
+		logs.Errors.Println("SelectMultipleImageFile error:" + err.Error())
 		return ""
 	}
 	return strings.Join(result, ",")
-}
-
-// ShowDownloadImageDialog 下载提示确认弹窗
-//
-//	@return string
-func (a *App) ShowDownloadImageDialog() string {
-	selection, err := wailsruntime.MessageDialog(a.ctx, wailsruntime.MessageDialogOptions{
-		Type:    wailsruntime.QuestionDialog,
-		Title:   "确认下载",
-		Message: "请确认是否要将当前预览的图片下载至本地?",
-	})
-	if err != nil {
-		Errors.Println("SelectImageFile error:" + err.Error())
-		return "No"
-	}
-	return selection
 }
 
 // GetServerUrl 获取服务器地址
