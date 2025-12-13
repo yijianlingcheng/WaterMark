@@ -475,7 +475,7 @@ const FrameViewConfirmTplOptions = {
         }
         await sleep(100)
         let sure = await FrameViewGoEvent.SureExportPhotoTips(exportPath)
-        if (sure == "Yes") {
+        if (sure == "Yes" || sure == "是") {
             console.log(sure, exportPath)
             FrameViewExportProcess.LocationExport(exportPath)
         }

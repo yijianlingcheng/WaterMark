@@ -141,10 +141,30 @@ func (a *App) SelectDirectory(title string) string {
 //
 // @return string.
 func (a *App) ShowExportPhotoTips(savePath string) string {
+	title := "导出确认"
+	message := "是否执行导出操作,并将导出文件存放在:\"" + savePath + "\"文件夹中?"
+	yes := "是"
+	no := "否"
+	if internal.IsWindows() {
+		result, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+			Type:    runtime.QuestionDialog,
+			Title:   title,
+			Message: message,
+		})
+		if err != nil {
+			internal.Log.Error("SelectDirectory error:" + err.Error())
+
+			return ""
+		}
+
+		return result
+	}
 	result, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type:    runtime.QuestionDialog,
-		Title:   "导出确认",
-		Message: "是否执行导出操作,并将导出文件存放在:\"" + savePath + "\"文件夹中?",
+		Type:          runtime.QuestionDialog,
+		Title:         title,
+		Message:       message,
+		DefaultButton: yes,
+		Buttons:       []string{yes, no},
 	})
 	if err != nil {
 		internal.Log.Error("SelectDirectory error:" + err.Error())
