@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+
+    <style>
+        body {
+            margin: 0;
+            color: white;
+            font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            height: 97vh;
+            background-color: #1f1f1f;
+        }
+
+        #app main {
+            margin-left: 2em;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .bg {
+            animation: slide 3s ease-in-out infinite alternate;
+            background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
+            bottom: 0;
+            left: -50%;
+            opacity: .5;
+            position: fixed;
+            right: -50%;
+            top: 0;
+            z-index: -1;
+        }
+
+        .bg2 {
+            animation-direction: alternate-reverse;
+            animation-duration: 4s;
+        }
+
+        .bg3 {
+            animation-duration: 5s;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-25%);
+            }
+
+            100% {
+                transform: translateX(25%);
+            }
+        }
+    </style>
+</head>
+
+<body id="app" class="app">
+    
+    <main>
+        <h1>WaterMark</h1>
+        <p>一个为照片添加边框与水印功能的程序</p>
+        <p>版本:v0.0.1</p>
+        <ol>
+            <li>实现Windows系统下内置exiftool工具</li>
+            <li>实现了照片exif信息查看与导出</li>
+            <li>实现了几个简单照片边框模板</li>
+            <li>实现了照片边框生成与导出</li>
+        </ol>
+    </main>
+</body>
+<script src="/wails/ipc.js"></script>
+<script src="/wails/runtime.js"></script>
+<script src="../jquery-3.7.1.min.js"></script>
+<script src="../main.js"></script>
+
+</html>

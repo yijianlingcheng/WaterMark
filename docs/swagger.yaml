@@ -1,0 +1,416 @@
+basePath: /
+definitions:
+  controller.ErrorInfo:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+    type: object
+  controller.ExifAndBorderInfo:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+      exif:
+        $ref: '#/definitions/controller.ExifInfoSuccess'
+      size:
+        $ref: '#/definitions/frame.PhotoSize'
+      text:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.ExifInfoSuccess:
+    properties:
+      ExposureTime:
+        type: string
+      FNumber:
+        type: string
+      FileName:
+        type: string
+      FocalLength:
+        type: string
+      ISO:
+        type: string
+      ImageDataSize:
+        type: string
+      ImageHeight:
+        type: string
+      ImageSize:
+        type: string
+      ImageWidth:
+        type: string
+      LensModel:
+        type: string
+      Make:
+        type: string
+      Model:
+        type: string
+      Orientation:
+        type: string
+      code:
+        type: integer
+      errmsg:
+        type: string
+      file:
+        type: string
+      参数:
+        type: string
+      器材:
+        type: string
+      快门次数:
+        type: string
+      时间:
+        type: string
+      模式:
+        type: string
+      焦距:
+        type: string
+      色彩:
+        type: string
+    type: object
+  controller.ImportInfo:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+      files:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.Message:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+      list:
+        items:
+          type: string
+        type: array
+    type: object
+  controller.NoError:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+    type: object
+  controller.TemplatesInfo:
+    properties:
+      code:
+        type: integer
+      errmsg:
+        type: string
+      list:
+        additionalProperties:
+          type: string
+        type: object
+    type: object
+  frame.PhotoSize:
+    properties:
+      borderBottomHeight:
+        type: integer
+      borderLeftWidth:
+        type: integer
+      borderRightWidth:
+        type: integer
+      borderTopHeight:
+        type: integer
+      sourceHeight:
+        type: integer
+      sourceWidth:
+        type: integer
+    type: object
+host: localhost:11079
+info:
+  contact:
+    email: yijianlingchen@outlook.com
+    name: yijianlingcheng
+    url: https://github.com/yijianlingcheng
+  description: 照片边框工具后端接口.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: yijianlingcheng
+  title: 照片边框工具后端接口
+  version: "1.0"
+paths:
+  /frame/createExportTask:
+    post:
+      description: 对指定照片创建导出任务,异步执行导出
+      parameters:
+      - description: 导出文件存放的路径
+        in: formData
+        name: save
+        required: true
+        type: string
+      - description: 照片路径;多个文件,分割
+        in: formData
+        name: file
+        required: true
+        type: string
+      - description: 布局信息,JSON字符串:必须包含frame_name字段
+        in: formData
+        name: layout
+        required: true
+        type: string
+      - description: 布局信息,边框预览时调整保存的参数
+        in: formData
+        name: preview_layout
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.NoError'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 创建导出任务
+      tags:
+      - Frame
+  /frame/getExifAndBorderInfo:
+    post:
+      description: 获取照片的exif与边框信息
+      parameters:
+      - description: 照片路径
+        in: formData
+        name: file
+        required: true
+        type: string
+      - description: 图片尺寸类型,border:边框尺寸,photo:原始图片尺寸
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: 布局信息,JSON字符串:必须包含frame_name字段
+        in: formData
+        name: layout
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息
+          schema:
+            $ref: '#/definitions/controller.ExifAndBorderInfo'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 获取照片的exif与边框信息
+      tags:
+      - Frame
+  /frame/getExportProgress:
+    get:
+      description: 获取导出进度
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SSE消息".
+          schema:
+            type: string
+      summary: 获取导出进度,输出SSE消息
+      tags:
+      - Frame
+  /frame/getFrameTemplateInfo:
+    post:
+      description: 获取边框模板信息,此接口用于展示边框模板列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.TemplatesInfo'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 获取边框模板信息
+      tags:
+      - Frame
+  /frame/importPhotoFiles:
+    post:
+      description: 将指定图片导入到内存中,提供给生成照片边框的逻辑使用
+      parameters:
+      - description: 照片路径支持多个路径;多个路径,隔开
+        in: formData
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.ImportInfo'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 将指定图片导入到内存中
+      tags:
+      - Frame
+  /frame/reloadFrameTemplate:
+    post:
+      description: 重新加载边框模板文件,此接口用于运行过程中调整或新增了边框布局文件
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.NoError'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 重新加载边框模板文件
+      tags:
+      - Frame
+  /frame/reloadLogoImages:
+    post:
+      description: 重新加载logo文件夹下的图片,此接口用于运行过程中在logo文件夹下面添加了文件
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.NoError'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 重新加载logo文件下的图片
+      tags:
+      - Frame
+  /frame/showPhotoFrame:
+    post:
+      description: 对指定照片生成边框水印图片,并且直接输出图片内容
+      parameters:
+      - description: 照片路径
+        in: formData
+        name: file
+        required: true
+        type: string
+      - description: 返回的图片类型,border:只返回边框图,photo:返回照片+边框合成图
+        in: formData
+        name: type
+        required: true
+        type: string
+      - description: 布局信息,JSON字符串:必须包含frame_name字段
+        in: formData
+        name: layout
+        required: true
+        type: string
+      produces:
+      - image/jpeg
+      responses:
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 对指定照片生成边框图
+      tags:
+      - Frame
+  /message/info:
+    get:
+      description: 获取启动页输出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功信息".
+          schema:
+            $ref: '#/definitions/controller.Message'
+      summary: 获取启动页输出
+      tags:
+      - message
+  /view/ExifInfoExportBySaveFile:
+    post:
+      description: 导出当前展示照片的exif信息,将其保存在指定路径中
+      parameters:
+      - description: 照片路径
+        in: formData
+        name: file
+        required: true
+        type: string
+      - description: 导出文件保存的路径
+        in: formData
+        name: save
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 导出完成
+          schema:
+            $ref: '#/definitions/controller.NoError'
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 导出指定照片的exif信息
+      tags:
+      - view
+  /view/GetPhotosExifInfo:
+    post:
+      description: 返回指定照片的exif信息与摘要
+      parameters:
+      - description: 照片路径
+        in: formData
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.ExifInfoSuccess'
+        "400":
+          description: 错误信息
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 获取照片exif信息
+      tags:
+      - view
+  /view/showImage:
+    get:
+      description: 展示指定照片,直接输出图片信息
+      parameters:
+      - description: 照片路径
+        in: query
+        name: file
+        required: true
+        type: string
+      produces:
+      - image/jpeg
+      responses:
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 展示照片
+      tags:
+      - view
+schemes:
+- http
+- https.
+swagger: "2.0"

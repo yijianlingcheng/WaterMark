@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="../all.min.css" />
+    <style>
+        img {
+            overflow-clip-margin: content-box;
+            overflow: clip;
+        }
+
+        .div-images-container {
+            margin-top: 50px;
+            height: 430px;
+            /* margin-left: 50px; */
+            width: 500px;
+        }
+
+        .img-container {
+            width: 500px;
+            height: auto;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            max-height: 381px;
+        }
+
+        .show-img-list {
+            white-space: nowrap;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background: #2e2e2e;
+            border-width: 2px;
+            border-style: solid;
+            border-color: #808080;
+            border-left: none;
+            border-right: none;
+            width: 1010px;
+            height: 156px;
+            display: flex;
+        }
+
+        .div-img-list {
+            width: 131px;
+            display: flex;
+        }
+
+        .img-list {
+            width: 115px;
+            height: 115px;
+            border: 2px #666699;
+            padding: 0.5rem;
+            margin: 0.5rem;
+            cursor: pointer;
+        }
+
+        .img-list-selected {
+            border-style: solid;
+            border-width: 4px;
+            border-color: gray;
+        }
+
+        .img-list-span {
+            position: relative;
+            margin-top: 133px;
+            text-align: center;
+            width: 131px;
+            /* padding: 0.5rem; */
+            margin-left: -139px;
+            font-size: 12px;
+            overflow: hidden;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
+        .show-exif-info {
+            width: 225px;
+            margin-top: 50px;
+            margin-left: 15px;
+            text-align: left;
+        }
+
+        .show-exif-info p {
+            font-size: 12px;
+        }
+
+        .show-text-info {
+            width: 225px;
+            margin-top: 50px;
+            margin-left: 25px;
+            text-align: left;
+        }
+
+        .show-text-info p {
+            font-size: 12px;
+        }
+
+        .origin-img-list {
+            display: flex;
+        }
+
+        .left,
+        .right {
+            display: flex;
+            width: 100px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .left>svg,
+        .right>svg {
+            margin-top: 45px;
+        }
+
+        svg:hover {
+            fill: #fff;
+        }
+
+        #images-origin {
+            position: absolute;
+            width: 470px;
+            margin-left: -485px;
+            z-index: 3;
+            margin-top: 17px;
+        }
+
+        .show-text-options {
+            margin-top: 20px;
+            font-size: 12px;
+            height: 130px;
+        }
+
+        #export-skip-image {
+            cursor: pointer;
+        }
+
+        #save-btn {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #export-btn {
+            position: absolute;
+            margin-top: 65px;
+            margin-left: -69px;
+            cursor: pointer;
+        }
+
+        #export-show-dir {
+            position: absolute;
+            margin-top: 440px;
+            margin-left: 765px;
+            display: none;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        #export-save {
+            cursor: pointer;
+        }
+
+        #export-save-dir {
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body id="app" class="app">
+
+    <main>
+        <div class="show-exif-info">
+            <div>
+                <p>名称:<span id="exif-info-name"></span></p>
+                <p>大小:<span id="exif-info-byte"></span></p>
+                <p>尺寸:<span id="exif-info-size"></span></p>
+                <p>相机:<span id="exif-info-model"></span></p>
+                <p>镜头:<span id="exif-info-len"></span></p>
+                <p>焦距:<span id="exif-info-focal"></span></p>
+                <p>光圈:<span id="exif-info-fnumber"></span></p>
+                <p>快门:<span id="exif-info-exposure"></span></p>
+                <p>ISO:<span id="exif-info-iso"></span></p>
+                <p>时间:<span id="exif-info-time"></span></p>
+            </div>
+        </div>
+        <div class="watermark-tpl-list">
+            <div class="div-images-container">
+                <img class="img-container" id="images-container" src="/assets/images/template.jpg">
+                <img class="img-origin" id="images-origin" src="/assets/images/template.jpg">
+            </div>
+        </div>
+        <div class="show-text-info" id="show-text-div">
+
+        </div>
+        <div class="show-img-list">
+            <div class="left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="currentColor"
+                    class="bi bi-caret-left-fill" viewBox="0 0 16 16"
+                    onclick="FramePreviewBorderDomProcess.PrevPreviewImage()">
+                    <path fill-rule="evenodd"
+                        d="M9.224 1.553a.5.5 0 0 1 .223.67L6.56 8l2.888 5.776a.5.5 0 1 1-.894.448l-3-6a.5.5 0 0 1 0-.448l3-6a.5.5 0 0 1 .67-.223z" />
+                </svg>
+            </div>
+            <div class="origin-img-list" id="origin-images-container"></div>
+            <div class="right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="currentColor"
+                    class="bi bi-caret-right-fill" viewBox="0 0 16 16"
+                    onclick="FramePreviewBorderDomProcess.NextPreviewImage()">
+                    <path fill-rule="evenodd"
+                        d="M6.776 1.553a.5.5 0 0 1 .671.223l3 6a.5.5 0 0 1 0 .448l-3 6a.5.5 0 1 1-.894-.448L9.44 8 6.553 2.224a.5.5 0 0 1 .223-.671z" />
+                </svg>
+            </div>
+        </div>
+    </main>
+    <footer class="foreground">
+        <h3 class="foreground-first">
+            边框生成 \ 边框预览
+        </h3>
+    </footer>
+</body>
+<script src="/wails/ipc.js"></script>
+<script src="/wails/runtime.js"></script>
+<script src="../jquery-3.7.1.min.js"></script>
+<script src="../main.js"></script>
+<script src="../timelineMax.min.js"></script>
+<script>
+    FramePreviewBorderOptions.SetSelectImages()
+    // 加载预览大图
+    FramePreviewBorderOptions.LoadPreivewImage("", "")
+    // 加载大图的exif信息
+    FramePreviewBorderOptions.LoadPreivewExif("")
+    // 加载原始图片
+    FramePreviewBorderDomProcess.LoadOriginImage()
+
+    // 检查
+    setInterval(FramePreviewBorderDomProcess.CheckSelectAndPreviewIsSame, minOpTime * 3)
+</script>
+
+</html>

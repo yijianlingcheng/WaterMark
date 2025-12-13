@@ -1,0 +1,676 @@
+version: "2"
+linters:
+    # 禁用所有的Linter, 需要的从enable中添加
+    default: none
+    enable:
+      # 可以在 settings 中进行设置的
+      - errcheck # 检查GO代码中未检查错误的程序
+      - govet # 检查并报告可疑结构，与 go vet 大致相同
+      - unused # 检查未使用的常量、变量、函数和类型
+      - staticcheck # 静态检查， 具体配置信息请查看 https://staticcheck.dev/docs/checks/
+      - asasalint   # 检查 pass []any as any in variadic func（...any） 的 S S
+      - bidichk   # 检查危险的 Unicode 字符序列。
+      - copyloopvar   # Linter 检测复制循环变量的位置。
+      - cyclop   # 检查函数和封装圈复杂度
+      - funlen   # 检查长函数。
+      - decorder # 检查类型、常量、变量和函数的声明顺序和计数。
+#      - depguard   # 检查包导入是否在可接受的包列表中。从main启动加载的包路径上进行限制
+      - dogsled   # 检查具有太多空白标识符的赋值（例如 x、、、_、：= f（））。
+      - dupl   # 检测重复的代码片段。
+      - dupword   # 检查源代码中的重复单词。
+      - errchkjson   # 检查传递给 json 编码函数的类型。报告不支持的类型，并报告可以省略对返回错误的检查的情况。
+      - errorlint   # 用于查找会导致Go 1.13中引入的错误包装方案出现问题的代码
+#      - exhaustive   # 检查 enum switch 语句的穷举性。
+#      - exhaustruct   # 检查是否初始化了所有结构字段
+      - fatcontext   # 检测循环和函数文本中的嵌套上下文。
+      - forbidigo   # 禁止标识符
+#      - funcorder   # 检查函数、方法和构造函数的顺序
+      - ginkgolinter   # 强制实施使用 ginkgo 和 gomega 的标准。
+      - gochecksumtype   # 对Go“求和类型”运行穷举性检查。
+#      - gocognit   # 计算和检查函数的认知复杂性。
+      - goconst   # 查找可替换为常量的重复字符串。
+      - gocritic   #提供检查错误、性能和样式问题的诊断。  可通过动态规则进行扩展，无需重新编译。  动态规则是使用 AST 模式、过滤器、报告消息和可选建议以声明方式编写的。
+#      - gocyclo   # 计算并检查函数的圈复杂度。
+      - godot   # 检查评论是否以句点结尾。
+      - godox   # 检测注释中 FIXME、TODO 和其他关键字的使用情况。
+#      - goheader   # 检查文件头是否与 pattern 匹配。
+      - gomoddirectives   # 在 go.mod 中管理 'replace'、'retract' 和 'excludes' 指令的使用。
+      - gomodguard   # 从 go.mod中对版本进行限制， 提供了更详细的控制选项
+      - gosec   # 检查源代码是否存在安全问题。
+#      - gosmopolitan   # 在您的 Go 代码库中报告某些 i18n/l10n 反模式。
+#      - grouper   # 分析表达式组。
+#      - iface   # 检测接口使用错误，帮助开发者避免接口污染。
+      - importas   # 强制实施一致的导入别名。
+#      - inamedparam   # Reports 具有未命名方法参数的接口。
+#      - interfacebloat   # 一个检查接口内方法数量的 Linter。
+#      - ireturn   # 接受接口，返回具体类型。
+      - lll   # 报告长度。 默认长度为120，不单独进行设置
+#      - loggercheck   # 检查常见 Logger 库 （kitlog、klog、logr、slog、zap） 的键值对。
+      - maintidx   # Maintidx 衡量每个功能的可维护性指数。
+#      - makezero   # 查找初始长度为非零的切片声明。
+      - misspell   # 查找经常拼写错误的英语单词。
+      - musttag   #在 （未） 封送的结构中强制实施字段标记。
+      - nakedret   # 检查具有裸返回值的函数是否不超过最大大小（可以为零）。
+      - nestif   # 报告深度嵌套的 if 语句。默认5层
+      - nilnil   # 检查是否没有同时返回错误和无效值
+      - nlreturn   # return 前方加一个空行，让代码逻辑清晰， 默认空行为1行
+      - nolintlint   # 报告格式不正确或不充分的 nolint 指令。
+      - nonamedreturns   # 报告所有命名的返回。
+      - paralleltest   # 检测 Go 测试中缺少 t.Parallel（） 方法的使用。
+      - perfsprint   # 检查 fmt.Sprintf 可以替换为更快的替代方案。
+#      - prealloc   # 查找可能预先分配的切片声明。
+      - predeclared   # 查找隐藏 Go 的预声明标识符之一的代码。
+      - promlinter   # 通过 promlint 检查 Prometheus 指标命名。
+      - protogetter   # 报告在应使用 getter 时直接从 proto 消息字段读取。
+      - reassign   # 检查是否未重新分配包变量。
+      - recvcheck   # 检查接收方类型是否一致。
+      - revive   # 快速、可配置、可扩展、灵活且美观的 Go Linter。golint 的直接替代品。
+#      - rowserrcheck   # 检查行的 Rows.Err 是否检查成功。
+#      - sloglint   #确保使用 log/slog 时的代码风格一致。
+      - spancheck   # 检查 OpenTelemetry/Census 跨度的错误。
+      - tagalign   # 检查 struct 标签是否对齐良好。
+#      - tagliatelle   # 检查 struct 标记。
+      - testifylint   # 检查 github.com/stretchr/testify 的使用情况。
+      - testpackage   # Linter 的 linter 使您使用单独的 _test 包。
+      - thelper   # Thelper 检测不以 t.Helper（） 方法开头的测试帮助程序。
+      - usestdlibvars   # 一个 Linter，用于检测使用 Go 标准库中的变量/常量的可能性。
+      - usetesting   # 报告 testing 包中带有 replacement 的函数的使用情况。
+      - unconvert   # 删除不必要的类型转换。
+#      - unparam   # 报告未使用的函数参数。
+#      - varnamelen   # 检查变量名称的长度是否与其范围匹配。
+      - whitespace   # 用于检查函数开头和结尾的不必要换行符，例如 if、for 等。
+#      - wrapcheck   # 检查从外部包返回的错误是否已包装。
+#      - wsl   # 添加或删除空行。
+
+
+      # 不能进行设置的
+      - ineffassign # 检测未使用对现有变量的赋值
+      - asciicheck   #检查所有代码标识符的名称中是否不包含非 ASCII 符号。
+      - bodyclose   # body关闭    检查 HTTP 响应体是否关闭成功。
+      - canonicalheader   # Canonical标头检查 net/http.Header 使用规范 Header。
+      - containedctx   # Containedctx 是检测 struct contained context 的 linter。Context 字段。
+      - contextcheck   # 检查函数是否使用非继承上下文。
+      - durationcheck   # 检查两个 duration 是否相乘。
+#      - err113   # 检查处理表达式的错误。
+      - errname   # 检查 sentinel 错误是否以Err为前缀，错误类型是否以error为后缀
+      - exptostd   # 检测 golang.org/x/exp/ 中可替换为 std 函数的函数。
+      - forcetypeassert   # 查找强制类型断言。
+      - gocheckcompilerdirectives   # 检查 go 编译器指令注释 （//go：） 是否有效。
+#      - gochecknoglobals   # 检查是否不存在全局变量。
+      - gochecknoinits   # 检查 Go 代码中是否存在 init 函数。
+      - goprintffuncname   # 检查类似printf的函数是否以f结尾命名。
+      - intrange   # 用于查找 for 循环可以使用整数范围的位置。
+      - mirror   #  报告字节/字符串使用的错误镜像模式。
+      - nilerr   #  查找返回 nil 的代码，即使它检查错误不是 nil。
+      - nilnesserr   # Reports 构造检查 err ！= nil，但返回不同的 nil 值错误。 由 nilness 和 nilerr 提供支持。
+      - noctx   #   查找不带上下文的发送 http 请求。上下文。
+      - nosprintfhostport   # 检查是否滥用 Sprintf 来构造 URL 中包含 port 的主机。
+      - sqlclosecheck   # 检查 sql.行、sql。Stmt， sqlx.NamedStmt， pgx.Query 已关闭。
+      - testableexamples   # Linter 检查示例是否可测试（具有预期的输出）。
+      - tparallel   # 检测 Go 测试代码中 t.Parallel（） 方法的不当使用。
+      - wastedassign   #    查找浪费的赋值语句。
+      - zerologlint   # 检测用户忘记使用Send或Msg发送的zerolog的错误使用。
+
+    settings:
+      cyclop:
+        max-complexity: 15
+        package-average: 0.0
+
+      decorder:
+        # 定义顺序布局
+        dec-order:
+          - const
+          - type
+          - var
+          - func
+        # 如果为true, 不对顺序进行校验
+        disable-dec-order-check: false
+        # If true, underscore vars (vars with "_" as the name) will be ignored at all checks.
+        # Default: false (underscore vars are not ignored)
+        ignore-underscore-vars: false
+        # init 函数位置校验
+        disable-init-func-first-check: false
+        # 允许多次声明 const, var
+        disable-dec-num-check: false
+
+      dupl:
+        threshold: 100
+
+      errcheck:
+        # 类型断言中的错误校验 `a := b.(MyStruct)`.
+        check-type-assertions: true
+        # 将错误分配给空白标识符的报告不进行校验: `num, _ := strconv.Atoi(numStr)`.
+        check-blank: false
+        # 禁用 errcheck 排除列表（errcheck内置排除列表和go标准库）
+        disable-default-exclusions: true
+        # 要排除校验的函数
+        exclude-functions:
+          - fmt.Fprintf
+
+      forbidigo:
+        forbid:
+          - pattern: ^(fmt.Print(|f|ln)|print|println)$
+            msg: Do not commit print statements.
+        #          # The package name might be ambiguous.
+        #          # The full import path can be used as additional criteria.
+        #          # Depends on analyze-types below.
+        #          - pattern: ^v1.Dump$
+        #            pkg: ^example.com/pkg/api/v1$
+        # Exclude godoc examples from forbidigo checks.
+        # Default: true
+        exclude-godoc-examples: false
+        # Instead of matching the literal source code,
+        # use type information to replace expressions with strings that contain the package name
+        # and (for methods and fields) the type name.
+        # This makes it possible to handle import renaming and forbid struct fields and methods.
+        # Default: false
+        analyze-types: true
+
+      funlen:
+        # 检查函数行数， 默认60行
+        lines: 40
+        statements: -1
+        # 统计行数时忽略注释
+        ignore-comments: true
+
+      goconst:
+        # 字符串常量最小长度
+        min-len: 2
+        # 触发最小次数
+        min-occurrences: 2
+        # 与值匹配的常量
+        match-constant: true
+        # 搜索重复数字
+        numbers: true
+        # 最小值 和 最大值,只适用于 `goconst.numbers`.
+        min: 2
+        max: 2
+        # Ignore when constant is not used as function argument.
+        ignore-calls: false
+        # 排除给定字符串
+        # Default: ""
+        ignore-string-values:
+          - 'foo.+'
+        # 检查重复常量
+        find-duplicates: true
+        # 常量表达式计算
+        eval-const-expressions: true
+
+      gocritic:
+        enabled-tags:
+          - diagnostic
+          - style
+          - performance
+          - experimental
+          - opinionated
+        disabled-checks:
+          - whyNoLint
+          - sloppyReassign
+          - importShadow
+
+      godox:
+        # 报告注释中 以下方关键字 开头的信息
+        keywords:
+          - BUG
+          - FIXME
+          - OPTIMIZE
+          - HACK
+          - TODO
+
+      gomoddirectives:
+        replace-local: true
+        # 允许replace的包
+        replace-allow-list: [ ]
+
+      gomodguard:
+        allowed:
+          # 允许模块列表
+          modules:
+            - gorm.io/driver/mysql
+            - gorm.io/gorm
+          # 允许模块域名
+          domains:
+            - google.golang.org
+            - gopkg.in
+            - golang.org
+            - github.com
+            - go.uber.org
+        blocked:
+          modules:
+            - github.com/jinzhu/gorm:
+                # 推荐替换模块
+                recommendations:
+                  - gorm.io/gorm
+                # 推荐替换原因
+                reason: "版本升级到v2 gorm.io/gorm"
+          versions:
+            - github.com/mitchellh/go-homedir:
+                # 约束版本
+                version: "< 1.1.0"
+                # 版本约束原因
+                reason: "testing if blocked version constraint works."
+          local-replace-directives: false
+
+      govet:
+        disable-all: true
+        enable:
+          # Check for missing values after append.
+          - appends
+          # Report mismatches between assembly files and Go declarations.
+          - asmdecl
+          # Check for useless assignments.
+          - assign
+          # Check for common mistakes using the sync/atomic package.
+          - atomic
+          # Check for non-64-bits-aligned arguments to sync/atomic functions.
+          - atomicalign
+          # Check for common mistakes involving boolean operators.
+          - bools
+          # Check //go:build and // +build directives.
+          - buildtag
+          # Detect some violations of the cgo pointer passing rules.
+          - cgocall
+          # Check for unkeyed composite literals.
+          - composites
+          # Check for locks erroneously passed by value.
+          - copylocks
+          # Check for calls of reflect.DeepEqual on error values.
+          - deepequalerrors
+          # Report common mistakes in defer statements.
+          - defers
+          # Check Go toolchain directives such as //go:debug.
+          - directive
+          # Report passing non-pointer or non-error values to errors.As.
+          - errorsas
+          # Find structs that would use less memory if their fields were sorted.
+          - fieldalignment
+          # Find calls to a particular function.
+          - findcall
+          # Report assembly that clobbers the frame pointer before saving it.
+          - framepointer
+          # Report using Go 1.22 enhanced ServeMux patterns in older Go versions.
+          - httpmux
+          # Check for mistakes using HTTP responses.
+          - httpresponse
+          # Detect impossible interface-to-interface type assertions.
+          - ifaceassert
+          # Check references to loop variables from within nested functions.
+          - loopclosure
+          # Check cancel func returned by context.WithCancel is called.
+          - lostcancel
+          # Check for useless comparisons between functions and nil.
+          - nilfunc
+          # Check for redundant or impossible nil comparisons.
+          - nilness
+          # Check consistency of Printf format strings and arguments.
+          - printf
+          # Check for comparing reflect.Value values with == or reflect.DeepEqual.
+          - reflectvaluecompare
+          # Check for possible unintended shadowing of variables.
+          - shadow
+          # Check for shifts that equal or exceed the width of the integer.
+          - shift
+          # Check for unbuffered channel of os.Signal.
+          - sigchanyzer
+          # Check for invalid structured logging calls.
+          - slog
+          # Check the argument type of sort.Slice.
+          - sortslice
+          # Check signature of methods of well-known interfaces.
+          - stdmethods
+          # Report uses of too-new standard library symbols.
+          - stdversion
+          # Check for string(int) conversions.
+          - stringintconv
+          # Check that struct field tags conform to reflect.StructTag.Get.
+          - structtag
+          # Report calls to (*testing.T).Fatal from goroutines started by a test.
+          - testinggoroutine
+          # Check for common mistaken usages of tests and examples.
+          - tests
+          # Check for calls of (time.Time).Format or time.Parse with 2006-02-01.
+          - timeformat
+          # Report passing non-pointer or non-interface values to unmarshal.
+          - unmarshal
+          # Check for unreachable code.
+          - unreachable
+          # Check for invalid conversions of uintptr to unsafe.Pointer.
+          - unsafeptr
+          # Check for unused results of calls to some functions.
+          - unusedresult
+          # Checks for unused writes.
+          - unusedwrite
+          # Check for misuses of sync.WaitGroup.
+          - waitgroup
+        settings:
+          shadow:
+            strict: true
+
+      importas:
+        alias:
+#          # Using `servingv1` alias for `knative.dev/serving/pkg/apis/serving/v1` package.
+#          - pkg: knative.dev/serving/pkg/apis/serving/v1
+#            alias: servingv1
+#          # You can specify the package path by regular expression,
+#          # and alias by regular expression expansion syntax like below.
+#          # See https://github.com/julz/importas#use-regular-expression for details.
+#          - pkg: knative.dev/serving/pkg/apis/(\w+)/(v[\w\d]+)
+#            alias: $1$2
+          # 不使用别名
+          - pkg: errors
+            alias: ""
+
+      nolintlint:
+        allow-unused: false # 报告任何未使用的 nolint 指令
+        require-explanation: false # 不需要对 nolint 指令进行解释
+        require-specific: false # 不需要 nolint 指令具体说明要跳过哪个 linter
+
+      revive:
+        max-open-files: 2048
+        severity: warning
+        enable-all-rules: false
+        confidence: 0.1
+        # https://github.com/mgechev/revive/blob/HEAD/RULES_DESCRIPTIONS.md
+        rules:
+          - name: atomic # 检查sync/atomic中常见使用错误
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: banned-characters # 检查标识符（var const func）中出现的禁用字符
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments: ["Ω", "Σ", "σ"]
+          - name: bool-literal-in-expr # 在逻辑表达式中使用 bool 判断
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: call-to-gc # 显示调用GC进行回收
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: cognitive-complexity # 最大函数复杂度
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments: [15]
+          - name: context-as-argument # ctx 上下文参数必须是第一个
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - allow-types-before: "*testing.T,*github.com/user/repo/testing.Harness"
+          - name: cyclomatic # 圈复杂度指标
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments: [15]
+          - name: datarace # 检查数据竞争
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: deep-exit # 查找除 main 或 init 函数以外的退出
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: defer # 检查defer常见的使用问题
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - [ "call-chain","loop","method-call","recover","immediate-recover","return" ]
+          - name: duplicated-imports # 查找重复导入的包
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: early-return # 检查提前返回的优化
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - "preserve-scope"
+              - "allow-jump"
+          - name: enforce-map-style # 强制map初始化风格， 不会影响 make(map[type]type)map[type]type{}make(map[type]type, size)map[type]type{k1: v1}
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - "make"
+          - name: enforce-repeated-arg-type-style # 简化重复参数和返回类型声明
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - "short" # 省略重复的类型
+#              # Or this parameter:
+#              - func-arg-style: "full"
+#                func-ret-val-style: "short"
+          - name: enforce-slice-style # 强制slice初始化风格
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - "make"
+          - name: error-naming # 错误命名前缀必须使用Err或Error
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: error-return # 错误返回放在函数最后一个
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: file-length-limit # 文件长度限制
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - max: 2000
+          - name: filename-format # 文件名格式
+            severity: warning
+            disabled: false
+            exclude: [""]
+            arguments:
+              - "^[_a-z][_a-z0-9]*\\.go$"
+          - name: identical-branches # 两个分支中具有相同实现
+            severity: warning
+            disabled: false
+            exclude: [""]
+          - name: unconditional-recursion # 检测无限递归
+            severity: warning
+            disabled: false
+            exclude: [""]
+
+    # 定义公共忽略规则， 不会跳过分析，对typecheck没有用
+    exclusions:
+      # 排除规则模式
+      #
+      # - `strict`: sources are excluded by strictly following the Go generated file convention.
+      #    Source files that have lines matching only the following regular expression will be excluded: `^// Code generated .* DO NOT EDIT.$`
+      #    This line must appear before the first non-comment, non-blank text in the file.
+      #    https://go.dev/s/generatedcode
+      # - `lax`: sources are excluded if they contain lines like `autogenerated file`, `code generated`, `do not edit`, etc.
+      # - `disable`: disable the generated files exclusion.
+      #
+      # Default: strict
+      generated: lax
+      # 未使用排除规则就进行警告
+      warn-unused: true
+      # Predefined exclusion rules.
+      # Default: []
+      presets:
+#        - comments
+        # 忽略标准库中常见错误处理模式
+        - std-error-handling
+        # 忽略常见误报
+        - common-false-positives
+        # 忽略老旧代码中的问题，维护遗留代码库时使用
+        - legacy
+
+#      # Excluding configuration per-path, per-linter, per-text and per-source.
+#      rules:
+#        # Exclude some linters from running on tests files.
+#        - path: _test.go
+#          linters:
+#            - gocyclo
+#            - errcheck
+#            - dupl
+#            - gosec
+#        # Run some linter only for test files by excluding its issues for everything else.
+#        - path-except: _test.go
+#          linters:
+#            - forbidigo
+#        # Exclude known linters from partially hard-vendored code,
+#        # which is impossible to exclude via `nolint` comments.
+#        # `/` will be replaced by the current OS file path separator to properly work on Windows.
+#        - path: internal/hmac/
+#          text: "weak cryptographic primitive"
+#          linters:
+#            - gosec
+#        # Exclude some `staticcheck` messages.
+#        - linters:
+#            - staticcheck
+#          text: "SA9003:"
+#        # Exclude `lll` issues for long lines with `go:generate`.
+#        - linters:
+#            - lll
+#          source: "^//go:generate "
+      # Which file paths to exclude: they will be analyzed, but issues from them won't be reported.
+      # "/" will be replaced by the current OS file path separator to properly work on Windows.
+      # Default: []
+      # 文件排除
+#      paths:
+#        - ".*\.my\.go$"
+#        - lib/bad.go
+#      # Which file paths to not exclude.
+#      # Default: []
+#      paths-except:
+#        - ".*\.my\.go$"
+#        - lib/bad.go
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+    - golines
+
+  settings:
+    gci:
+      # Section configuration to compare against.
+      # Section names are case-insensitive and may contain parameters in ().
+      # The default order of sections is `standard > default > custom > blank > dot > alias > localmodule`.
+      # If `custom-order` is `true`, it follows the order of `sections` option.
+      # Default: ["standard", "default"]
+      sections:
+        - standard # Standard section: captures all standard packages.
+        - default # Default section: contains all imports that could not be matched to another section type.
+        - prefix(github.com/org/project) # Custom section: groups all imports with the specified Prefix.
+        - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
+        - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
+        - alias # Alias section: contains all alias imports. This section is not present unless explicitly enabled.
+        - localmodule # Local module section: contains all local packages. This section is not present unless explicitly enabled.
+      # Checks that no inline comments are present.
+      # Default: false
+      no-inline-comments: true
+      # Checks that no prefix comments (comment lines above an import) are present.
+      # Default: false
+      no-prefix-comments: true
+      # Enable custom order of sections.
+      # If `true`, make the section order the same as the order of `sections`.
+      # Default: false
+      custom-order: true
+      # Drops lexical ordering for custom sections.
+      # Default: false
+      no-lex-order: true
+    gofmt:
+      simplify: true
+      # Apply the rewrite rules to the source before reformatting.
+      # https://pkg.go.dev/cmd/gofmt
+      # Default: []
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+        - pattern: '(a)'
+          replacement: 'a'
+        - pattern: 'a[0:b]'
+          replacement: 'a[:b]'
+        - pattern: 'a[0:]'
+          replacement: 'a[:]'
+    gofumpt:
+      module-path: ""
+      extra-rules: false
+    goimports:
+      # 设置放在第三方包后面的包
+      local-prefixes:
+        - github.com/zxcblog/study
+    golines:
+      # 一行不超过120个字符
+      max-len: 120
+      tab-len: 4
+      shorten-comments: true
+      reformat-tags: true
+      chain-split-dots: false
+  exclusions: # 格式化要排除的文件
+    warn-unused: true
+#     Mode of the generated files analysis.
+#     - `strict`: sources are excluded by strictly following the Go generated file convention.
+#        Source files that have lines matching only the following regular expression will be excluded: `^// Code generated .* DO NOT EDIT.$`
+#        This line must appear before the first non-comment, non-blank text in the file.
+#        https://go.dev/s/generatedcode
+#     - `lax`: sources are excluded if they contain lines like `autogenerated file`, `code generated`, `do not edit`, etc.
+#     - `disable`: disable the generated files exclusion.
+    generated: strict
+    paths: []
+#      - ".*\.my\.go$"
+#      - lib/bad.go
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  uniq-by-line: true
+  whole-files: true
+  # 修复发现的问题
+  fix: true
+
+output:
+  formats:
+    # 文本格式输出， 包含颜色，文件名称，行数和验证器名称
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true
+      colors: true
+    # 输出到html
+    html:
+      path: ./_output/lint/output.html
+
+  path-prefix: ""
+  path-mode: "abs"
+  # 对输出的结果进行排序
+  sort-order:
+    - linter
+    - severity
+    - file # filepath, line, and column.
+  show-stats: true
+
+run:
+  timeout: 5m
+  relative-path-mode: gomod
+  issues-exit-code: 1
+  tests: false
+  # List of build tags, all linters use it.
+  # Default: []
+  build-tags: []
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+  allow-serial-runners: true
+  concurrency: 0
+#  go: '1.24' # 默认使用go.mod文件go版本
+
+severity:
+  default: error
+  rules:
+    - linters:
+        - dupl
+      severity: info

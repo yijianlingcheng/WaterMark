@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+    <link rel="stylesheet" href="../main.css" />
+    <style>
+        .file-list {
+            width: 100%;
+            text-align: left;
+            padding-top: 100px;
+            padding-left: 100px;
+            font-size: 1.5em;
+        }
+
+        .layout-tpl {
+            margin-left: 665px;
+            font-size: 1.5em;
+            display: none;
+            position: fixed;
+            margin-top: 550px;
+        }
+
+        ul {
+            display: flex;
+            list-style-type: none;
+            flex-flow: wrap;
+        }
+
+        li {
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        #select-file-num {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body id="app" class="app">
+
+    <main>
+        <div class="file-list">
+            <a>
+                <span onclick="FrameViewSelectImageOptions.SelectDirImages()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="21" fill="currentColor"
+                        class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z">
+                        </path>
+                    </svg>
+                    点击选择文件夹
+                </span>
+            </a>
+            <p id="select-file-num">
+            </p>
+            <ul class="file-list-ul" id="file-list-show-ul">
+
+            </ul>
+        </div>
+        <div class="layout-tpl">
+            <a>
+                <span onclick="FrameViewSelectImageOptions.LocationSelectTpl()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="21" fill="currentColor"
+                        class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z">
+                        </path>
+                    </svg>
+                    下一步:选择模板
+                </span>
+            </a>
+        </div>
+        <div style="display: block;width: 100%;">
+
+        </div>
+        <div class="show-layout-tpl">
+
+        </div>
+    </main>
+    <footer class="foreground">
+        <h3 class="foreground-first">
+            边框生成 \ 文件夹
+        </h3>
+    </footer>
+</body>
+<script src="/wails/ipc.js"></script>
+<script src="/wails/runtime.js"></script>
+<script src="../jquery-3.7.1.min.js"></script>
+<script src="../main.js"></script>
+<script>
+    FrameViewGoEvent.TemporaryClean()
+</script>
+
+</html>

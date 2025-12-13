@@ -1,0 +1,86 @@
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# log file
+logs
+
+# Editor/IDE
+# .idea/
+# .vscode/
+
+# After editing .gitignore to match the ignored files, you can do < git ls-files -ci --exclude-standard >
+# to see the files that are included in the exclude lists; you can then do
+# 
+# @ Linux/MacOS: < git ls-files -ci --exclude-standard -z | xargs -0 git rm --cached >
+# @ Windows (PowerShell): < git ls-files -ci --exclude-standard | % { git rm --cached "$_" } >
+# @ Windows (cmd.exe): < for /F "tokens=*" %a in ('git ls-files -ci --exclude-standard') do @git rm --cached "%a" >
+# ...to re-init the ignore list
+
+# Wails directories
+build/bin
+frontend/wailsjs
+
+# Wails junk files
+.syso
+
+# Go files
+go.sum
+
+# IDEs
+.idea
+.vscode
+
+# System enviroment variables
+env
+
+# 排除exiftool工具
+exiftool/*.exe
+exiftool/*.zip
+exiftool/*.md
+exiftool/*.txt
+exiftool/exiftool_files/
+
+# 排除runtime
+runtime/*.csv
+runtime/*.cache
+runtime/*.JPG
+runtime/*.jpg
+runtime/*.JPEG
+runtime/*.jpeg
+runtime/*.png
+runtime/*.json
+
+# 排除macOS特殊文件
+.DS_Store
+
+# 排除golangci-lint输出的文件
+_output
+
+# 排除程序运行过程中生成的logo
+logos/*_*_*.png

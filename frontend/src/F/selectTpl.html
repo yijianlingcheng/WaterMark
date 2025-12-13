@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="../all.min.css" />
+    <style>
+        :root {
+            --height: 76vmin;
+            --width: 800px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            /* background: linear-gradient(to top, #209cff 0%, #68e0cf 100%) no-repeat; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            transition: all 200ms ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .carousel {
+            width: var(--width);
+            height: var(--height);
+            position: relative;
+        }
+
+        .carousel .btn {
+            position: absolute;
+            height: calc(100% - 20%);
+            width: calc(100% - 90%);
+            margin: 35px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 400ms ease;
+            overflow: hidden;
+        }
+
+        .carousel .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            transition: all 300ms ease;
+        }
+
+        .carousel .btn i {
+            font-size: 1.6rem;
+            color: #000;
+            transition: all 400ms ease;
+            opacity: 0;
+        }
+
+        .carousel .btn-back {
+            top: 0;
+            left: 0px;
+        }
+
+        .carousel .btn-back:before {
+            border-radius: 100% 0 0 100%;
+            transform: translateX(100px);
+        }
+
+        .carousel .btn-back .fa-arrow-left {
+            transform: translateX(100px);
+        }
+
+        .carousel .btn-next {
+            top: 0;
+            right: 0px;
+        }
+
+        .carousel .btn-next:before {
+            border-radius: 0 100% 100% 0;
+            transform: translate(-100px);
+        }
+
+        .carousel .btn-next .fa-arrow-right {
+            transform: translateX(-100px);
+        }
+
+        .carousel .btn .right-indicator,
+        .carousel .btn .left-indicator {
+            opacity: 1;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .carousel .btn .right-indicator {
+            transform: translateX(-20px);
+        }
+
+        .carousel .btn .left-indicator {
+            transform: translateX(-5px);
+        }
+
+        .carousel .btn:hover:before {
+            border-radius: 0;
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(0);
+        }
+
+        .carousel .btn:hover .fa-arrow-left,
+        .carousel .btn:hover .fa-arrow-right {
+            opacity: 1;
+        }
+
+        .carousel .btn:hover .fa-arrow-left {
+            transform: translateX(8px);
+        }
+
+        .carousel .btn:hover .fa-arrow-right {
+            transform: translateX(8px);
+        }
+
+        .carousel .btn:hover .right-indicator {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+
+        .carousel .btn:hover .left-indicator {
+            transform: translateX(-100px);
+            opacity: 0;
+        }
+
+        .carousel .viewbox {
+            width: calc(100% - 30%);
+            height: calc(100% - 20%);
+            position: relative;
+            margin: 25px auto;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), 2px 5px 10px rgba(0, 0, 0, 0.1), -2px 8px 10px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .carousel .viewbox .track {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: all 500ms ease;
+            z-index: 2;
+        }
+
+        .carousel .viewbox .track .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform: scale(1.09);
+        }
+
+        .carousel .viewbox .track .slide .images {
+            width: 87%;
+            height: auto;
+            padding-top: 5%;
+            /* object-fit: cover; */
+        }
+
+        .carousel .nav-indicator {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            width: 500px;
+            overflow: hidden;
+        }
+
+        .carousel .nav-indicator .dot {
+            margin: 0 5px;
+            /* width: 100px; */
+            height: 25px;
+            /* border-radius: 50%; */
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 300ms ease;
+        }
+
+        .carousel .nav-indicator .dot.active {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .support {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            background: #1abc9c;
+        }
+
+        a {
+            margin: 5px 5px;
+            color: #fff;
+            font-size: 2rem;
+            transition: all 400ms ease;
+        }
+
+        /* a:hover {
+            color: #222;
+        } */
+
+        .fa-chevron-right:before {
+            content: "\f054";
+        }
+
+        .active {
+            cursor: pointer;
+        }
+
+        .tpl-selected {
+            left: 610.4px;
+            transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+            background-color: #ff9900;
+        }
+
+        #next-frame-image {
+            margin-top: 300px;
+        }
+        #next-frame-image > a {
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .shake {
+            animation: shake 800ms ease-in-out;
+        }
+        @keyframes shake { /* 垂直抖动，核心代码 */
+            10%, 90% { transform: translate3d(0, -1px, 0); }
+            20%, 80% { transform: translate3d(0, +2px, 0); }
+            30%, 70% { transform: translate3d(0, -4px, 0); }
+            40%, 60% { transform: translate3d(0, +4px, 0); }
+            50% { transform: translate3d(0, -4px, 0); }
+        }
+        .foreground-first{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body id="app" class="app">
+    
+    <main>
+        <div class="carousel">
+            <span id="tpl-show-name-span"></span>
+            <div class="btn btn-back hidden"><i class="fas fa-arrow-left"></i><i
+                    class="fas fa-chevron-left left-indicator"></i></div>
+            <div class="viewbox">
+                <div class="track" style="transform: translateX(0px); filter: blur(0px);" id="tpl-show-images-div">
+
+                </div>
+            </div>
+            <div class="btn btn-next">
+                <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-chevron-right right-indicator"></i>
+            </div>
+            <div class="nav-indicator" id="tpl-show-name-div">
+
+            </div>
+        </div>
+        <div id="next-frame-image">
+            <a onclick="FrameViewSelectTplOptions.LocationConfirmTpl()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" fill="currentColor"
+                    class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
+                    <path
+                        d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z">
+                    </path>
+                </svg> 下一步
+            </a>
+        </div>
+    </main>
+    <footer class="foreground">
+        <h3 class="foreground-first">
+            边框生成 \ 选择模板
+        </h3>
+    </footer>
+</body>
+<script src="/wails/ipc.js"></script>
+<script src="/wails/runtime.js"></script>
+<script src="../jquery-3.7.1.min.js"></script>
+<script src="../main.js"></script>
+<script src="../timelineMax.min.js"></script>
+<script>
+    // 加载模板信息
+    FrameViewSelectTplOptions.LoadTemplates()
+</script>
+
+</html>

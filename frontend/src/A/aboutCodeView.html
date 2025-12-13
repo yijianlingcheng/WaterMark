@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, Chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+    <!-- Main Source Files -->
+
+    <style>
+        body {
+            margin: 0;
+            color: white;
+            font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            height: 97vh;
+            background-color: #1f1f1f;
+        }
+
+        #app main {
+            margin-left: 2em;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .bg {
+            animation: slide 3s ease-in-out infinite alternate;
+            background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
+            bottom: 0;
+            left: -50%;
+            opacity: .5;
+            position: fixed;
+            right: -50%;
+            top: 0;
+            z-index: -1;
+        }
+
+        .bg2 {
+            animation-direction: alternate-reverse;
+            animation-duration: 4s;
+        }
+
+        .bg3 {
+            animation-duration: 5s;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-25%);
+            }
+
+            100% {
+                transform: translateX(25%);
+            }
+        }
+    </style>
+</head>
+
+<body id="app" class="app">
+    
+    <main>
+        <h1>WaterMark</h1>
+        <p>一个为照片添加边框与水印功能的程序</p>
+        <ol>
+            <li>使用Go开发(https://golang.google.cn/)</li>
+            <li>桌面程序使用wails构建(https://wails.io/zh-Hans/docs/introduction)</li>
+            <li>照片exif信息获取使用exiftool工具(https://exiftool.org/)</li>
+            <li> fork了https://github.com/barasher/go-exiftool并进行了部分修改</li>
+            <li>后端接口服务采用gin框架(https://gin-gonic.com/zh-cn/)</li>
+            <li>Go exiftool库fork https://github.com/barasher/go-exiftool 并进行了部分修改</li>
+            <li>图片水印生成使用Go库,不需要额外安装扩展</li>
+            <li>文字水印使用Alibaba-PuHuiTi-Bold.ttf,Alibaba-PuHuiTi-Light.ttf字体(https://alibabafont.taobao.com/)</li>
+            <li>目前MacOS,Win10,Win11</li>
+            <li>源码请访问github(https://github.com/yijianlingcheng/WaterMark)</li>
+        </ol>
+        <h2>关于贡献代码</h2>
+        <ol>
+            <li>先安装Go并配置环境(Go1.18+)</li>
+            <li>参照https://wails.io/zh-Hans/docs/gettingstarted/installation 安装wails</li>
+            <li>执行wails doctor检查依赖</li>
+            <li>clone 代码完成之后 cd 进入代码目录</li>
+            <li>API接口使用<code>swag</code> 自动生成api文档,如果新增或者修改了接口,需要执行<code>swag init</code>重新生成文档</li>
+            <li>代码统一使用<code>LF</code>作为换行符, IDE需要安装插件识别项目中的<code>.editorconfig</code>文件</li>
+            <li>IDE需要识别项目中的<code>.gitignore</code>文件,避免提交不必要的文件</li>
+            <li>代码使用<code>golangci-lint</code>作为代码检查工具,IDE需要安装插件识别项目中的<code>.golangci.yaml</code>文件</li>
+            <li>修改代码之后需要执行<code>golangci-lint run</code>检查代码质量</li>
+            <li>创建自己的分支,开发完成测试后通过pull request进行提交申请</li>
+        </ol>
+    </main>
+</body>
+<script src="/wails/ipc.js"></script>
+<script src="/wails/runtime.js"></script>
+<script src="../jquery-3.7.1.min.js"></script>
+<script src="../main.js"></script>
+
+</html>
