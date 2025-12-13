@@ -18,7 +18,7 @@ func initLogConfig() {
 	Log.SetFormatter(&logrus.JSONFormatter{})
 
 	// 设置日志存放位置,存放在app.log文件中,这个不需要定制化存放路径,程序中直接写死即可
-	file, _ := os.OpenFile(GetLogPath("app.log"), os.O_APPEND|os.O_CREATE, 0o644)
+	file, _ := os.OpenFile(GetLogPath("app.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o600)
 	Log.Out = file
 
 	if ISRelease() {
