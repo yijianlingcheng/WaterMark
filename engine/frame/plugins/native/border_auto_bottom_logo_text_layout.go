@@ -180,17 +180,38 @@ func (b *autoBottomLogoTextLayoutBorder) setTextLayoutTextMarginLeftWithRight(fm
 // 设置字体size.
 func (b *autoBottomLogoTextLayoutBorder) setTextLayoutTextFontSize(fm *photoFrame, fontSize int) {
 	// 计算字体size
+
+	imageX := fm.opts.getSourceImageX()
+	textOneContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextOneContent)
+	textTwoContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextTwoContent)
+	textThreeContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextThreeContent)
+	textFourContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextFourContent)
+
+	textContent := textOneContent + textTwoContent
+	if len(textOneContent+textTwoContent) < len(textThreeContent+textFourContent) {
+		textContent = textThreeContent + textFourContent
+	}
+
+	// 需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠
+	textContentMaxFontSize := getTextContentMaxSize(
+		imageX-fm.opts.Params.LogoWidth*2,
+		textContent,
+	)
+
+	// 从外部字体,计算得出的最大展示字体选择一个最小的作为实际字体使用
+	maxFontSize := min(fontSize, textContentMaxFontSize)
+
 	if fm.opts.Params.TextOneFontSize == 0 {
-		fm.opts.Params.TextOneFontSize = fontSize
+		fm.opts.Params.TextOneFontSize = maxFontSize
 	}
 	if fm.opts.Params.TextTwoFontSize == 0 {
-		fm.opts.Params.TextTwoFontSize = fontSize
+		fm.opts.Params.TextTwoFontSize = maxFontSize
 	}
 	if fm.opts.Params.TextThreeFontSize == 0 {
-		fm.opts.Params.TextThreeFontSize = fontSize
+		fm.opts.Params.TextThreeFontSize = maxFontSize
 	}
 	if fm.opts.Params.TextFourFontSize == 0 {
-		fm.opts.Params.TextFourFontSize = fontSize
+		fm.opts.Params.TextFourFontSize = maxFontSize
 	}
 }
 

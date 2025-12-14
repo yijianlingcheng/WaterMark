@@ -35,7 +35,7 @@ func getAppMenus(app *App) []AppMenus {
 		{
 			name: "设置(S)",
 			menus: []appMenuItem{
-				{label: "模板设置", accelerator: "s", callback: func() { openPhotoDSView(app) }},
+				// {label: "模板设置", accelerator: "s", callback: func() { openPhotoDSView(app) }},
 				{label: "退出程序", accelerator: "q", callback: func() { rt.Quit(app.ctx) }},
 			},
 		},

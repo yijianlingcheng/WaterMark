@@ -62,9 +62,7 @@ func (fm *photoFrame) getBorderText() []string {
 		if fm.borImage.textLay.list[i].words == "" {
 			continue
 		}
-		data = append(data, textWordsList[i])
-		data = append(data, key)
-		data = append(data, changeText2ExifContent(fm.opts.getExif(), key))
+		data = append(data, textWordsList[i], key, changeText2ExifContent(fm.opts.getExif(), key))
 	}
 
 	return data

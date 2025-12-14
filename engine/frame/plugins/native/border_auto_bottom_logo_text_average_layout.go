@@ -19,18 +19,19 @@ func (b *autoBottomLogoTextAverageLayoutBorder) initLayoutValue(fm *photoFrame) 
 func (b *autoBottomLogoTextAverageLayoutBorder) setTextLayoutTextAndLogo(fm *photoFrame) {
 	imageX := fm.opts.getSourceImageX()
 
+	textOneContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextOneContent)
+	textTwoContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextTwoContent)
+	textThreeContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextThreeContent)
+
 	// 计算logo
 	b.getTextLayoutLogoCommonData(fm)
-
-	// 字体大小
-	fm.opts.Params.TextOneFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextOneFontSize / 100
-	fm.opts.Params.TextTwoFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextTwoFontSize / 100
-	fm.opts.Params.TextThreeFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextThreeFontSize / 100
+	// 设置字体大小
+	b.setFontSize(fm, textOneContent, textTwoContent, textThreeContent)
 
 	twoTextWidth, twoTextHeight := getTextContentXAndY(
 		fm.opts.Params.TextTwoFontSize,
 		internal.GetFontFilePath(fm.opts.Params.TextTwoFontFile),
-		changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextTwoContent),
+		textTwoContent,
 	)
 	// 字体布局
 	fm.opts.Params.TextTwoMarginLeft = imageX - twoTextWidth - fm.opts.Params.TextTwoFontSize
@@ -39,7 +40,7 @@ func (b *autoBottomLogoTextAverageLayoutBorder) setTextLayoutTextAndLogo(fm *pho
 	_, oneTextHeight := getTextContentXAndY(
 		fm.opts.Params.TextOneFontSize,
 		internal.GetFontFilePath(fm.opts.Params.TextOneFontFile),
-		changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextOneContent),
+		textOneContent,
 	)
 
 	fm.opts.Params.TextOneMarginTop = (fm.opts.Params.MainMarginBottom-fm.opts.Params.TextOneFontSize)/3 +
@@ -50,7 +51,7 @@ func (b *autoBottomLogoTextAverageLayoutBorder) setTextLayoutTextAndLogo(fm *pho
 	fm.opts.Params.TextThreeMarginLeft = fm.opts.Params.TextTwoFontSize
 
 	// logo布局
-	fm.opts.Params.LogoMarginTop = fm.opts.Params.TextTwoMarginTop + (fm.opts.Params.TextTwoFontSize-twoTextHeight)/2
+	fm.opts.Params.LogoMarginTop = fm.opts.Params.TextOneMarginTop + (fm.opts.Params.TextTwoFontSize - twoTextHeight)
 	fm.opts.Params.LogoMarginLeft = fm.opts.Params.TextTwoMarginLeft -
 		fm.opts.Params.LogoWidth*2
 
@@ -65,6 +66,40 @@ func (b *autoBottomLogoTextAverageLayoutBorder) setTextLayoutTextAndLogo(fm *pho
 	// 左边距
 	fm.opts.Params.SeparatorMarginLeft = fm.opts.Params.LogoMarginLeft +
 		fm.opts.Params.LogoWidth + fm.opts.Params.LogoWidth/2
+}
+
+// 设置字体大小.需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠.
+func (b *autoBottomLogoTextAverageLayoutBorder) setFontSize(
+	fm *photoFrame,
+	textOneContent, textTwoContent, textThreeContent string,
+) {
+	imageX := fm.opts.getSourceImageX()
+
+	textContent := textOneContent + textTwoContent
+	if len(textOneContent+textTwoContent) < len(textThreeContent+textTwoContent) {
+		textContent = textThreeContent + textTwoContent
+	}
+	// 需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠
+	textContentMaxFontSize := getTextContentMaxSize(
+		imageX-fm.opts.Params.LogoWidth*5/2,
+		textContent,
+	)
+
+	// 字体大小
+	fm.opts.Params.TextOneFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextOneFontSize / 100
+	fm.opts.Params.TextTwoFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextTwoFontSize / 100
+	fm.opts.Params.TextThreeFontSize = fm.opts.Params.MainMarginBottom * fm.opts.Params.TextThreeFontSize / 100
+
+	// 重新赋值
+	if fm.opts.Params.TextOneFontSize > textContentMaxFontSize {
+		fm.opts.Params.TextOneFontSize = textContentMaxFontSize
+	}
+	if fm.opts.Params.TextTwoFontSize > textContentMaxFontSize {
+		fm.opts.Params.TextTwoFontSize = textContentMaxFontSize
+	}
+	if fm.opts.Params.TextThreeFontSize > textContentMaxFontSize {
+		fm.opts.Params.TextThreeFontSize = textContentMaxFontSize
+	}
 }
 
 // 画边框.
