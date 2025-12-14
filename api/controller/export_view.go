@@ -222,8 +222,3 @@ func exportFrameTask(save, path, prex string, exifInfo exiftool.FileMetadata, tp
 func sendExportProgress(str string) {
 	export_Progress_Chan <- str
 }
-
-// 关闭导出消息通道.
-func closeExportChan() {
-	close(export_Progress_Chan)
-}

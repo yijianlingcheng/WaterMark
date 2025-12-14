@@ -31,7 +31,7 @@ var (
 )
 
 // 获取文字内容对应的width,每次都需要重新计算.
-func getTextContentWidthAndHeight(fontSize int, fontFile, content string) (int, int) {
+func getTextContentSize(fontSize int, fontFile, content string) (int, int) {
 	// 利用gg库计算文字宽度
 	width, height := fontSize*len(content), fontSize*2
 	dc := gg.NewContext(width, height)
@@ -42,9 +42,18 @@ func getTextContentWidthAndHeight(fontSize int, fontFile, content string) (int, 
 		return 0, 0
 	}
 	w, h := dc.MeasureString(content)
-	dc = nil
 
 	return int(w), int(h)
+}
+
+// 获取指定宽度,指定字体文件下的最大宽度.
+func getTextContentMaxSize(width int, content string) int {
+	maxFontSize := width / len(content)
+	for range 2 {
+		maxFontSize = maxFontSize * 96 / 72
+	}
+
+	return maxFontSize
 }
 
 // 获取文字内容对应的width.
@@ -68,7 +77,7 @@ func getTextContentXAndY(fontSize int, fontFile, content string) (int, int) {
 	if xok && yok {
 		return width, height
 	}
-	width, height = getTextContentWidthAndHeight(fontSize, fontFile, content)
+	width, height = getTextContentSize(fontSize, fontFile, content)
 
 	// 写入缓存
 	textContentCache.mtx.Lock()
