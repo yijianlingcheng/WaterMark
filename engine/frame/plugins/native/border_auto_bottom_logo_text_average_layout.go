@@ -76,12 +76,14 @@ func (b *autoBottomLogoTextAverageLayoutBorder) setFontSize(
 	imageX := fm.opts.getSourceImageX()
 
 	textContent := textOneContent + textTwoContent
+	textFontFile := internal.GetFontFilePath(fm.opts.Params.TextOneFontFile)
 	if len(textOneContent+textTwoContent) < len(textThreeContent+textTwoContent) {
 		textContent = textThreeContent + textTwoContent
 	}
 	// 需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠
 	textContentMaxFontSize := getTextContentMaxSize(
 		imageX-fm.opts.Params.LogoWidth*5/2,
+		textFontFile,
 		textContent,
 	)
 

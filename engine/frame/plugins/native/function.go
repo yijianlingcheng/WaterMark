@@ -14,20 +14,41 @@ import (
 
 	"github.com/fogleman/gg"
 
+	"WaterMark/layout"
 	"WaterMark/message"
 	"WaterMark/pkg"
 )
 
-// 文字内容宽高缓存.
-type textContentXAndYCache struct {
-	xCache map[string]int
-	yCache map[string]int
-	mtx    sync.Mutex
-}
+type (
+
+	// 文字内容宽高缓存.
+	textContentXAndYCache struct {
+		xCache map[string]int
+		yCache map[string]int
+		mtx    sync.Mutex
+	}
+
+	// 文字适宜最大FontSize缓存.
+	textContentFontSizeCache struct {
+		cache map[string]int
+		mtx   sync.Mutex
+	}
+
+	textContenWithLogotFontSizeCache struct {
+		cache map[string]int
+		mtx   sync.Mutex
+	}
+)
 
 var (
 	textContentCache     *textContentXAndYCache
 	textContentCacheOnce sync.Once
+
+	textFontSizeCache     *textContentFontSizeCache
+	textFontSizeCacheOnce sync.Once
+
+	textFontSizeWithLogoCache *textContenWithLogotFontSizeCache
+	textFontSizeWithLogoOnce  sync.Once
 )
 
 // 获取文字内容对应的width,每次都需要重新计算.
@@ -46,11 +67,122 @@ func getTextContentSize(fontSize int, fontFile, content string) (int, int) {
 	return int(w), int(h)
 }
 
-// 获取指定宽度,指定字体文件下的最大宽度.
-func getTextContentMaxSize(width int, content string) int {
+// 根据字体与logo计算合适的字体大小.
+func getTextContentMaxSizeWithLogo(width int, logoName, fontFile, content string) int {
+	textFontSizeWithLogoOnce.Do(func() {
+		textFontSizeWithLogoCache = &textContenWithLogotFontSizeCache{
+			cache: make(map[string]int),
+		}
+	})
+	key := pkg.GetStrMD5(fmt.Sprintf("%s%s%s%d", logoName, fontFile, content, width))
+
+	textFontSizeWithLogoCache.mtx.Lock()
+	v, ok := textFontSizeWithLogoCache.cache[key]
+	textFontSizeWithLogoCache.mtx.Unlock()
+	if ok {
+		return v
+	}
+
+	maxFontSize := findTextContentMaxSizeWithLogo(width, logoName, fontFile, content)
+
+	textFontSizeWithLogoCache.mtx.Lock()
+	textFontSizeWithLogoCache.cache[key] = maxFontSize
+	textFontSizeWithLogoCache.mtx.Unlock()
+
+	return maxFontSize
+}
+
+// 根据字体与logo计算合适的字体大小.
+func findTextContentMaxSizeWithLogo(width int, logoName, fontFile, content string) int {
 	maxFontSize := width / len(content)
-	for range 2 {
+	w, _ := getTextContentSize(maxFontSize, fontFile, content)
+	logoShowInfo := layout.GetLogoXAndYByNameAndHeight(logoName, maxFontSize)
+
+	// 文字宽度+logo大于实际展示宽度
+	if w+logoShowInfo["width"] >= width {
+		for range 3 {
+			maxFontSize = maxFontSize * 72 / 96
+			logoShowInfo = layout.GetLogoXAndYByNameAndHeight(logoName, maxFontSize)
+			w, _ = getTextContentSize(maxFontSize, fontFile, content)
+			if w+logoShowInfo["width"] < width {
+				break
+			}
+		}
+
+		return maxFontSize
+	}
+
+	var lastFontSize int
+	// 文字宽度+logo小于实际展示宽度
+	for range 3 {
+		lastFontSize = maxFontSize
 		maxFontSize = maxFontSize * 96 / 72
+		w, _ = getTextContentSize(maxFontSize, fontFile, content)
+		logoShowInfo = layout.GetLogoXAndYByNameAndHeight(logoName, maxFontSize)
+
+		if w+logoShowInfo["width"] > width {
+			maxFontSize = lastFontSize
+
+			break
+		}
+	}
+
+	return maxFontSize
+}
+
+// 获取指定宽度,指定字体文件下的最大宽度.
+func getTextContentMaxSize(width int, fontFile, content string) int {
+	textFontSizeCacheOnce.Do(func() {
+		textFontSizeCache = &textContentFontSizeCache{
+			cache: make(map[string]int),
+		}
+	})
+
+	key := pkg.GetStrMD5(fmt.Sprintf("%s%s%d", fontFile, content, width))
+	textFontSizeCache.mtx.Lock()
+	v, ok := textFontSizeCache.cache[key]
+	textFontSizeCache.mtx.Unlock()
+
+	if ok {
+		return v
+	}
+	maxFontSize := findTextContentMaxSize(width, fontFile, content)
+
+	textFontSizeCache.mtx.Lock()
+	textFontSizeCache.cache[key] = maxFontSize
+	textFontSizeCache.mtx.Unlock()
+
+	return maxFontSize
+}
+
+// 获取指定宽度,指定字体文件下的最大宽度.
+func findTextContentMaxSize(width int, fontFile, content string) int {
+	maxFontSize := width / len(content)
+	w, _ := getTextContentSize(maxFontSize, fontFile, content)
+
+	// 文字宽度大于实际展示宽度
+	if w >= width {
+		for range 3 {
+			maxFontSize = maxFontSize * 72 / 96
+			w, _ = getTextContentSize(maxFontSize, fontFile, content)
+			if w < width {
+				break
+			}
+		}
+
+		return maxFontSize
+	}
+	var lastFontSize int
+	// 文字宽度小于实际展示宽度
+	for range 3 {
+		lastFontSize = maxFontSize
+		maxFontSize = maxFontSize * 96 / 72
+		w, _ = getTextContentSize(maxFontSize, fontFile, content)
+		if w > width {
+			maxFontSize = lastFontSize
+
+			break
+		}
 	}
 
 	return maxFontSize

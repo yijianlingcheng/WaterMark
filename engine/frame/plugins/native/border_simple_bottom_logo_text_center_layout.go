@@ -21,12 +21,27 @@ func (b *simpleBottomLogoTextCenterBorder) getMaxFontSize(fm *photoFrame, textOn
 	imageX := fm.opts.getSourceImageX()
 	// 需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠
 	textContent := textOneContent
+	textFontFile := internal.GetFontFilePath(fm.opts.Params.TextOneFontFile)
 	if len(textOneContent) < len(textThreeContent) {
 		textContent = textThreeContent
+		textFontFile = internal.GetFontFilePath(fm.opts.Params.TextThreeFontFile)
+	}
+
+	if b.HasLogo {
+		logoName := layout.GetLogoNameByMake(fm.opts.getMakeFromExif())
+		textContentMaxFontSize := getTextContentMaxSizeWithLogo(
+			imageX,
+			logoName,
+			textFontFile,
+			textContent,
+		)
+
+		return min(fm.opts.Params.MainMarginBottom/5, textContentMaxFontSize)
 	}
 
 	textContentMaxFontSize := getTextContentMaxSize(
 		imageX,
+		textFontFile,
 		textContent,
 	)
 

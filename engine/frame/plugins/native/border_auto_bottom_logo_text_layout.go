@@ -187,14 +187,22 @@ func (b *autoBottomLogoTextLayoutBorder) setTextLayoutTextFontSize(fm *photoFram
 	textThreeContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextThreeContent)
 	textFourContent := changeText2ExifContent(fm.opts.getExif(), fm.opts.Params.TextFourContent)
 
-	textContent := textOneContent + textTwoContent
-	if len(textOneContent+textTwoContent) < len(textThreeContent+textFourContent) {
-		textContent = textThreeContent + textFourContent
+	textContent := textOneContent
+	if len(textOneContent) < len(textTwoContent) {
+		textContent = textTwoContent
 	}
+	if len(textThreeContent) < len(textFourContent) {
+		textContent += textFourContent
+	} else {
+		textContent += textThreeContent
+	}
+	textFileFont := internal.GetFontFilePath(fm.opts.Params.TextOneFontFile)
 
 	// 需要先根据图片尺寸计算出一个最大的fontSize,用于防止文字重叠
+	leftShowWidth := fm.opts.Params.LogoMarginLeft + fm.opts.Params.LogoWidth + fm.opts.Params.LogoMarginRight
 	textContentMaxFontSize := getTextContentMaxSize(
-		imageX-fm.opts.Params.LogoWidth*2,
+		imageX-leftShowWidth*3,
+		textFileFont,
 		textContent,
 	)
 
