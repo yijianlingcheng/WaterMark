@@ -763,7 +763,7 @@ const FramePreviewBorderDomProcess = {
                 setWithGtHeight()
 
                 $("#images-container").css({ "height": "auto", "width": showWidth + "px" })
-                $("#images-origin").css({ "margin-top": marginTop + "px", "margin-left": (marginLeft - showWidth) + "px", "width": (showWidth - marginLeft - marginRight) + "px" })
+                $("#images-origin").css({ "margin-top": marginTop + "px", "margin-left": (marginLeft - showWidth) + "px", "width": (showWidth - marginLeft - marginRight) + "px", "height": "auto" })
             } else {
                 setWithGtHeight()
 
@@ -787,10 +787,12 @@ const FramePreviewBorderDomProcess = {
             let newOriginShowHegiht = showHeight / totalHeight * height
             let newOriginShowWidth = showHeight / totalHeight * width
 
+            let marginTop = (borderTop / totalHeight * showHeight).toFixed()
+
             if (isFirstLoad() || !isWidthGtHeight()) {
                 setWidthLtHeight()
 
-                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px" })
+                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px", "margin-top": marginTop + "px" })
                 $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
 
             } else {
@@ -801,7 +803,7 @@ const FramePreviewBorderDomProcess = {
 
                 await sleep(400)
 
-                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px" })
+                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px", "margin-top": marginTop + "px" })
                 $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
 
                 $("#images-container").show()

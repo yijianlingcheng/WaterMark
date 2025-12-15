@@ -67,7 +67,7 @@ exiftool/*.txt
 exiftool/exiftool_files/
 
 # 排除runtime
-runtime/*.csv
+runtime/*
 runtime/*.cache
 runtime/*.JPG
 runtime/*.jpg
