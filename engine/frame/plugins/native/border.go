@@ -38,6 +38,12 @@ type (
 		HasLogo bool
 	}
 
+	// 高斯模糊模板.
+	blurBottomTextCenterLayout struct {
+		Strategy borderStrategy
+		baseBottomLogoTextLayoutBorder
+	}
+
 	SimpleBorderFactory struct{}
 )
 
@@ -86,6 +92,8 @@ func (simple *SimpleBorderFactory) createBorder(name string) borderStrategy {
 		return &simpleBottomLogoTextCenterBorder{
 			HasLogo: true,
 		}
+	case "blur_bottom_text_center_layout":
+		return &blurBottomTextCenterLayout{}
 	}
 
 	return &fixedBottomLogoTextLayoutBorder{}

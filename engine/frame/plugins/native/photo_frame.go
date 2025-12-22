@@ -3,7 +3,10 @@ package native
 import (
 	"image"
 	"image/draw"
+	"runtime"
 	"sync"
+
+	"github.com/disintegration/imaging"
 
 	"WaterMark/internal"
 	"WaterMark/layout"
@@ -12,7 +15,7 @@ import (
 )
 
 type photoFrame struct {
-	frameDraw  *image.RGBA
+	frameDraw  draw.Image
 	borderDraw *image.RGBA
 	srcImage   *sourceImage
 	borImage   *borderImage
@@ -85,8 +88,9 @@ func (fm *photoFrame) initFrame(opts map[string]any) pkg.EError {
 		return borderErr
 	}
 	fm.borImage = borImage
-	// 判断是否需要加载原图
-	if fm.opts.needSourceImage() {
+
+	// 判断是否需要加载原图,如果是blur类型也需要加载原图
+	if fm.opts.needSourceImage() || fm.opts.isblur() {
 		sourceImage, loadSourceImageErr := fm.loadSourceImage(sourceImagePath)
 		if pkg.HasError(loadSourceImageErr) {
 			return loadSourceImageErr
@@ -98,10 +102,15 @@ func (fm *photoFrame) initFrame(opts map[string]any) pkg.EError {
 	// 初始化最终绘制对象
 	fm.finImage = newFinalImage(fm.opts)
 
-	var frame *image.RGBA
+	var frame draw.Image
 	var frameErr pkg.EError
 
-	frame, frameErr = fm.createDraw()
+	// 模糊模板特殊处理
+	if fm.opts.isblur() {
+		frame, frameErr = fm.createBlurDraw()
+	} else {
+		frame, frameErr = fm.createDraw()
+	}
 	if pkg.HasError(frameErr) {
 		return frameErr
 	}
@@ -119,6 +128,19 @@ func (fm *photoFrame) createDraw() (*image.RGBA, pkg.EError) {
 		fm.finImage.height,
 		fm.borImage.bgColor,
 	)
+}
+
+// 创建模糊模板画布.
+func (fm *photoFrame) createBlurDraw() (*image.NRGBA, pkg.EError) {
+	sourceImage := fm.srcImage.imgDecode
+	// 减小
+	newImage := imaging.Resize(sourceImage,
+		sourceImage.Bounds().Dx()/5,
+		sourceImage.Bounds().Dy()/5, imaging.Lanczos)
+	// 高斯模糊
+	newImage = imaging.Blur(newImage, 50)
+	// 放大
+	return imaging.Resize(newImage, fm.finImage.width, fm.finImage.height, imaging.Lanczos), pkg.NoError
 }
 
 // 旋转图片.
@@ -154,9 +176,52 @@ func (fm *photoFrame) loadSourceImage(path string) (image.Image, pkg.EError) {
 // 画主体.
 func (fm *photoFrame) drawMainImage(wg *sync.WaitGroup) {
 	defer wg.Done()
-	// 生成照片主体
 
+	// 生成照片主体
 	if fm.opts.needSourceImage() {
+		draw.Draw(
+			fm.frameDraw,
+			fm.srcImage.imgDecode.Bounds().Add(image.Point{fm.borImage.leftWidth, fm.borImage.topHeight}),
+			fm.srcImage.imgDecode,
+			image.Pt(0, 0),
+			draw.Over,
+		)
+	}
+}
+
+// 绘制模糊模板主体.
+func (fm *photoFrame) drawBlurMainImage() {
+	if fm.opts.needSourceImage() {
+		// 判断是否需要画圆角
+		if fm.opts.Params.BorderRadius > 0 {
+			w := fm.srcImage.imgDecode.Bounds().Dx()
+			h := fm.srcImage.imgDecode.Bounds().Dy()
+
+			// 画圆角
+			c := borderRadius{p: image.Point{X: w, Y: h}, r: w * fm.opts.Params.BorderRadius / 1000}
+			radiusImg := image.NewRGBA(image.Rect(0, 0, w, h))
+			draw.DrawMask(
+				radiusImg,
+				radiusImg.Bounds().Add(image.Point{1, 1}),
+				fm.srcImage.imgDecode,
+				image.Point{},
+				&c,
+				image.Point{},
+				draw.Over,
+			)
+			// 填充主体图片
+			draw.Draw(
+				fm.frameDraw,
+				radiusImg.Bounds().Add(
+					image.Point{fm.borImage.leftWidth, fm.borImage.topHeight},
+				),
+				radiusImg,
+				image.Pt(0, 0),
+				draw.Over,
+			)
+
+			return
+		}
 		draw.Draw(
 			fm.frameDraw,
 			fm.srcImage.imgDecode.Bounds().Add(image.Point{fm.borImage.leftWidth, fm.borImage.topHeight}),
@@ -173,6 +238,7 @@ func (fm *photoFrame) drawBorderImage(wg *sync.WaitGroup) pkg.EError {
 
 	// 生成边框对象
 	fm.borderDraw = loadImageRGBA(0, 0, fm.srcImage.width, fm.borImage.bottomHeight)
+
 	draw.Draw(
 		fm.borderDraw,
 		fm.borderDraw.Bounds(),
@@ -196,9 +262,29 @@ func (fm *photoFrame) drawBorderImage(wg *sync.WaitGroup) pkg.EError {
 	return pkg.NoError
 }
 
+// 画模糊边框与文字.
+func (fm *photoFrame) drawBlurBorderImage() pkg.EError {
+	// 生成边框对象
+	fm.borderDraw = loadImageRGBA(0, 0, fm.srcImage.width, fm.borImage.bottomHeight)
+
+	simpleBorderFactory := &SimpleBorderFactory{}
+	simpleBorderFactory.createBorder(fm.opts.Params.Name).drawBorder(fm)
+
+	return pkg.NoError
+}
+
 // 画出照片主体与边框
 // 为了性能考虑采用协程组实现.
 func (fm *photoFrame) drawFrame() {
+	// 模糊边框特殊处理
+	if fm.opts.isblur() {
+		// 画主体
+		fm.drawBlurMainImage()
+		// 画边框
+		fm.drawBlurBorderImage()
+
+		return
+	}
 	// 协程组
 	var wg sync.WaitGroup
 	// 2协程
@@ -214,7 +300,12 @@ func (fm *photoFrame) drawFrame() {
 
 // 拼接这两张图片
 // 将照片与生成好的边框水印图片拼接在一起.
-func (fm *photoFrame) drawMerge() *image.RGBA {
+func (fm *photoFrame) drawMerge() draw.Image {
+	// 模糊模板特殊处理
+	if fm.opts.isblur() {
+		return fm.frameDraw
+	}
+
 	draw.Draw(
 		fm.frameDraw,
 		image.Rect(
@@ -244,4 +335,6 @@ func (fm *photoFrame) clean() {
 	fm.srcImage = &sourceImage{}
 	fm.borImage = &borderImage{}
 	fm.finImage = &finalImage{}
+
+	runtime.GC()
 }

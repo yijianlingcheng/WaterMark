@@ -1,13 +1,13 @@
 package native
 
 import (
-	"image"
+	"image/draw"
 
 	"WaterMark/pkg"
 )
 
 // 创建边框,并返回对应的RGBA对象.
-func CreateFrameImageRGBA(opts map[string]any) (*image.RGBA, pkg.EError) {
+func CreateFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 	var fm photoFrame
 	// 初始化
 	err := fm.initFrame(opts)
@@ -21,7 +21,7 @@ func CreateFrameImageRGBA(opts map[string]any) (*image.RGBA, pkg.EError) {
 	// 保存
 	imageFilePath := fm.getSaveImageFile()
 	if imageFilePath != "" {
-		saveImage(imageFilePath, finalImage, 100)
+		saveJpgImage(imageFilePath, finalImage, 100)
 	}
 	// 清理
 	fm.clean()
@@ -44,7 +44,7 @@ func CreateFrameImageRGBABackground(opts map[string]any) pkg.EError {
 	// 保存
 	imageFilePath := fm.getSaveImageFile()
 	if imageFilePath != "" {
-		saveImage(imageFilePath, finalImage, 100)
+		saveJpgImage(imageFilePath, finalImage, 100)
 	}
 	// 清理
 	fm.clean()

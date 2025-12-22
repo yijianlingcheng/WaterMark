@@ -82,7 +82,6 @@ func ShowPhotoFrame(ctx *gin.Context) {
 
 		return
 	}
-
 	plug := frame.GetPlugin()
 	// 获取指定照片的缩略图
 	imageRGBA, frameErr := plug.CreateFrameImageRGBA(map[string]any{
@@ -91,7 +90,6 @@ func ShowPhotoFrame(ctx *gin.Context) {
 		"exif":            exifInfo,
 		"Params":          layout,
 	})
-
 	if pkg.HasError(frameErr) {
 		ctx.JSON(400, frameErr)
 

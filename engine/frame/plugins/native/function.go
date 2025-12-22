@@ -7,7 +7,6 @@ import (
 	"image/draw"
 	"image/jpeg"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -288,8 +287,8 @@ func drawLine(img draw.Image, start, end image.Point, c color.Color) {
 	}
 }
 
-// 保存图片.
-func saveImage(saveImageFile string, image *image.RGBA, quality int) {
+// 保存JPG图片.
+func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 	file, err := os.Create(saveImageFile)
 	if err != nil {
 		message.SendErrorMsg(saveImageFile + ":图片打开失败")
@@ -304,6 +303,4 @@ func saveImage(saveImageFile string, image *image.RGBA, quality int) {
 	if err != nil {
 		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
 	}
-
-	runtime.GC()
 }

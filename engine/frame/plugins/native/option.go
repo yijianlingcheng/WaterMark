@@ -25,6 +25,10 @@ func (fp *frameOption) needSourceImage() bool {
 	return fp.PhotoType != PHOTO_TYPE_BORDER
 }
 
+func (fp *frameOption) isblur() bool {
+	return fp.Params.Isblur
+}
+
 func (fp *frameOption) getExif() exiftool.FileMetadata {
 	return fp.Exif
 }
