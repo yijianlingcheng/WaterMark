@@ -7,8 +7,13 @@ import (
 
 type (
 	borderStrategy interface {
-		initLayoutValue(fm *photoFrame) pkg.EError
-		drawBorder(fm *photoFrame) pkg.EError
+		initLayoutValue(fm baseFrame) pkg.EError
+		drawBorder(fm baseFrame) pkg.EError
+	}
+
+	borderBlurStrategy interface {
+		initLayoutValue(fm baseFrame) pkg.EError
+		drawBorder(fm baseFrame) pkg.EError
 	}
 
 	// 固定-模板.
@@ -40,7 +45,7 @@ type (
 
 	// 高斯模糊模板.
 	blurBottomTextCenterLayout struct {
-		Strategy borderStrategy
+		Strategy borderBlurStrategy
 		baseBottomLogoTextLayoutBorder
 	}
 

@@ -12,11 +12,6 @@ func openPhotoView(app *App) {
 	rt.WindowExecJS(app.ctx, "window.location.href = \"/V/index.html\"")
 }
 
-// 打开照片-文件夹-查看-页面.
-func openPhotoDSView(app *App) {
-	rt.WindowExecJS(app.ctx, "window.location.href = \"/V/DSView.html\"")
-}
-
 // 打开边框-选择照片-页面.
 func openFrameView(app *App) {
 	rt.WindowExecJS(app.ctx, "window.location.href = \"/F/frameView.html\"")

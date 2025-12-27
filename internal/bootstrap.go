@@ -40,6 +40,10 @@ func InitAppConfigsAndRes() {
 		err = checkInstallExif()
 		message.SendErrorOrInfo(err, "exiftool工具已安装")
 
+		message.SendInfoMsg("检查ImageMagick工具是否安装")
+		err = checkInstallImageMagick()
+		message.SendErrorOrInfo(err, "ImageMagick工具已安装")
+
 		// 释放字体文件
 		message.SendInfoMsg("检查字体文件是否释放")
 		err = checkFontFile()

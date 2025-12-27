@@ -63,3 +63,29 @@ func checkLogoFile() pkg.EError {
 
 	return pkg.NoError
 }
+
+// 检查ImageMagick工具.
+func checkInstallImageMagick() pkg.EError {
+	err := winRestoreImagemagick7zFile()
+	if pkg.HasError(err) {
+		return err
+	}
+	err = checkImageMagick()
+	if pkg.HasError(err) {
+		return err
+	}
+
+	return pkg.NoError
+}
+
+// 检查ImageMagick工具.
+func checkImageMagick() pkg.EError {
+	args := []string{GetMagickBinPath(), "-version"}
+	version, err := cmd.CommandRun(5*time.Second, strings.Join(args, " "))
+
+	if version == "" || pkg.HasError(err) {
+		return pkg.ExiftoolNotExistError
+	}
+
+	return pkg.NoError
+}

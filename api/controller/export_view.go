@@ -212,8 +212,9 @@ func exportFrameTask(save, path, prex string, exifInfo exiftool.FileMetadata, tp
 			"sourceImageFile": path,
 			"photoType":       "photo",
 			"exif":            exifInfo,
-			"Params":          tpl,
+			"params":          tpl,
 			"saveImageFile":   save + "/" + prex + "_" + filepath.Base(path),
+			"isBlur":          tpl.Isblur,
 		},
 	)
 }

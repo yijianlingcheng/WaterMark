@@ -14,7 +14,7 @@ type frameOption struct {
 	PhotoType       string                `mapstructure:"photoType"`
 	SourceImageFile string                `mapstructure:"sourceImageFile"`
 	SaveImageFile   string                `mapstructure:"saveImageFile"`
-	Params          layout.FrameLayout
+	Params          layout.FrameLayout    `mapstructure:"params"`
 	OriginWidth     int
 	OriginHeight    int
 	IsAutoSave      bool
@@ -23,10 +23,6 @@ type frameOption struct {
 // 是否需要加载原始图片.
 func (fp *frameOption) needSourceImage() bool {
 	return fp.PhotoType != PHOTO_TYPE_BORDER
-}
-
-func (fp *frameOption) isblur() bool {
-	return fp.Params.Isblur
 }
 
 func (fp *frameOption) getExif() exiftool.FileMetadata {

@@ -6,7 +6,9 @@ import (
 	"image/color"
 	"image/draw"
 	"image/jpeg"
+	"image/png"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -220,9 +222,9 @@ func getTextContentXAndY(fontSize int, fontFile, content string) (int, int) {
 }
 
 // 画边框上的logo.
-func drawBorderLogo(fm *photoFrame, logoImage image.Image, startX, startY, endX, endY int) {
+func drawBorderLogo(fm *basePhotoFrame, logoImage image.Image, startX, startY, endX, endY int) {
 	draw.Draw(
-		fm.borderDraw,
+		fm.getBorderDraw(),
 		image.Rect(startX, startY, endX, endY),
 		logoImage,
 		image.Pt(0, 0),
@@ -287,6 +289,27 @@ func drawLine(img draw.Image, start, end image.Point, c color.Color) {
 	}
 }
 
+// 保存图片.
+func saveImageFile(isAsync bool, saveImageFile string, image draw.Image, quality int) {
+	ext := filepath.Ext(saveImageFile)
+	if strings.EqualFold(ext, JPG_FILE_TYPE) || strings.EqualFold(ext, JPEG_FILE_TYPE) {
+		if isAsync {
+			go saveJpgImage(saveImageFile, image, quality)
+
+			return
+		}
+		saveJpgImage(saveImageFile, image, quality)
+
+		return
+	}
+	if isAsync {
+		go savePngImage(saveImageFile, image)
+
+		return
+	}
+	savePngImage(saveImageFile, image)
+}
+
 // 保存JPG图片.
 func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 	file, err := os.Create(saveImageFile)
@@ -303,4 +326,25 @@ func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 	if err != nil {
 		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
 	}
+}
+
+// 保存PNG图片.
+func savePngImage(saveImageFile string, image draw.Image) {
+	file, err := os.Create(saveImageFile)
+	if err != nil {
+		message.SendErrorMsg(saveImageFile + ":图片打开失败")
+
+		return
+	}
+	defer file.Close()
+
+	err = png.Encode(file, image)
+	if err != nil {
+		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
+	}
+}
+
+// 自动保存模糊模板的背景图片.
+func autoSaveBlurBackgroundImage(path string, image draw.Image, quality int) {
+	go saveJpgImage(path, image, quality)
 }

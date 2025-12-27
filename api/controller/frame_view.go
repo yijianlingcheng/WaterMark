@@ -88,7 +88,8 @@ func ShowPhotoFrame(ctx *gin.Context) {
 		"sourceImageFile": file,
 		"photoType":       photoType,
 		"exif":            exifInfo,
-		"Params":          layout,
+		"params":          layout,
+		"isBlur":          layout.Isblur,
 	})
 	if pkg.HasError(frameErr) {
 		ctx.JSON(400, frameErr)
@@ -244,7 +245,8 @@ func GetPhotoExifAndBorderInfo(ctx *gin.Context) {
 		"sourceImageFile": file,
 		"photoType":       photoType,
 		"exif":            exifInfo,
-		"Params":          layout,
+		"params":          layout,
+		"isBlur":          layout.Isblur,
 	})
 	if pkg.HasError(err) {
 		ctx.JSON(400, err)

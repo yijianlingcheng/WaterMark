@@ -84,6 +84,25 @@ func GetMainLayoutPath() string {
 	return GetRootPath() + appConfigsPath + "/layout.json"
 }
 
+// 获取ImageMagick可执行文件路径.
+func GetMagickPath(p string) string {
+	return GetRootPath() + magickPath + "/" + p
+}
+
+// 获取ImageMagick可执行文件路径.
+func GetWinMagick7zPath() string {
+	return GetMagickPath("ImageMagick.7z")
+}
+
+// 获取ImageMagick可执行文件路径.
+func GetMagickBinPath() string {
+	if IsWindows() {
+		return GetMagickPath("magick.exe")
+	}
+
+	return "magick"
+}
+
 // 获取exiftool路径.
 func GetExiftoolPath() string {
 	if IsWindows() {

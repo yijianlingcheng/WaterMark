@@ -36,4 +36,9 @@
  2. APP_API_DEV api 开发模式,此模式用于 `go run main.go ` 启动api接口服务与必要的工具
  3. APP_RELEASE 打包模式,此模式用于 ` wails build `
  4. 以上模式修改位于` main.go` 文件的第一行:`SetAppMode()`
- 5. 部分图片、配置文件、字体文件通过`go-bindata`打包进代码中,打包命令如下:`go-bindata -pkg=assetfs   ./configs/app.yaml ./configs/layout.json  ./fonts/Alibaba-PuHuiTi-Bold.ttf ./fonts/Alibaba-PuHuiTi-Light.ttf ./logos/apple.png ./logos/nikon.png`
+ 5. 部分图片、配置文件、字体文件通过`go-bindata`打包进代码中
+ 6. 打包命令如下:
+    1. 杂项 `go-bindata -pkg=assetmixfs   ./configs ./fonts ./logos`
+    2. exiftool工具`go-bindata -pkg=assetexiffs ./exiftool`
+    3. imagemagick工具`go-bindata -pkg=assetmagickfs ./magick`
+
