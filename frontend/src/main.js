@@ -775,6 +775,7 @@ const FramePreviewBorderDomProcess = {
             if (sleepTime > 0) {
                 $("#images-container").hide()
                 $("#images-origin").hide()
+                $("#blur-show-div").hide()
 
                 await sleep(parseInt(requestUseTime * 2))
             }
@@ -788,6 +789,10 @@ const FramePreviewBorderDomProcess = {
             }
             $("#images-container").css({ "height": "auto", "width": showWidth + "px" })
             $("#images-origin").css(originCss)
+
+            if (borderRadius > 0) {
+                $("#blur-show-div").css({ "height": showHeight + "px", "width": showWidth + "px", "margin-left": 0 + "px" })
+            }
 
             if (sleepTime > 0) {
                 $("#images-container").show()
@@ -816,6 +821,7 @@ const FramePreviewBorderDomProcess = {
             if (sleepTime > 0) {
                 $("#images-container").hide()
                 $("#images-origin").hide()
+                $("#blur-show-div").hide()
 
                 await sleep(parseInt(requestUseTime * 2))
             }
@@ -826,8 +832,15 @@ const FramePreviewBorderDomProcess = {
                 originCss["border-radius"] = radius + "px"
                 originCss["box-shadow"] = "0px 0px " + radius + "px " + radius / 2 + "px rgba(128, 128, 128, 0.5)"
             }
+            let containerCss = { "height": showHeight + "px", "width": newShowWidth + "px" }
+            // 调整模糊模板的容器大小
+            $("#images-container").css(containerCss)
+            if (borderRadius > 0) {
+                containerCss["margin-left"] = (showWidth - newShowWidth) / 2 + "px"
+                $("#blur-show-div").css(containerCss)
+            }
+
             $("#images-origin").css(originCss)
-            $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
 
             if (sleepTime > 0) {
                 $("#images-container").show()
