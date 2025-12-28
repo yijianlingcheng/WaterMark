@@ -11,6 +11,7 @@ import (
 // runtime 代表允许过程中存放中间文件,缓存文件的地方
 // default 程序允许过程中,下载文件默认保存的地方
 // fonts 字体文件路径.
+// magick ImageMagick可执行文件存放路径.
 var (
 	appExiftoolPath = "/exiftool"
 
@@ -22,7 +23,11 @@ var (
 
 	appRuntimePath = "/runtime"
 
+	appBlurPath = appRuntimePath + "/blur"
+
 	appUserPath = "/userData"
+
+	magickPath = "/magick"
 
 	appFontFilePath = "/fonts"
 
@@ -32,6 +37,7 @@ var (
 		appLogosPath,
 		appConfigsPath,
 		appRuntimePath,
+		appBlurPath,
 		appUserPath,
 		appFontFilePath,
 	}

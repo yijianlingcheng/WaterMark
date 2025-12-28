@@ -14,7 +14,7 @@ type frameOption struct {
 	PhotoType       string                `mapstructure:"photoType"`
 	SourceImageFile string                `mapstructure:"sourceImageFile"`
 	SaveImageFile   string                `mapstructure:"saveImageFile"`
-	Params          layout.FrameLayout
+	Params          layout.FrameLayout    `mapstructure:"params"`
 	OriginWidth     int
 	OriginHeight    int
 	IsAutoSave      bool

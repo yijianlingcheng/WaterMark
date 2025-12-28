@@ -21,6 +21,11 @@ const (
 
 	// 类型:边框.
 	PHOTO_TYPE_BORDER = "border"
+
+	// jpg图片后缀名.
+	JPG_FILE_TYPE = ".jpg"
+
+	JPEG_FILE_TYPE = ".jpeg"
 )
 
 // 文字内容列表.

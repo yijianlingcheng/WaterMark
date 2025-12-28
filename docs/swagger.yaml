@@ -117,9 +117,13 @@ definitions:
         type: integer
       borderLeftWidth:
         type: integer
+      borderRadius:
+        type: integer
       borderRightWidth:
         type: integer
       borderTopHeight:
+        type: integer
+      isblur:
         type: integer
       sourceHeight:
         type: integer
@@ -319,6 +323,7 @@ paths:
         type: string
       produces:
       - image/jpeg
+      - image/png
       responses:
         "400":
           description: 错误信息".

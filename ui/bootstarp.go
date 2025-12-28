@@ -24,6 +24,7 @@ func AppStart(assets embed.FS, icon []byte) {
 		// 关闭开启的引擎
 		engine.QuitAllTools()
 		message.Close()
+		internal.CleanDir()
 
 		return
 	}

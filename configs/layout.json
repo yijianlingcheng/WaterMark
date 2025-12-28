@@ -509,6 +509,23 @@
             "text_three_content": "#FocalLength# , F/#FNumber# , #ExposureTime#s , ISO#ISO#",
             "text_three_font_color": "0,0,0,255",
             "text_three_font_file": "Alibaba-PuHuiTi-Light.ttf"
+        },
+        {
+            "frame_name": "高斯模糊-居中",
+            "is_blur": true,
+            "frame_type": "blur_bottom_text_center_layout",
+            "frame_layout": "auto",
+            "main_margin_left": 60,
+            "main_margin_right": 60,
+            "main_margin_top": 60,
+            "main_margin_bottom": 180,
+            "border_radius": 15,
+            "text_one_content": "#Model#",
+            "text_one_font_color": "255,255,255,255",
+            "text_one_font_file": "Alibaba-PuHuiTi-Bold.ttf",
+            "text_three_content": "#FocalLength# , F/#FNumber# , #ExposureTime#s , ISO#ISO#",
+            "text_three_font_color": "255,255,255,255",
+            "text_three_font_file": "Alibaba-PuHuiTi-Light.ttf"
         }
     ]
 }

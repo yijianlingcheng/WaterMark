@@ -6,14 +6,16 @@ import (
 	"image/color"
 	"image/draw"
 	"image/jpeg"
+	"image/png"
 	"os"
-	"runtime"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/fogleman/gg"
 
+	"WaterMark/internal"
 	"WaterMark/layout"
 	"WaterMark/message"
 	"WaterMark/pkg"
@@ -221,9 +223,9 @@ func getTextContentXAndY(fontSize int, fontFile, content string) (int, int) {
 }
 
 // 画边框上的logo.
-func drawBorderLogo(fm *photoFrame, logoImage image.Image, startX, startY, endX, endY int) {
+func drawBorderLogo(fm *basePhotoFrame, logoImage image.Image, startX, startY, endX, endY int) {
 	draw.Draw(
-		fm.borderDraw,
+		fm.getBorderDraw(),
 		image.Rect(startX, startY, endX, endY),
 		logoImage,
 		image.Pt(0, 0),
@@ -289,9 +291,21 @@ func drawLine(img draw.Image, start, end image.Point, c color.Color) {
 }
 
 // 保存图片.
-func saveImage(saveImageFile string, image *image.RGBA, quality int) {
+func saveImageFile(saveImageFile string, image draw.Image, quality int) {
+	ext := filepath.Ext(saveImageFile)
+	if strings.EqualFold(ext, JPG_FILE_TYPE) || strings.EqualFold(ext, JPEG_FILE_TYPE) {
+		saveJpgImage(saveImageFile, image, quality)
+
+		return
+	}
+	savePngImage(saveImageFile, image)
+}
+
+// 保存JPG图片.
+func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 	file, err := os.Create(saveImageFile)
 	if err != nil {
+		internal.Log.Error(saveImageFile + ":图片打开失败:" + err.Error())
 		message.SendErrorMsg(saveImageFile + ":图片打开失败")
 
 		return
@@ -302,8 +316,23 @@ func saveImage(saveImageFile string, image *image.RGBA, quality int) {
 		Quality: quality,
 	})
 	if err != nil {
+		internal.Log.Error(saveImageFile + ":图片写入失败:" + err.Error())
 		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
 	}
+}
 
-	runtime.GC()
+// 保存PNG图片.
+func savePngImage(saveImageFile string, image draw.Image) {
+	file, err := os.Create(saveImageFile)
+	if err != nil {
+		message.SendErrorMsg(saveImageFile + ":图片打开失败")
+
+		return
+	}
+	defer file.Close()
+
+	err = png.Encode(file, image)
+	if err != nil {
+		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
+	}
 }

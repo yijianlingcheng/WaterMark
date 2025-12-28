@@ -56,11 +56,16 @@ func LoadOrCreateLayoutImage() pkg.EError {
 		if internal.PathExists(file) {
 			continue
 		}
+		isBlue := false
+		if layouts[i].Isblur {
+			isBlue = true
+		}
 		go plugin.CreateFrameImageRGBA(map[string]any{
 			"sourceImageFile": path,
 			"exif":            exifInfo,
-			"Params":          layouts[i],
+			"params":          layouts[i],
 			"saveImageFile":   file,
+			"isBlur":          isBlue,
 		})
 	}
 

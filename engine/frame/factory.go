@@ -1,7 +1,7 @@
 package frame
 
 import (
-	"image"
+	"image/draw"
 
 	"github.com/yijianlingcheng/go-exiftool"
 
@@ -19,7 +19,7 @@ type Plugin interface {
 	// 是否是原生插件(不依赖CGO库)
 	IsNavite() bool
 	// 创建图片边框对应的*image.RGBA对象
-	CreateFrameImageRGBA(opts map[string]any) (*image.RGBA, pkg.EError)
+	CreateFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError)
 	// 获取图片边框信息
 	GetFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EError)
 	// 重新加载logo

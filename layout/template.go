@@ -70,6 +70,7 @@ type (
 		SeparatorMarginRight  int    `json:"separator_margin_right"`
 		SeparatorMarginTop    int    `json:"separator_margin_top"`
 		SeparatorMarginBottom int    `json:"separator_margin_bottom"`
+		BorderRadius          int    `json:"border_radius"`
 		Isblur                bool   `json:"is_blur"`
 	}
 )

@@ -7,8 +7,13 @@ import (
 
 type (
 	borderStrategy interface {
-		initLayoutValue(fm *photoFrame) pkg.EError
-		drawBorder(fm *photoFrame) pkg.EError
+		initLayoutValue(fm baseFrame) pkg.EError
+		drawBorder(fm baseFrame) pkg.EError
+	}
+
+	borderBlurStrategy interface {
+		initLayoutValue(fm baseFrame) pkg.EError
+		drawBorder(fm baseFrame) pkg.EError
 	}
 
 	// 固定-模板.
@@ -36,6 +41,12 @@ type (
 		Strategy borderStrategy
 		baseBottomLogoTextLayoutBorder
 		HasLogo bool
+	}
+
+	// 高斯模糊模板.
+	blurBottomTextCenterLayout struct {
+		Strategy borderBlurStrategy
+		baseBottomLogoTextLayoutBorder
 	}
 
 	SimpleBorderFactory struct{}
@@ -86,6 +97,8 @@ func (simple *SimpleBorderFactory) createBorder(name string) borderStrategy {
 		return &simpleBottomLogoTextCenterBorder{
 			HasLogo: true,
 		}
+	case "blur_bottom_text_center_layout":
+		return &blurBottomTextCenterLayout{}
 	}
 
 	return &fixedBottomLogoTextLayoutBorder{}

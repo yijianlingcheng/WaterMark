@@ -1,7 +1,7 @@
 package frame
 
 import (
-	"image"
+	"image/draw"
 
 	"github.com/yijianlingcheng/go-exiftool"
 
@@ -36,7 +36,7 @@ func (p *NativePlugin) IsNavite() bool {
 }
 
 // 生成照片边框的RGBA数据.
-func (p *NativePlugin) CreateFrameImageRGBA(opts map[string]any) (*image.RGBA, pkg.EError) {
+func (p *NativePlugin) CreateFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 	return native.CreateFrameImageRGBA(opts)
 }
 

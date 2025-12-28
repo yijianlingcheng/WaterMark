@@ -95,14 +95,14 @@ func newSourceImage(path string) *sourceImage {
 }
 
 // 边框布局.
-func getBorderImage(fm *photoFrame) (*borderImage, pkg.EError) {
+func getBorderImage(fm baseFrame) (*borderImage, pkg.EError) {
 	// 根据布局类型获取对应策略
 	simpleBorderFactory := &SimpleBorderFactory{}
 
 	// 处理布局对应的初始化
-	simpleBorderFactory.createBorder(fm.opts.Params.Name).initLayoutValue(fm)
+	simpleBorderFactory.createBorder(fm.getLayoutName()).initLayoutValue(fm.getPhotoFrame())
 
-	return newBorderImage(&fm.opts.Params)
+	return newBorderImage(fm.getLayoutParams())
 }
 
 // 返回固定布局对象.

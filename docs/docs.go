@@ -266,7 +266,8 @@ const docTemplate = `{
             "post": {
                 "description": "对指定照片生成边框水印图片,并且直接输出图片内容",
                 "produces": [
-                    "image/jpeg"
+                    "image/jpeg",
+                    "image/png"
                 ],
                 "tags": [
                     "Frame"
@@ -612,10 +613,16 @@ const docTemplate = `{
                 "borderLeftWidth": {
                     "type": "integer"
                 },
+                "borderRadius": {
+                    "type": "integer"
+                },
                 "borderRightWidth": {
                     "type": "integer"
                 },
                 "borderTopHeight": {
+                    "type": "integer"
+                },
+                "isblur": {
                     "type": "integer"
                 },
                 "sourceHeight": {

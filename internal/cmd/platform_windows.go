@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
@@ -49,6 +50,27 @@ func CommandRun(timeout time.Duration, args string) (string, pkg.EError) {
 	}
 
 	return outStr, cmdErr
+}
+
+// commandRun 运行window cmd命令.
+func CommandRunWithArgs(timeout time.Duration, args []string) (string, pkg.EError) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	//nolint:gosec
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	hideWindowCmd(cmd)
+
+	out, err := cmd.CombinedOutput()
+
+	cmdErr := pkg.NoError
+	if err != nil {
+		errStr := changeToUTF8String(err.Error(), GB18030)
+		errStr = err.Error() + errStr + ":" + strings.Join(args, " ")
+		cmdErr = pkg.NewErrors(pkg.CMD_COMMAND_RUN_ERROR, errStr)
+	}
+
+	return string(out), cmdErr
 }
 
 // 将字节切片转换为指定编码的字符串.

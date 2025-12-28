@@ -3,7 +3,7 @@ package internal
 import (
 	"github.com/spf13/viper"
 
-	"WaterMark/assetfs"
+	"WaterMark/assetmixfs"
 	"WaterMark/pkg"
 )
 
@@ -50,7 +50,7 @@ func restoreAppConfigFile(path string) {
 	if PathExists(path) {
 		return
 	}
-	err := assetfs.RestoreAssets(GetRootPath(), "configs")
+	err := assetmixfs.RestoreAssets(GetRootPath(), "configs")
 	if err != nil {
 		panic(path + ":配置文件创建失效,请仔细检查")
 	}
