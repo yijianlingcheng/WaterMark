@@ -5,7 +5,6 @@ import (
 	"image/draw"
 	"runtime"
 
-	"WaterMark/internal"
 	"WaterMark/layout"
 	"WaterMark/message"
 	"WaterMark/pkg"
@@ -39,6 +38,7 @@ type (
 		borImage   *borderImage
 		finImage   *finalImage
 		opts       *frameOption
+		isBlur     bool
 	}
 )
 
@@ -75,6 +75,11 @@ func (fm *basePhotoFrame) getFrameDraw() draw.Image {
 
 // 初始化.
 func (fm *basePhotoFrame) initSetSize(opts map[string]any) pkg.EError {
+	// 判断是否是模糊边框
+	isBlur, ok := opts["isBlur"].(bool)
+	if ok && isBlur {
+		fm.isBlur = true
+	}
 	fm.opts = newFrameOption(opts)
 
 	sourceImagePath := fm.opts.getSourceImageFile()
@@ -98,6 +103,14 @@ func (fm *basePhotoFrame) initSetSize(opts map[string]any) pkg.EError {
 
 // 获取边框尺寸.
 func (fm *basePhotoFrame) getFrameSize() map[string]int {
+	isBlur := 0
+	if fm.isBlur {
+		isBlur = 1
+	}
+	w := fm.opts.getSourceImageX()
+	h := fm.opts.getSourceImageY()
+	borderRadius := max(w, h) * fm.opts.Params.BorderRadius / 1000
+
 	return map[string]int{
 		"borderLeftWidth":    fm.borImage.leftWidth,
 		"borderRightWidth":   fm.borImage.rightWidth,
@@ -105,6 +118,8 @@ func (fm *basePhotoFrame) getFrameSize() map[string]int {
 		"borderBottomHeight": fm.borImage.bottomHeight,
 		"sourceWidth":        fm.srcImage.width,
 		"sourceHeight":       fm.srcImage.height,
+		"isBlur":             isBlur,
+		"borderRadius":       borderRadius,
 	}
 }
 
@@ -199,7 +214,7 @@ func (fm *basePhotoFrame) resetSourceImageXAndY() {
 
 // 加载图片.
 func (fm *basePhotoFrame) loadSourceImage(path string) (image.Image, pkg.EError) {
-	image, loadErr := internal.CacheLoadImageWithDecode(path)
+	image, loadErr := pkg.LoadImageWithDecode(path)
 	if pkg.HasError(loadErr) {
 		return nil, loadErr
 	}

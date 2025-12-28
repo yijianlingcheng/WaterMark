@@ -53,7 +53,6 @@ func InitAppConfigsAndRes() {
 		message.SendInfoMsg("检查logo是否释放")
 		err = checkLogoFile()
 		message.SendErrorOrInfo(err, "logo已存在")
-
 		// 是否开启api调试
 		if ISApiDebug() {
 			go message.ApiDebug()

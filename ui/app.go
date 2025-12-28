@@ -57,6 +57,7 @@ func (a *App) BeforeClose(ctx context.Context) bool {
 	// 关闭启动的工具
 	engine.QuitAllTools()
 	message.Close()
+	internal.CleanDir()
 
 	return false
 }

@@ -487,6 +487,8 @@ var framePreviewSelectImages = []
 var lastOptime = Date.now();
 var minOpTime = 400
 var inUpdate = false
+var requestTime = Date.now()
+var requestUseTime = 0
 
 // 是否是快速点击
 function isfastClick() {
@@ -513,9 +515,10 @@ const FramePreviewBorderOptions = {
     },
     // 加载预览图片
     LoadPreivewImage: async function (name, layout) {
+        // 记录接口请求时间
+        requestTime = Date.now()
 
         inUpdate = true
-
         while (host == "") {
             await sleep(50)
         }
@@ -554,8 +557,10 @@ const FramePreviewBorderOptions = {
                 return response.blob();
             })
             .then(blob => {
-                inUpdate = false
+                // 记录请求耗时
+                requestUseTime = Date.now() - requestTime
 
+                inUpdate = false
                 $("#images-container").attr("data-src", name)
                 // 创建指向 Blob 的临时 URL
                 const imageUrl = URL.createObjectURL(blob);
@@ -568,6 +573,7 @@ const FramePreviewBorderOptions = {
                 };
 
                 $("#images-origin").attr("src", host + "/view/showImage?file=" + name)
+                $("#blur-background-img").attr("src", host + "/view/showImage?file=" + name)
             })
             .catch(error => {
                 console.error('获取或显示图片失败:', error);
@@ -749,6 +755,7 @@ const FramePreviewBorderDomProcess = {
         let borderBottom = parseInt(data["BorderBottomHeight"])
         let width = parseInt(data["SourceWidth"])
         let height = parseInt(data["SourceHeight"])
+        let borderRadius = parseInt(data["BorderRadius"])
         let totalWidth = borderLeft + borderRight + width
         let totalHeight = borderTop + borderBottom + height
 
@@ -759,24 +766,36 @@ const FramePreviewBorderDomProcess = {
             let marginRight = (borderRight / totalWidth * showWidth).toFixed()
             let marginTop = (borderTop / totalHeight * showHeight).toFixed()
 
-            if (isFirstLoad() || isWidthGtHeight()) {
-                setWithGtHeight()
+            let sleepTime = 0
+            if (!isFirstLoad() && !isWidthGtHeight()) {
+                sleepTime = parseInt(requestUseTime * 2)
 
-                $("#images-container").css({ "height": "auto", "width": showWidth + "px" })
-                $("#images-origin").css({ "margin-top": marginTop + "px", "margin-left": (marginLeft - showWidth) + "px", "width": (showWidth - marginLeft - marginRight) + "px", "height": "auto" })
-            } else {
-                setWithGtHeight()
-
+            }
+            setWithGtHeight()
+            if (sleepTime > 0) {
                 $("#images-container").hide()
                 $("#images-origin").hide()
 
-                await sleep(400)
+                await sleep(parseInt(requestUseTime * 2))
+            }
+            // 原始图片展示宽度
+            let originShowWidth = showWidth - marginLeft - marginRight
+            let originCss = { "margin-top": marginTop + "px", "margin-left": (marginLeft - showWidth) + "px", "width": (originShowWidth) + "px", "height": "auto" }
+            if (borderRadius > 0) {
+                let radius = parseInt(originShowWidth / width * borderRadius)
+                originCss["border-radius"] = radius + "px"
+                originCss["box-shadow"] = "0px 0px " + radius + "px " + radius / 2 + "px rgba(128, 128, 128, 0.5)"
+            }
+            $("#images-container").css({ "height": "auto", "width": showWidth + "px" })
+            $("#images-origin").css(originCss)
 
-                $("#images-container").css({ "height": "auto", "width": showWidth + "px" })
-                $("#images-origin").css({ "margin-top": marginTop + "px", "margin-left": (marginLeft - showWidth) + "px", "width": (showWidth - marginLeft - marginRight) + "px", "height": "auto" })
-
+            if (sleepTime > 0) {
                 $("#images-container").show()
                 $("#images-origin").show()
+            }
+
+            if (borderRadius > 0) {
+                $("#blur-show-div").show()
             }
 
         } else {
@@ -788,26 +807,34 @@ const FramePreviewBorderDomProcess = {
             let newOriginShowWidth = showHeight / totalHeight * width
 
             let marginTop = (borderTop / totalHeight * showHeight).toFixed()
+            let sleepTime = 0
+            if (!isFirstLoad() && isWidthGtHeight()) {
+                sleepTime = parseInt(requestUseTime * 2)
+            }
+            setWidthLtHeight()
 
-            if (isFirstLoad() || !isWidthGtHeight()) {
-                setWidthLtHeight()
-
-                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px", "margin-top": marginTop + "px" })
-                $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
-
-            } else {
-                setWidthLtHeight()
-
+            if (sleepTime > 0) {
                 $("#images-container").hide()
                 $("#images-origin").hide()
 
-                await sleep(400)
+                await sleep(parseInt(requestUseTime * 2))
+            }
 
-                $("#images-origin").css({ "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px", "margin-top": marginTop + "px" })
-                $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
+            let originCss = { "height": newOriginShowHegiht + "px", "width": newOriginShowWidth + "px", "margin-left": marginLeft + "px", "margin-top": marginTop + "px" }
+            if (borderRadius > 0) {
+                let radius = parseInt(newOriginShowHegiht / height * borderRadius)
+                originCss["border-radius"] = radius + "px"
+                originCss["box-shadow"] = "0px 0px " + radius + "px " + radius / 2 + "px rgba(128, 128, 128, 0.5)"
+            }
+            $("#images-origin").css(originCss)
+            $("#images-container").css({ "height": showHeight + "px", "width": newShowWidth + "px" })
 
+            if (sleepTime > 0) {
                 $("#images-container").show()
                 $("#images-origin").show()
+            }
+            if (borderRadius > 0) {
+                $("#blur-show-div").show()
             }
         }
     },

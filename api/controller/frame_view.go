@@ -2,6 +2,7 @@ package controller
 
 import (
 	"image/jpeg"
+	"image/png"
 	"strconv"
 	"strings"
 
@@ -55,9 +56,9 @@ func baseCheckShowPhotoFrame(ctx *gin.Context) map[string]any {
 }
 
 // @Summary 对指定照片生成边框图
-// @Description 对指定照片生成边框水印图片,并且直接输出图片内容
+// @Description 对指定照片生成边框水印图片,并且直接输出图片内容,模糊模板的时候输出png图片,普通边框输出jpg图片
 // @Tags Frame
-// @Produce image/jpeg
+// @Produce image/jpeg,image/png
 // @Param file formData string true "照片路径"
 // @Param type formData string true "返回的图片类型,border:只返回边框图,photo:返回照片+边框合成图"
 // @Param layout formData string true "布局信息,JSON字符串:必须包含frame_name字段"
@@ -97,7 +98,12 @@ func ShowPhotoFrame(ctx *gin.Context) {
 		return
 	}
 	// 生成更小的图片,加快前端访问,将jpg图片作为输出直接返回
-	err := jpeg.Encode(ctx.Writer, photoFrameResize(imageRGBA), &jpeg.Options{Quality: 75})
+	var err error
+	if layout.Isblur {
+		err = png.Encode(ctx.Writer, photoFrameResize(imageRGBA))
+	} else {
+		err = jpeg.Encode(ctx.Writer, photoFrameResize(imageRGBA), &jpeg.Options{Quality: 75})
+	}
 	if err != nil {
 		message.SendErrorMsg("ShowPhotoFrame 接口出现错误:" + err.Error())
 	}

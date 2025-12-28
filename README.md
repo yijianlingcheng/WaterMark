@@ -4,10 +4,10 @@
 ### 简要说明
  1. 使用Go开发(https://golang.google.cn/)
  2. 桌面程序使用wails构建(https://wails.io/zh-Hans/docs/introduction)
- 3. 照片exif信息获取使用exiftool工具(https://exiftool.org/),Go exiftool库fork https://github.com/barasher/go-exiftool并进行了部分修改
- 4. 后端接口服务采用gin框架(https://gin-gonic.com/zh-cn/)
- 5. Go exiftool库fork https://github.com/barasher/go-exiftool 并进行了部分修改
- 6. 图片水印生成使用Go库,不需要额外安装扩展
+ 3. 照片exif信息获取使用exiftool工具(https://exiftool.org/)
+ 4. 照片模糊模板使用ImageMagick添加阴影边框效果，[ImageMagick](https://imagemagick.org/)
+ 5. 后端接口服务采用gin框架(https://gin-gonic.com/zh-cn/)
+ 6. Go exiftool库fork https://github.com/barasher/go-exiftool 并进行了部分修改
  7. 文字水印使用Alibaba-PuHuiTi-Bold.ttf,Alibaba-PuHuiTi-Light.ttf字体(https://alibabafont.taobao.com/)
  8. 目前MacOS,Win10,Win11
  9. 源码请访问github(https://github.com/yijianlingcheng/WaterMark)
@@ -16,6 +16,11 @@
  1. Windows系统下,程序已经内置打包exiftool工具,运行时会自动解压到指定的路径
 ### MacOS exiftool
  1. MacOS安装完成exiftool后需将exiftool加入环境变量
+
+### Windows ImageMagick
+ 1. Windows系统下,程序已经内置打包ImageMagick工具,运行时会自动解压到指定的路径
+### MacOS ImageMagick
+ 1. MacOS安装完成ImageMagick后需将ImageMagick加入环境变量
 
 
 ### 项目开发与调试 

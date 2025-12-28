@@ -133,3 +133,18 @@ func PathExists(path string) bool {
 
 	return !errors.Is(err, os.ErrNotExist)
 }
+
+// 获取模糊模板处理之后的的图片文件路径.
+func GetAppBlurFilePath(p string) string {
+	return GetRootPath() + appBlurPath + "/" + p
+}
+
+// 清理程序运行时产生的临时文件夹.
+func CleanDir() {
+	delBlurPath()
+}
+
+// 删除模糊图片缓存文件夹.
+func delBlurPath() {
+	os.RemoveAll(GetRootPath() + appBlurPath)
+}

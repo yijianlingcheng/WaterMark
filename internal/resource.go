@@ -2,6 +2,8 @@ package internal
 
 import (
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 
 	"WaterMark/assetexiffs"
@@ -71,10 +73,14 @@ func editImageMagickConfig() {
 	if err != nil {
 		Log.Panic("读取ImageMagick配置文件失败,程序异常退出:" + err.Error())
 	}
+	// 限制cpu使用数量在4~8之间
+	cpu := min(max(runtime.NumCPU(), 4), 8)
+
+	cpulimit := strconv.Itoa(cpu)
 	newContent := strings.ReplaceAll(
 		string(content),
 		"<!-- <policy domain=\"resource\" name=\"thread\" value=\"2\"/> -->",
-		"<policy domain=\"resource\" name=\"thread\" value=\"8\"/>",
+		"<policy domain=\"resource\" name=\"thread\" value=\""+cpulimit+"\"/>",
 	)
 	err = os.WriteFile(policyPath, []byte(newContent), 0o600)
 	if err != nil {

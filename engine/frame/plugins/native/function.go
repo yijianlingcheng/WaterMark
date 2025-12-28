@@ -15,6 +15,7 @@ import (
 
 	"github.com/fogleman/gg"
 
+	"WaterMark/internal"
 	"WaterMark/layout"
 	"WaterMark/message"
 	"WaterMark/pkg"
@@ -290,20 +291,10 @@ func drawLine(img draw.Image, start, end image.Point, c color.Color) {
 }
 
 // 保存图片.
-func saveImageFile(isAsync bool, saveImageFile string, image draw.Image, quality int) {
+func saveImageFile(saveImageFile string, image draw.Image, quality int) {
 	ext := filepath.Ext(saveImageFile)
 	if strings.EqualFold(ext, JPG_FILE_TYPE) || strings.EqualFold(ext, JPEG_FILE_TYPE) {
-		if isAsync {
-			go saveJpgImage(saveImageFile, image, quality)
-
-			return
-		}
 		saveJpgImage(saveImageFile, image, quality)
-
-		return
-	}
-	if isAsync {
-		go savePngImage(saveImageFile, image)
 
 		return
 	}
@@ -314,6 +305,7 @@ func saveImageFile(isAsync bool, saveImageFile string, image draw.Image, quality
 func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 	file, err := os.Create(saveImageFile)
 	if err != nil {
+		internal.Log.Error(saveImageFile + ":图片打开失败:" + err.Error())
 		message.SendErrorMsg(saveImageFile + ":图片打开失败")
 
 		return
@@ -324,6 +316,7 @@ func saveJpgImage(saveImageFile string, image draw.Image, quality int) {
 		Quality: quality,
 	})
 	if err != nil {
+		internal.Log.Error(saveImageFile + ":图片写入失败:" + err.Error())
 		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
 	}
 }
@@ -342,9 +335,4 @@ func savePngImage(saveImageFile string, image draw.Image) {
 	if err != nil {
 		message.SendErrorMsg(saveImageFile + "图片写入失败:" + err.Error())
 	}
-}
-
-// 自动保存模糊模板的背景图片.
-func autoSaveBlurBackgroundImage(path string, image draw.Image, quality int) {
-	go saveJpgImage(path, image, quality)
 }

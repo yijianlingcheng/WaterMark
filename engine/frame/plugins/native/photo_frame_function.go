@@ -31,7 +31,7 @@ func createBlurFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 	// 保存
 	imageFilePath := fm.getSaveImageFile()
 	if imageFilePath != "" {
-		saveImageFile(false, imageFilePath, finalImage, 100)
+		saveImageFile(imageFilePath, finalImage, 100)
 	}
 	// 清理
 	fm.clean()
@@ -54,7 +54,7 @@ func createNormalFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 	// 保存
 	imageFilePath := fm.getSaveImageFile()
 	if imageFilePath != "" {
-		saveImageFile(false, imageFilePath, finalImage, 100)
+		saveImageFile(imageFilePath, finalImage, 100)
 	}
 	// 清理
 	fm.clean()
