@@ -7,7 +7,6 @@ type PhotoSize struct {
 	BorderBottomHeight int
 	SourceWidth        int
 	SourceHeight       int
-	Isblur             int
 	BorderRadius       int
 }
 
@@ -37,10 +36,6 @@ func NewPhotoSize(size map[string]int) PhotoSize {
 	if !shOk {
 		sourceHeight = 0
 	}
-	isBlur, ibOk := size["isBlur"]
-	if !ibOk {
-		isBlur = 0
-	}
 	borderRadius, brOk := size["borderRadius"]
 	if !brOk {
 		borderRadius = 0
@@ -53,7 +48,6 @@ func NewPhotoSize(size map[string]int) PhotoSize {
 		BorderBottomHeight: borderBottomHeight,
 		SourceWidth:        sourceWidth,
 		SourceHeight:       sourceHeight,
-		Isblur:             isBlur,
 		BorderRadius:       borderRadius,
 	}
 }

@@ -8,7 +8,13 @@ import (
 	"runtime"
 )
 
-var rootPath string
+var (
+	// 项目根路径.
+	rootPath string
+
+	// magick字符串.
+	magick = "magick"
+)
 
 // initRootPath 初始化项目根路径,解决go run 与go build执行时路径不一致问题.
 func initRootPath() {
@@ -97,10 +103,10 @@ func GetWinMagick7zPath() string {
 // 获取ImageMagick可执行文件路径.
 func GetMagickBinPath() string {
 	if IsWindows() {
-		return GetMagickPath("magick.exe")
+		return GetMagickPath(magick + ".exe")
 	}
 
-	return "magick"
+	return magick
 }
 
 // 获取exiftool路径.

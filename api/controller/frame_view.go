@@ -246,7 +246,6 @@ func GetPhotoExifAndBorderInfo(ctx *gin.Context) {
 
 		return
 	}
-	// 获取指定照片的缩略图
 	info, err := frame.GetPlugin().GetFrameImageBorderInfo(map[string]any{
 		"sourceImageFile": file,
 		"photoType":       photoType,
@@ -266,9 +265,5 @@ func GetPhotoExifAndBorderInfo(ctx *gin.Context) {
 
 		return
 	}
-	ctx.JSON(200, ExifAndBorderInfo{
-		Exif: exifInfoTranslatorApi(exifInfo),
-		Size: frame.NewPhotoSize(size),
-		Text: text,
-	})
+	ctx.JSON(200, ExifAndBorderInfo{Exif: exifInfoTranslatorApi(exifInfo), Size: frame.NewPhotoSize(size), Text: text})
 }

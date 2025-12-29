@@ -15,6 +15,8 @@ import (
 )
 
 // 检查模板中指定的字体文件是否存在.
+//
+//nolint:gocritic
 func checkLayoutTemplateFont(templateLayout layout.FrameLayout) pkg.EError {
 	fontFiles := []string{
 		templateLayout.TextOneFontFile,

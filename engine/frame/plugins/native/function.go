@@ -54,6 +54,8 @@ var (
 )
 
 // 获取文字内容对应的width,每次都需要重新计算.
+//
+//nolint:gocritic
 func getTextContentSize(fontSize int, fontFile, content string) (int, int) {
 	// 利用gg库计算文字宽度
 	width, height := fontSize*len(content), fontSize*2
@@ -191,6 +193,8 @@ func findTextContentMaxSize(width int, fontFile, content string) int {
 }
 
 // 获取文字内容对应的width.
+//
+//nolint:gocritic
 func getTextContentXAndY(fontSize int, fontFile, content string) (int, int) {
 	// 延迟初始化
 	textContentCacheOnce.Do(func() {
