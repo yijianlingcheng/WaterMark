@@ -264,7 +264,7 @@ const docTemplate = `{
         },
         "/frame/showPhotoFrame": {
             "post": {
-                "description": "对指定照片生成边框水印图片,并且直接输出图片内容",
+                "description": "对指定照片生成边框水印图片,并且直接输出图片内容,模糊模板的时候输出png图片,普通边框输出jpg图片",
                 "produces": [
                     "image/jpeg",
                     "image/png"
@@ -620,9 +620,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "borderTopHeight": {
-                    "type": "integer"
-                },
-                "isblur": {
                     "type": "integer"
                 },
                 "sourceHeight": {

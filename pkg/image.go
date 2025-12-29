@@ -70,6 +70,8 @@ func GetFileType(io *os.File) (string, EError) {
 }
 
 // 对指定图片文件生成指定宽高的图片.
+//
+//nolint:gosec
 func GenerateImageByWidthHeight(img image.Image, w, h int) image.Image {
 	return resize.Resize(uint(w), uint(h), img, resize.Lanczos3)
 }

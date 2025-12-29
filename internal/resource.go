@@ -50,7 +50,7 @@ func winRestoreImagemagick7zFile() pkg.EError {
 	}
 	if !PathExists(GetMagickBinPath()) {
 		// 从文件中释放ImageMagick.7z文件
-		err := assetmagickfs.RestoreAssets(GetRootPath(), "magick")
+		err := assetmagickfs.RestoreAssets(GetRootPath(), magick)
 		if err != nil {
 			Log.Panic("ImageMagick.7z文件释放失败,程序异常退出:" + err.Error())
 		}

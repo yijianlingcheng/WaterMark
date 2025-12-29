@@ -235,6 +235,8 @@ func (fm *basePhotoFrame) getSaveImageFile() string {
 }
 
 // 清理.
+//
+//nolint:revive
 func (fm *basePhotoFrame) clean() {
 	fm.opts = nil
 	fm.frameDraw = nil
