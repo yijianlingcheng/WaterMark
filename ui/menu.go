@@ -81,7 +81,9 @@ func regiestAppMenus(app *App) *menu.Menu {
 		t := appMenu.AddSubmenu(m.name)
 		for _, item := range m.menus {
 			// 添加子菜单中的选项
-			t.AddText(item.label, keys.CmdOrCtrl(item.accelerator), func(_ *menu.CallbackData) {
+			// 快捷键使用Ctrl+Alt+前缀,Mac上为Ctrl+Option+
+			myShortcut := keys.Combo(item.accelerator, keys.CmdOrCtrlKey, keys.OptionOrAltKey)
+			t.AddText(item.label, myShortcut, func(_ *menu.CallbackData) {
 				item.callback()
 			})
 			t.AddSeparator()

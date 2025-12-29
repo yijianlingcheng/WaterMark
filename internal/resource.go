@@ -1,7 +1,14 @@
 package internal
 
 import (
-	"WaterMark/assetfs"
+	"os"
+	"runtime"
+	"strconv"
+	"strings"
+
+	"WaterMark/assetexiffs"
+	"WaterMark/assetmagickfs"
+	"WaterMark/assetmixfs"
 	"WaterMark/pkg"
 )
 
@@ -15,7 +22,7 @@ func winRestoreExitoolZipFile() pkg.EError {
 	// 释放完成exiftool.zip文件之后对其进行解压
 	if !PathExists(GetExiftoolPath()) {
 		// 从文件中释放exiftool.zip文件
-		err := assetfs.RestoreAssets(GetRootPath(), "exiftool")
+		err := assetexiffs.RestoreAssets(GetRootPath(), "exiftool")
 		if err != nil {
 			Log.Panic("exiftool.zip文件释放失败,程序异常退出:" + err.Error())
 		}
@@ -35,9 +42,55 @@ func winRestoreExitoolZipFile() pkg.EError {
 	return pkg.NoError
 }
 
+// 释放已经保存好的ImageMagick.7z压缩文件,并实现自动解压,保证在win系统上ImageMagick工具可用.
+func winRestoreImagemagick7zFile() pkg.EError {
+	// Windows系统逻辑
+	if !IsWindows() {
+		return pkg.NoError
+	}
+	if !PathExists(GetMagickBinPath()) {
+		// 从文件中释放ImageMagick.7z文件
+		err := assetmagickfs.RestoreAssets(GetRootPath(), magick)
+		if err != nil {
+			Log.Panic("ImageMagick.7z文件释放失败,程序异常退出:" + err.Error())
+		}
+		// 判断文件是否释放成功,释放失败程序直接终止
+		if !PathExists(GetWinMagick7zPath()) {
+			Log.Panic("ImageMagick.7z文件释放失败,程序异常退出")
+		}
+		// 解压文件
+		Unzip7z(GetWinMagick7zPath(), GetMagickPath(""))
+		editImageMagickConfig()
+	}
+
+	return pkg.NoError
+}
+
+// 修改ImageMagick配置文件,调整多线程处理能力.防止cpu占用过高.
+func editImageMagickConfig() {
+	policyPath := GetMagickPath("policy.xml")
+	content, err := os.ReadFile(policyPath)
+	if err != nil {
+		Log.Panic("读取ImageMagick配置文件失败,程序异常退出:" + err.Error())
+	}
+	// 限制cpu使用数量在4~8之间
+	cpu := min(max(runtime.NumCPU(), 4), 8)
+
+	cpulimit := strconv.Itoa(cpu)
+	newContent := strings.ReplaceAll(
+		string(content),
+		"<!-- <policy domain=\"resource\" name=\"thread\" value=\"2\"/> -->",
+		"<policy domain=\"resource\" name=\"thread\" value=\""+cpulimit+"\"/>",
+	)
+	err = os.WriteFile(policyPath, []byte(newContent), 0o600)
+	if err != nil {
+		Log.Panic("写入ImageMagick配置文件失败,程序异常退出:" + err.Error())
+	}
+}
+
 // 释放字体文件.
 func restoreFontFile() pkg.EError {
-	err := assetfs.RestoreAssets(GetRootPath(), "fonts")
+	err := assetmixfs.RestoreAssets(GetRootPath(), "fonts")
 	if err != nil {
 		Log.Panic("字体文件释放失败,程序异常退出:" + err.Error())
 	}
@@ -47,7 +100,7 @@ func restoreFontFile() pkg.EError {
 
 // 释放logo文件.
 func restoreLogoFile() pkg.EError {
-	err := assetfs.RestoreAssets(GetRootPath(), "logos")
+	err := assetmixfs.RestoreAssets(GetRootPath(), "logos")
 	if err != nil {
 		Log.Panic("logo文件释放失败,程序异常退出:" + err.Error())
 	}

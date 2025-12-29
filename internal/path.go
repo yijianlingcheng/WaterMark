@@ -8,7 +8,13 @@ import (
 	"runtime"
 )
 
-var rootPath string
+var (
+	// 项目根路径.
+	rootPath string
+
+	// magick字符串.
+	magick = "magick"
+)
 
 // initRootPath 初始化项目根路径,解决go run 与go build执行时路径不一致问题.
 func initRootPath() {
@@ -84,6 +90,25 @@ func GetMainLayoutPath() string {
 	return GetRootPath() + appConfigsPath + "/layout.json"
 }
 
+// 获取ImageMagick可执行文件路径.
+func GetMagickPath(p string) string {
+	return GetRootPath() + magickPath + "/" + p
+}
+
+// 获取ImageMagick可执行文件路径.
+func GetWinMagick7zPath() string {
+	return GetMagickPath("ImageMagick.7z")
+}
+
+// 获取ImageMagick可执行文件路径.
+func GetMagickBinPath() string {
+	if IsWindows() {
+		return GetMagickPath(magick + ".exe")
+	}
+
+	return magick
+}
+
 // 获取exiftool路径.
 func GetExiftoolPath() string {
 	if IsWindows() {
@@ -113,4 +138,19 @@ func PathExists(path string) bool {
 	}
 
 	return !errors.Is(err, os.ErrNotExist)
+}
+
+// 获取模糊模板处理之后的的图片文件路径.
+func GetAppBlurFilePath(p string) string {
+	return GetRootPath() + appBlurPath + "/" + p
+}
+
+// 清理程序运行时产生的临时文件夹.
+func CleanDir() {
+	delBlurPath()
+}
+
+// 删除模糊图片缓存文件夹.
+func delBlurPath() {
+	os.RemoveAll(GetRootPath() + appBlurPath)
 }

@@ -2,6 +2,7 @@ package native
 
 import (
 	"image"
+	"image/draw"
 
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
@@ -40,7 +41,7 @@ func newTextBrush(fontFilePath string, fontSize float64, fontColor *image.Unifor
 //	rgba 需要添加文字的图片
 //	pt 文字对应的坐标
 //	content 文字内容
-func (fb *textBrush) drawFontOnRGBA(rgba *image.RGBA, pt image.Point, content string) pkg.EError {
+func (fb *textBrush) drawFontOnRGBA(rgba draw.Image, pt image.Point, content string) pkg.EError {
 	if fb.FontType == nil {
 		return pkg.NoError
 	}

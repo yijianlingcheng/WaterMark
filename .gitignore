@@ -84,3 +84,5 @@ _output
 
 # 排除程序运行过程中生成的logo
 logos/*_*_*.png
+
+magick/

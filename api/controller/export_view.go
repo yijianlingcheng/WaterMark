@@ -121,7 +121,12 @@ loop:
 // 导出执行函数.
 func exportFrame(save, file string, layoutTpl *layout.FrameLayout, previewLayoutMap map[string]string) {
 	prex := time.Now().Format("2006-01-02-15_04_05")
-	task := make(chan struct{}, 6)
+	workNum := 6
+	// 模糊模板需要限制为单线程处理
+	if layoutTpl.Isblur {
+		workNum = 1
+	}
+	task := make(chan struct{}, workNum)
 	var wg sync.WaitGroup
 	errors := make(map[string]pkg.EError, 0)
 	for file := range strings.SplitSeq(file, ",") {
@@ -212,8 +217,9 @@ func exportFrameTask(save, path, prex string, exifInfo exiftool.FileMetadata, tp
 			"sourceImageFile": path,
 			"photoType":       "photo",
 			"exif":            exifInfo,
-			"Params":          tpl,
+			"params":          tpl,
 			"saveImageFile":   save + "/" + prex + "_" + filepath.Base(path),
+			"isBlur":          tpl.Isblur,
 		},
 	)
 }
