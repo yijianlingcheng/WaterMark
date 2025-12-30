@@ -86,5 +86,4 @@ _output
 logos/*_*_*.png
 
 magick/
-!COVERAGE.md
-coverage.out
+coverage

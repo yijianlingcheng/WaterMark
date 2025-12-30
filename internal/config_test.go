@@ -134,6 +134,7 @@ func TestISApiDebug(t *testing.T) {
 }
 
 func TestRestoreAppConfigFile(t *testing.T) {
+	InitAppConfigsAndRes()
 	tests := []struct {
 		name    string
 		setup   func() string
