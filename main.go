@@ -35,8 +35,6 @@ func main() {
 	internal.SetAppMode(internal.APP_RELEASE)
 	// 初始化配置与资源
 	internal.InitAppConfigsAndRes()
-	// 替换版本说明文件中的APP版本号
-	internal.ReplaceAppVersion()
 	// 启动http server
 	go api.ServerStart()
 	// 启动

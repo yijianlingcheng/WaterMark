@@ -5,12 +5,14 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
+
+	"WaterMark/pkg"
 )
 
 var Log = logrus.New()
 
 // 初始化日志工具.
-func initLogConfig() {
+func initLogConfig() pkg.EError {
 	// 在日志中记录对应的调用方法
 	Log.SetReportCaller(true)
 
@@ -31,4 +33,6 @@ func initLogConfig() {
 		// 设置debug级别模式
 		Log.SetLevel(logrus.TraceLevel)
 	}
+
+	return pkg.NoError
 }

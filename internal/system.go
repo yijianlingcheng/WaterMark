@@ -9,6 +9,8 @@ import (
 // logos 相机或者镜头厂家logo存放的路径
 // configs 自定义配置文件的存放路径,用于保存用户自定义设置信息
 // runtime 代表允许过程中存放中间文件,缓存文件的地方
+// blur 代表允许过程中,生成的模糊图片存放的路径
+// userData 代表用户自定义数据存放的路径
 // default 程序允许过程中,下载文件默认保存的地方
 // fonts 字体文件路径.
 // magick ImageMagick可执行文件存放路径.

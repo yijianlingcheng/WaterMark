@@ -86,3 +86,4 @@ _output
 logos/*_*_*.png
 
 magick/
+coverage

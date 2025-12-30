@@ -1,8 +1,11 @@
 @echo off
-REM tools.bat - minimal ASCII-safe dispatcher: check / dev / win-build
-REM Usage: tools.bat <check|dev|win-build>
+REM tools.bat - minimal ASCII-safe dispatcher: check / api / dev / build
+REM Usage: tools.bat <check|api|dev|build>
 setlocal enabledelayedexpansion
 
+for %%I in ("%CD%\..") do set "WORKSPACE=%%~fI"
+if "%WORKSPACE:~-1%"=="\" set "WORKSPACE=%WORKSPACE:~0,-1%"
+cd %WORKSPACE%
 :: If no argument, show usage and exit
 if "%~1"=="" goto :usage
 
@@ -10,34 +13,28 @@ set "ACTION=%~1"
 shift
 
 if /I "%ACTION%"=="check" goto :check
+if /I "%ACTION%"=="api" goto :api
 if /I "%ACTION%"=="dev" goto :dev
-if /I "%ACTION%"=="win-build" goto :winbuild
+if /I "%ACTION%"=="build" goto :build
 
 echo Unknown action: "%ACTION%"
 goto :usage
-
-:: Try to delegate to PowerShell script only for valid actions and only if tools.ps1 exists
-:maybe_delegate
-where powershell >nul 2>&1
-if errorlevel 1 exit /B 0
-if exist "%~dp0build.ps1" (
-  echo Detected powershell.exe, delegating to tools.ps1...
-  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build.ps1" %*
-  exit /B %ERRORLEVEL%
-)
-exit /B 0
 
 :maybe_delegate_check
 call :maybe_delegate
 goto :check
 
+:maybe_delegate_api
+call :maybe_delegate
+goto :api
+
 :maybe_delegate_dev
 call :maybe_delegate
 goto :dev
 
-:maybe_delegate_winbuild
+:maybe_delegate_build
 call :maybe_delegate
-goto :winbuild
+goto :build
 
 :: -- batch implementations (ASCII messages) --
 
@@ -48,6 +45,31 @@ echo ==================================================
 echo Running: golangci-lint run
 echo ==================================================
 golangci-lint run
+exit /B %ERRORLEVEL%
+
+:api
+set "REQUIRED=swag"
+call :ensure_tools
+echo ==================================================
+echo Step 1: swag init
+echo ==================================================
+swag init
+if ERRORLEVEL 1 (
+  echo swag init failed, code %ERRORLEVEL%
+  exit /B %ERRORLEVEL%
+)
+echo ==================================================
+echo Step 2: change mode
+echo ==================================================
+go run .\scripts\tool.go -appMode=api-dev
+if ERRORLEVEL 1 (
+  echo change mode failed, code %ERRORLEVEL%
+  exit /B %ERRORLEVEL%
+)
+echo ==================================================
+echo Step 3: go run main.go
+echo ==================================================
+go run .\main.go
 exit /B %ERRORLEVEL%
 
 :dev
@@ -62,13 +84,21 @@ if ERRORLEVEL 1 (
   exit /B %ERRORLEVEL%
 )
 echo ==================================================
-echo Step 2: wails dev
+echo Step 2: change mode
+echo ==================================================
+go run .\scripts\tool.go -appMode=dev
+if ERRORLEVEL 1 (
+  echo change mode failed, code %ERRORLEVEL%
+  exit /B %ERRORLEVEL%
+)
+echo ==================================================
+echo Step 3: wails dev
 echo ==================================================
 echo Note: wails dev will block this console. Use: start "" wails dev to run in new window.
 wails dev
 exit /B %ERRORLEVEL%
 
-:winbuild
+:build
 set "REQUIRED=swag golangci-lint wails"
 call :ensure_tools
 echo ==================================================
@@ -88,9 +118,17 @@ if ERRORLEVEL 1 (
   exit /B %ERRORLEVEL%
 )
 echo ==================================================
-echo Step 3: parse version file
+echo Step 3: change mode
 echo ==================================================
-set "VERSION_FILE=%~dp0version"
+go run .\scripts\tool.go -appMode=release
+if ERRORLEVEL 1 (
+  echo change mode failed, code %ERRORLEVEL%
+  exit /B %ERRORLEVEL%
+)
+echo ==================================================
+echo Step 4: parse version file
+echo ==================================================
+set "VERSION_FILE=%~dp0\version"
 if not exist "%VERSION_FILE%" (
   echo [Error] version file not found: "%VERSION_FILE%"
   exit /B 2
@@ -141,7 +179,7 @@ if "!APP_VERSION!"=="" (
 )
 set "OUTNAME=win10_amd64_WaterMark_!APP_VERSION!.exe"
 echo ==================================================
-echo Step 4: wails build -clean -o "%OUTNAME%"
+echo Step 5: wails build -clean -o "%OUTNAME%"
 echo ==================================================
 wails build -clean -o "%OUTNAME%"
 exit /B %ERRORLEVEL%
@@ -179,9 +217,10 @@ if %MISSING% GTR 0 (
 exit /B 0
 
 :usage
-echo Usage: %~nx0 ^<check^|dev^|win-build^>
+echo Usage: %~nx0 ^<check^|api^|dev^|build^>
 echo.
 echo   check      - run: golangci-lint run
-echo   dev        - run: swag init then wails dev
-echo   win-build  - swag init -^> golangci-lint run -^> parse version -^> wails build -clean -o win10_amd64_WaterMark_{APP_VERSION}.exe
+echo   api        - run: swag init then ^change appMode to api then exec go run main.go
+echo   dev        - run: swag init then ^change appMode to dev then wails dev
+echo   build      - run: swag init -^> golangci-lint run -^> ^change appMode to release -^> parse version -^> wails build -clean -o win10_amd64_WaterMark_{APP_VERSION}.exe
 exit /B 1

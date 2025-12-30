@@ -31,7 +31,10 @@ func winRestoreExitoolZipFile() pkg.EError {
 			Log.Panic("exiftool.zip文件释放失败,程序异常退出")
 		}
 		// 解压文件
-		Unzip(GetExiftoolZipPath(), GetExiftoolUnzipPath())
+		unzipErr := Unzip(GetExiftoolZipPath(), GetExiftoolUnzipPath())
+		if pkg.HasError(unzipErr) {
+			Log.Panic("exiftool.zip文件解压失败,程序异常退出:" + unzipErr.String())
+		}
 
 		// 判断zip是否解压成功
 		if !PathExists(GetExiftoolPath()) {
@@ -59,7 +62,10 @@ func winRestoreImagemagick7zFile() pkg.EError {
 			Log.Panic("ImageMagick.7z文件释放失败,程序异常退出")
 		}
 		// 解压文件
-		Unzip7z(GetWinMagick7zPath(), GetMagickPath(""))
+		unzipErr := Unzip7z(GetWinMagick7zPath(), GetMagickPath(""))
+		if pkg.HasError(unzipErr) {
+			Log.Panic("ImageMagick.7z文件解压失败,程序异常退出:" + unzipErr.String())
+		}
 		editImageMagickConfig()
 	}
 

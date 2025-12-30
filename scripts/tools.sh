@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # tools.sh - cross-platform POSIX-style script for Linux/macOS
-# Usage: ./tools.sh <check|dev|build|check-env>
+# Usage: ./tools.sh <check|api|dev|build|check-env>
 # - check      : run golangci-lint run
-# - dev        : swag init  && wails dev
-# - build      : swag init -> golangci-lint run -> parse version file -> wails build -clean -o waterMark_{APP_VERSION}
+# - api        : swag init && change appMode to api && go run main.go
+# - dev        : swag init && change appMode to dev && wails dev
+# - build      : swag init -> golangci-lint run -> change appMode to release -> parse version file -> wails build -clean -o waterMark_{APP_VERSION}
 # - check-env  : check environment tools: go, wails, exiftool, ImageMagick (magick or convert)
 #
 # Version file:
@@ -19,17 +20,20 @@ set -o nounset
 set -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-VERSION_FILE="${SCRIPT_DIR}/version"
+WORKSPACE_DIR="$(cd "$(dirname "${SCRIPT_DIR}")" >/dev/null 2>&1 && pwd)"
+VERSION_FILE="${WORKSPACE_DIR}/version"
+cd ${WORKSPACE_DIR}
 
 err() { printf '%s\n' "$*" >&2; }
 info() { printf '%s\n' "$*"; }
 
 usage() {
   cat <<'USAGE'
-Usage: tools.sh <check|dev|build|check-env>
+Usage: tools.sh <check|api|dev|build|check-env>
 
   check      - run: golangci-lint run
-  dev        - run: swag init then wails dev (will block the terminal)
+  api        - run: swag init && change appMode to api && go run main.go
+  dev        - run: swag init && change appMode to dev && wails dev (will block the terminal)
   build      - swag init -> golangci-lint run -> parse version ->
                wails build -clean -o waterMark_{APP_VERSION}
   check-env  - check environment tools: go, wails, exiftool, ImageMagick (magick or convert)
@@ -202,11 +206,22 @@ main() {
       check_tools golangci-lint || exit 10
       run_or_exit "Running: golangci-lint run" golangci-lint run
       ;;
+    
+    api)
+      check_tools swag || exit 10
+      run_or_exit "Step 1: swag init" swag init || exit $?
+      info "Step 2: change appMode to api"
+      go run ./scripts/tool.go -appMode=api-dev
+      info "Step 3: go run main.go"
+      go run ./main.go
+      ;;
 
     dev)
       check_tools swag wails || exit 10
       run_or_exit "Step 1: swag init" swag init || exit $?
-      info "Step 2: starting wails dev (will block this terminal)"
+      info "Step 2: change appMode to api"
+      go run ./scripts/tool.go -appMode=dev
+      info "Step 3: starting wails dev (will block this terminal)"
       # wails dev usually blocks; run directly
       wails dev
       ;;
@@ -215,12 +230,14 @@ main() {
       check_tools swag golangci-lint wails || exit 10
       run_or_exit "Step 1: swag init" swag init || exit $?
       run_or_exit "Step 2: golangci-lint run" golangci-lint run || exit $?
-      info "Step 3: parsing version file: $VERSION_FILE"
+      info "Step 3: change appMode to api"
+      go run ./scripts/tool.go -appMode=release
+      info "Step 4: parsing version file: $VERSION_FILE"
       local app_ver
       app_ver="$(parse_version_file)" || exit $?
       info "Parsed APP_VERSION = ${app_ver}"
       local outname="waterMark_${app_ver}"
-      run_or_exit "Step 4: wails build -clean -o ${outname}" wails build -clean -o "${outname}"
+      run_or_exit "Step 5: wails build -clean -o ${outname}" wails build -clean -o "${outname}"
       ;;
 
     check-env)

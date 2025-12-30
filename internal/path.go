@@ -6,6 +6,8 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+
+	"WaterMark/pkg"
 )
 
 var (
@@ -119,7 +121,7 @@ func GetExiftoolPath() string {
 }
 
 // 初始化程序需要的各种文件夹.
-func createAppDS(list []string) {
+func createAppDS(list []string) pkg.EError {
 	for _, i := range list {
 		if PathExists(i) {
 			continue
@@ -128,6 +130,8 @@ func createAppDS(list []string) {
 			panic("创建运行时文件夹失败,创建失败的文件路径为:" + i)
 		}
 	}
+
+	return pkg.NoError
 }
 
 // 判断所给路径文件/文件夹是否存在.
