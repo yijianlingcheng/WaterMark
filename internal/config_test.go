@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"WaterMark/pkg"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"WaterMark/pkg"
 )
 
 func TestSetAppMode(t *testing.T) {
@@ -134,9 +135,9 @@ func TestISApiDebug(t *testing.T) {
 
 func TestRestoreAppConfigFile(t *testing.T) {
 	tests := []struct {
-		name     string
-		setup    func() string
-		wantErr  bool
+		name    string
+		setup   func() string
+		wantErr bool
 	}{
 		{
 			name: "file exists",
@@ -268,6 +269,8 @@ func TestModeTransitions(t *testing.T) {
 }
 
 func TestInitAppConfig(t *testing.T) {
+	InitAppConfigsAndRes()
+
 	tests := []struct {
 		name    string
 		setup   func() func()

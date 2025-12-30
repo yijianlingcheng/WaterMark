@@ -108,6 +108,11 @@ func GetAllLayout() []FrameLayout {
 
 // 加载并初始化布局.
 func loadandInitLayout() pkg.EError {
+	// 确保frameLayouts不为nil
+	if frameLayouts == nil {
+		frameLayouts = &FrameLayouts{}
+	}
+
 	file := internal.GetMainLayoutPath()
 	if !internal.PathExists(file) {
 		return pkg.NewErrors(pkg.FILE_NOT_EXIST_ERROR, file+":布局文件不存在")

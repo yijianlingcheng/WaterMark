@@ -62,8 +62,6 @@ func getTextContentSize(fontSize int, fontFile, content string) (int, int) {
 	dc := gg.NewContext(width, height)
 	err := dc.LoadFontFace(fontFile, float64(fontSize))
 	if err != nil {
-		message.SendErrorMsg(fontFile + ":字体文件不存在")
-
 		return 0, 0
 	}
 	w, h := dc.MeasureString(content)
@@ -297,6 +295,7 @@ func drawLine(img draw.Image, start, end image.Point, c color.Color) {
 // 保存图片.
 func saveImageFile(saveImageFile string, image draw.Image, quality int) {
 	ext := filepath.Ext(saveImageFile)
+	ext = strings.ToLower(ext)
 	if strings.EqualFold(ext, JPG_FILE_TYPE) || strings.EqualFold(ext, JPEG_FILE_TYPE) {
 		saveJpgImage(saveImageFile, image, quality)
 

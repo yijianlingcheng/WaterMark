@@ -101,5 +101,6 @@ func (simple *SimpleBorderFactory) createBorder(name string) borderStrategy {
 		return &blurBottomTextCenterLayout{}
 	}
 
+	// 如果没有匹配到任何布局类型，返回默认布局
 	return &fixedBottomLogoTextLayoutBorder{}
 }

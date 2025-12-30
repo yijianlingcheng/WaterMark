@@ -8,6 +8,9 @@ import (
 
 // 创建边框,并返回对应的RGBA对象.
 func CreateFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
 	isBlur, ok := opts["isBlur"].(bool)
 	if ok && isBlur {
 		return createBlurFrameImageRGBA(opts)
@@ -18,6 +21,9 @@ func CreateFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 
 // 创建模糊边框,并返回对应的RGBA对象.
 func createBlurFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
 	var fm blurPhotoFrame
 	// 初始化
 	err := fm.initFrame(opts)
@@ -41,6 +47,9 @@ func createBlurFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 
 // 创建普通边框,并返回对应的RGBA对象.
 func createNormalFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
 	var fm photoFrame
 	// 初始化
 	err := fm.initFrame(opts)
@@ -64,6 +73,10 @@ func createNormalFrameImageRGBA(opts map[string]any) (draw.Image, pkg.EError) {
 
 // 获取边框信息.
 func GetFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
+
 	isBlur, ok := opts["isBlur"].(bool)
 	if ok && isBlur {
 		return getBlurFrameImageBorderInfo(opts)
@@ -74,6 +87,9 @@ func GetFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EError) {
 
 // 获取模糊边框信息.
 func getBlurFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
 	var fm blurPhotoFrame
 	err := fm.initSetSize(opts)
 	if pkg.HasError(err) {
@@ -91,6 +107,9 @@ func getBlurFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EErro
 
 // 获取普通边框信息.
 func getNormalFrameImageBorderInfo(opts map[string]any) (map[string]any, pkg.EError) {
+	if len(opts) == 0 {
+		return nil, pkg.RequestParamNilError
+	}
 	var fm photoFrame
 	err := fm.initSetSize(opts)
 	if pkg.HasError(err) {

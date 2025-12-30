@@ -24,23 +24,21 @@ type blurPhotoFrame struct {
 
 // 初始化.
 func (fm *blurPhotoFrame) initFrame(opts map[string]any) pkg.EError {
+	if len(opts) == 0 {
+		return pkg.RequestParamNilError
+	}
 	fm.isBlur = true
 	fm.opts = newFrameOption(opts)
-
 	sourceImagePath := fm.opts.getSourceImageFile()
 	// 初始化各种对象
 	fm.srcImage = newSourceImage(sourceImagePath)
 	// 判断是否需要旋转图片
 	fm.resetSourceImageXAndY()
-
 	borImage, borderErr := getBorderImage(fm)
 	if pkg.HasError(borderErr) {
-		message.SendErrorMsg(borderErr.String())
-
 		return borderErr
 	}
 	fm.borImage = borImage
-
 	// 判断是否需要加载原图
 	if fm.opts.needSourceImage() && !checkBlurImageExist(fm.getBlurBackgroundImageFilePath()) {
 		sourceImage, loadSourceImageErr := fm.loadSourceImage(sourceImagePath)

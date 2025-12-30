@@ -100,7 +100,11 @@ func getBorderImage(fm baseFrame) (*borderImage, pkg.EError) {
 	simpleBorderFactory := &SimpleBorderFactory{}
 
 	// 处理布局对应的初始化
-	simpleBorderFactory.createBorder(fm.getLayoutName()).initLayoutValue(fm.getPhotoFrame())
+	strategy := simpleBorderFactory.createBorder(fm.getLayoutName())
+	if strategy == nil {
+		return nil, pkg.RequestParamNilError
+	}
+	strategy.initLayoutValue(fm.getPhotoFrame())
 
 	return newBorderImage(fm.getLayoutParams())
 }

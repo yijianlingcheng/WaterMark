@@ -119,6 +119,9 @@ func newLogo(name, fullPath string) (*Logo, pkg.EError) {
 	name = strings.ToLower(name)
 	ext := filepath.Ext(fullPath)
 	imgaeDecode, loadErr := pkg.LoadImageWithDecode(fullPath)
+	if pkg.HasError(loadErr) {
+		return &Logo{}, loadErr
+	}
 
 	return &Logo{
 		IsLoad:    true,

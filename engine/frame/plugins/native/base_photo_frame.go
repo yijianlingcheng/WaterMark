@@ -5,8 +5,8 @@ import (
 	"image/draw"
 	"runtime"
 
+	"WaterMark/internal"
 	"WaterMark/layout"
-	"WaterMark/message"
 	"WaterMark/pkg"
 )
 
@@ -75,16 +75,33 @@ func (fm *basePhotoFrame) getFrameDraw() draw.Image {
 
 // 初始化.
 func (fm *basePhotoFrame) initSetSize(opts map[string]any) pkg.EError {
+	if len(opts) == 0 {
+		return pkg.RequestParamNilError
+	}
+
 	// 判断是否是模糊边框
 	isBlur, ok := opts["isBlur"].(bool)
 	if ok && isBlur {
 		fm.isBlur = true
 	}
 	fm.opts = newFrameOption(opts)
+	if fm.opts == nil {
+		return pkg.RequestParamNilError
+	}
+	// 检查源图像路径是否存在且不为空
+	if fm.opts.getSourceImageFile() != "" && !internal.PathExists(fm.opts.getSourceImageFile()) {
+		return pkg.RequestParamNilError
+	}
 
-	sourceImagePath := fm.opts.getSourceImageFile()
+	// 检查是否缺少必要参数 - 只有当没有源图像路径且宽高都为0时才返回错误
+	if fm.opts.getSourceImageFile() == "" && fm.opts.getSourceImageX() == 0 && fm.opts.getSourceImageY() == 0 {
+		return pkg.RequestParamNilError
+	}
 	// 初始化各种对象
-	fm.srcImage = newSourceImage(sourceImagePath)
+	fm.srcImage = newSourceImage(fm.opts.getSourceImageFile())
+	if fm.srcImage == nil {
+		return pkg.RequestParamNilError
+	}
 	// 判断是否需要旋转图片
 	fm.resetSourceImageXAndY()
 	// 判断是否需要加载原图
@@ -92,9 +109,10 @@ func (fm *basePhotoFrame) initSetSize(opts map[string]any) pkg.EError {
 
 	borImage, borderErr := getBorderImage(fm)
 	if pkg.HasError(borderErr) {
-		message.SendErrorMsg(borderErr.String())
-
 		return borderErr
+	}
+	if borImage == nil {
+		return pkg.RequestParamNilError
 	}
 	fm.borImage = borImage
 
@@ -109,7 +127,13 @@ func (fm *basePhotoFrame) getFrameSize() map[string]int {
 	}
 	w := fm.opts.getSourceImageX()
 	h := fm.opts.getSourceImageY()
-	borderRadius := max(w, h) * fm.opts.Params.BorderRadius / 1000
+
+	// Calculate borderRadius with zero check to prevent division by zero
+	maxDimension := max(w, h)
+	borderRadius := 0
+	if maxDimension > 0 {
+		borderRadius = maxDimension * fm.opts.Params.BorderRadius / 1000
+	}
 
 	return map[string]int{
 		"borderLeftWidth":    fm.borImage.leftWidth,
@@ -137,25 +161,38 @@ func (fm *basePhotoFrame) getBorderText() []string {
 	return data
 }
 
-// 初始化.
-func (fm *basePhotoFrame) initFrame(opts map[string]any) pkg.EError {
-	fm.opts = newFrameOption(opts)
-
-	sourceImagePath := fm.opts.getSourceImageFile()
-	// 初始化各种对象
+// 初始化基本对象.
+func (fm *basePhotoFrame) initBasicFrame(sourceImagePath string) pkg.EError {
+	// 初始化sourceImage
 	fm.srcImage = newSourceImage(sourceImagePath)
-	// 判断是否需要旋转图片
+	if fm.srcImage == nil {
+		return pkg.RequestParamNilError
+	}
+
+	// 旋转图片尺寸
 	fm.resetSourceImageXAndY()
 
+	// 获取borderImage
 	borImage, borderErr := getBorderImage(fm)
 	if pkg.HasError(borderErr) {
-		message.SendErrorMsg(borderErr.String())
-
 		return borderErr
+	}
+	if borImage == nil {
+		return pkg.RequestParamNilError
 	}
 	fm.borImage = borImage
 
-	// 判断是否需要加载原图
+	// 初始化finalImage
+	fm.finImage = newFinalImage(fm.opts)
+	if fm.finImage == nil {
+		return pkg.RequestParamNilError
+	}
+
+	return pkg.NoError
+}
+
+// 加载或设置图片.
+func (fm *basePhotoFrame) loadOrSetImage(sourceImagePath string) pkg.EError {
 	if fm.opts.needSourceImage() {
 		sourceImage, loadSourceImageErr := fm.loadSourceImage(sourceImagePath)
 		if pkg.HasError(loadSourceImageErr) {
@@ -165,17 +202,51 @@ func (fm *basePhotoFrame) initFrame(opts map[string]any) pkg.EError {
 	} else {
 		fm.srcImage.SetImageXAndY(fm.opts.getSourceImageX(), fm.opts.getSourceImageY())
 	}
-	// 初始化最终绘制对象
-	fm.finImage = newFinalImage(fm.opts)
 
-	var frame draw.Image
-	var frameErr pkg.EError
+	return pkg.NoError
+}
 
-	frame, frameErr = fm.createDraw()
+// 创建并设置frame.
+func (fm *basePhotoFrame) createAndSetFrame() pkg.EError {
+	frame, frameErr := fm.createDraw()
 	if pkg.HasError(frameErr) {
 		return frameErr
 	}
+	if frame == nil {
+		return pkg.RequestParamNilError
+	}
 	fm.frameDraw = frame
+
+	return pkg.NoError
+}
+
+// 初始化.
+func (fm *basePhotoFrame) initFrame(opts map[string]any) pkg.EError {
+	if len(opts) == 0 {
+		return pkg.RequestParamNilError
+	}
+
+	fm.opts = newFrameOption(opts)
+	if fm.opts == nil {
+		return pkg.RequestParamNilError
+	}
+
+	sourceImagePath := fm.opts.getSourceImageFile()
+
+	// 初始化基本对象
+	if err := fm.initBasicFrame(sourceImagePath); pkg.HasError(err) {
+		return err
+	}
+
+	// 加载或设置图片
+	if err := fm.loadOrSetImage(sourceImagePath); pkg.HasError(err) {
+		return err
+	}
+
+	// 创建并设置frame
+	if err := fm.createAndSetFrame(); pkg.HasError(err) {
+		return err
+	}
 
 	return pkg.NoError
 }

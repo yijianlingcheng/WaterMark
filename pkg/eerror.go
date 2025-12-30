@@ -89,6 +89,12 @@ var (
 		Code:  LAYOUT_TYPE_NOT_FIND_ERROR,
 		Error: errors.New("布局类型查找失败"),
 	}
+
+	// 请求参数为空.
+	RequestParamNilError = EError{
+		Code:  REQUEST_PARAM_ERROR,
+		Error: errors.New("请求参数为空"),
+	}
 )
 
 // 是否正常.

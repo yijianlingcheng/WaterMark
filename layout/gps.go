@@ -14,13 +14,17 @@ func GpsFormat(gps string) string {
 	}
 	str := strings.Split(gps, ", ")
 
+	if len(str) == 1 {
+		return parseGPSInfo(str[0]) + " "
+	}
+
 	return parseGPSInfo(str[0]) + " " + parseGPSInfo(str[1])
 }
 
 // 获取GPS格式化之后的字符串,如果gps为空则展示默认值.
 func GetGPSOrDefault(gps, other string) string {
 	s := GpsFormat(gps)
-	if s != "" {
+	if s != "" && s != " " {
 		return s
 	}
 
@@ -40,12 +44,12 @@ func parseGPSInfo(str string) string {
 		return ""
 	}
 	// 解析各部分
-	degrees, _ := strconv.Atoi(matches[1])
-	minutes, _ := strconv.Atoi(matches[2])
+	degrees, _ := strconv.ParseFloat(matches[1], 64)
+	minutes, _ := strconv.ParseFloat(matches[2], 64)
 	direction := matches[4]
 
 	// 格式化输出
-	result := fmt.Sprintf("%d°%02d′%s", degrees, minutes, direction)
+	result := fmt.Sprintf("%d°%02d′%s", int(degrees), int(minutes), direction)
 
 	return result
 }

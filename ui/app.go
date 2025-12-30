@@ -83,7 +83,7 @@ func (a *App) BindErrorMessage() {
 					Title:   "发生了一个错误",
 					Message: err,
 				})
-				if e == nil {
+				if e != nil {
 					internal.Log.Panic(err)
 				}
 				internal.Log.Error(e.Error())

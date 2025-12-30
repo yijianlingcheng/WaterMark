@@ -63,9 +63,18 @@ func (fp *frameOption) getMakeFromExif() string {
 // 利用mapstructure库将map转为frameOption.
 func newFrameOption(opts map[string]any) *frameOption {
 	var fp frameOption
+	// 处理nil opts，确保Decode不会失败
+	if len(opts) == 0 {
+		opts = make(map[string]any)
+	}
 	err := mapstructure.Decode(opts, &fp)
 	if err != nil {
 		internal.Log.Panic("opts转为frameOption失败:" + err.Error())
+	}
+
+	// 确保Exif.Fields不是nil，防止nil pointer dereference
+	if fp.Exif.Fields == nil {
+		fp.Exif.Fields = make(map[string]any)
 	}
 
 	return &fp
