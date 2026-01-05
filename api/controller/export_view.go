@@ -67,7 +67,7 @@ func CreateExportTask(ctx *gin.Context) {
 
 		return
 	}
-	previewLayoutParams := ctx.PostForm(paramQueryPrevireLayout)
+	previewLayoutParams := ctx.PostForm(paramQueryPreviewLayout)
 	var previewLayoutMap map[string]string
 	err := json.Unmarshal([]byte(previewLayoutParams), &previewLayoutMap)
 	if err != nil {

@@ -10,6 +10,13 @@ import (
 	"WaterMark/pkg"
 )
 
+const (
+	// JPEG图片列表.
+	JPEG_NAME = "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;)"
+	// JPEG图片匹配模式.
+	JPEG_PATTERN = "*.jpg;*.JPG;*.jpeg;*.JPEG;"
+)
+
 // SelectImageFile
 //
 // 选择单个图片文件,不支持选择raw格式图片
@@ -24,41 +31,13 @@ func (a *App) SelectImageFile() string {
 		Title:            "请选择图片",
 		Filters: []runtime.FileFilter{
 			{
-				DisplayName: "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;)",
-				Pattern:     "*.jpg;*.JPG;*.jpeg;*.JPEG;",
+				DisplayName: JPEG_NAME,
+				Pattern:     JPEG_PATTERN,
 			},
 		},
 	})
 	if err != nil {
 		internal.Log.Error("SelectImageFile error:" + err.Error())
-
-		return ""
-	}
-
-	return strings.ReplaceAll(result, "\\", "/")
-}
-
-// SelectImageFileSupportRaw
-//
-// 选择单个图片文件,支持选择raw格式图片
-// 如果已选择,则返回对应的图片地址
-// 如果没有选择,返回空字符串
-//
-//	@return string
-func (a *App) SelectImageFileSupportRaw() string {
-	result, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		DefaultDirectory: "",
-		DefaultFilename:  "",
-		Title:            "请选择图片",
-		Filters: []runtime.FileFilter{
-			{
-				DisplayName: "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;*NEF)",
-				Pattern:     "*.jpg;*.JPG;*.jpeg;*.JPEG;*NEF",
-			},
-		},
-	})
-	if err != nil {
-		internal.Log.Error("SelectImageFileSupportRaw error:" + err.Error())
 
 		return ""
 	}
@@ -80,8 +59,8 @@ func (a *App) SelectMultipleImageFile() string {
 		Title:            "请选择图片",
 		Filters: []runtime.FileFilter{
 			{
-				DisplayName: "Images (*.jpg;*.JPG;*.jpeg;*.JPEG;)",
-				Pattern:     "*.jpg;*.JPG;*.jpeg;*.JPEG;",
+				DisplayName: JPEG_NAME,
+				Pattern:     JPEG_PATTERN,
 			},
 		},
 	})

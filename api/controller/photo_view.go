@@ -87,7 +87,17 @@ func ExifInfoExportBySaveFile(ctx *gin.Context) {
 		path = strings.ReplaceAll(path, "\\", "/")
 		savePath = strings.ReplaceAll(savePath, "\\", "/")
 	}
+	// 检查文件是否存在
+	if !internal.PathExists(path) {
+		ctx.JSON(400, requestResoureNotExistError(path, paramFileIsNotExist))
 
+		return
+	}
+	if savePath == "" {
+		ctx.JSON(400, requestParamError(paramSaveIsEmpty))
+
+		return
+	}
 	// 删除同名文件
 	if internal.PathExists(savePath) {
 		os.Remove(savePath)

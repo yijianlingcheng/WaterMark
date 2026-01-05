@@ -39,6 +39,7 @@ func InitAppConfigsAndRes() {
 			return
 		}
 
+		// 是否开启接口调试
 		if ISApiDebug() {
 			go message.ApiDebug()
 		}

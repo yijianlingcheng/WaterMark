@@ -25,7 +25,8 @@ type App struct {
 	mtx           sync.Mutex
 }
 
-var preview = "preview"
+// 预览桶.
+var bucketPreview = "preview"
 
 // NewApp creates a new App application struct.
 func NewApp() *App {
@@ -110,7 +111,7 @@ func (a *App) TemporaryStorage(key, value, bucket string) string {
 	defer a.mtx.Unlock()
 	// 根据不同的桶名称选择不同的存放数据的map
 	switch bucket {
-	case preview:
+	case bucketPreview:
 		a.previewParams[key] = value
 	default:
 		a.data[key] = value
@@ -124,7 +125,7 @@ func (a *App) GetTemporaryStorage(key, bucket string) string {
 	a.mtx.Lock()
 	defer a.mtx.Unlock()
 
-	if bucket == preview {
+	if bucket == bucketPreview {
 		if v, ok := a.previewParams[key]; ok {
 			return v
 		}
@@ -144,7 +145,7 @@ func (a *App) GetTemporaryAll(bucket string) string {
 	a.mtx.Lock()
 	defer a.mtx.Unlock()
 
-	if bucket == preview {
+	if bucket == bucketPreview {
 		jsonByte, err := json.Marshal(a.previewParams)
 		if err == nil {
 			return string(jsonByte)

@@ -24,7 +24,7 @@ tests\run_tests.bat -cover -coverprofile=coverage.out
 
 # 运行测试并生成 HTML 覆盖率报告
 tests\run_tests.bat -cover -coverprofile=coverage.out
-go tool cover '-html=coverage.out'
+go tool cover -html=coverage.out
 ```
 
 ### Linux/macOS 系统

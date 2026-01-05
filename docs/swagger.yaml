@@ -309,6 +309,10 @@ paths:
         name: file
         required: true
         type: string
+      - description: 保存路径,如果为空,则不保存
+        in: formData
+        name: save
+        type: string
       - description: 返回的图片类型,border:只返回边框图,photo:返回照片+边框合成图
         in: formData
         name: type

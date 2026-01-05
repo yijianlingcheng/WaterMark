@@ -20,7 +20,7 @@ func AppStart(assets embed.FS, icon []byte) {
 		// 初始化部分引擎
 		engine.InitAllTools()
 		// 等待退出信号
-		wait2Exit()
+		wait2ExitSignal()
 		// 关闭开启的引擎
 		engine.QuitAllTools()
 		message.Close()
@@ -37,7 +37,7 @@ func AppStart(assets embed.FS, icon []byte) {
 }
 
 // 等待发送信号退出.
-func wait2Exit() {
+func wait2ExitSignal() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 	<-c

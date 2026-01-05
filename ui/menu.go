@@ -41,21 +41,21 @@ func getAppMenus(app *App) []AppMenus {
 		},
 		{
 			name:  "EXIF查看(V)",
-			menus: []appMenuItem{{label: "照片", accelerator: "v", callback: func() { openPhotoView(app) }}},
+			menus: []appMenuItem{{label: "照片", accelerator: "v", callback: func() { openPhotoView() }}},
 		},
 		{
 			name: "边框生成(F)",
 			menus: []appMenuItem{
-				{label: "照片", accelerator: "f", callback: func() { openFrameView(app) }},
-				{label: "文件夹", accelerator: "w", callback: func() { openFrameDSView(app) }},
+				{label: "照片", accelerator: "f", callback: func() { openFrameView() }},
+				{label: "文件夹", accelerator: "w", callback: func() { openFrameDSView() }},
 			},
 		},
 		{
 			name: "关于(A)",
 			menus: []appMenuItem{
-				{label: "使用说明", accelerator: "a", callback: func() { openHelpView(app) }},
-				{label: "版本", accelerator: "c", callback: func() { openAboutVersionView(app) }},
-				{label: "贡献代码", accelerator: "g", callback: func() { openAboutCodeView(app) }},
+				{label: "使用说明", accelerator: "a", callback: func() { openHelpView() }},
+				{label: "版本", accelerator: "c", callback: func() { openAboutVersionView() }},
+				{label: "贡献代码", accelerator: "g", callback: func() { openAboutCodeView() }},
 			},
 		},
 	}
@@ -67,6 +67,7 @@ func regiestAppMenus(app *App) *menu.Menu {
 
 	appMenu := menu.NewMenu()
 	menus := checkMenusEnabled(getAppMenus(app))
+	regiestJsExec(app)
 	// 循环创建菜单
 	for i, m := range menus {
 		if i == 0 {

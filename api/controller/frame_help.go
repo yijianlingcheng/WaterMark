@@ -18,6 +18,7 @@ import (
 //
 //nolint:gocritic
 func checkLayoutTemplateFont(templateLayout layout.FrameLayout) pkg.EError {
+	// 检查模板中指定的字体文件是否存在，不存在则返回错误.基于目前的实现，只有4个绘制文字内容的位置
 	fontFiles := []string{
 		templateLayout.TextOneFontFile,
 		templateLayout.TextTwoFontFile,
@@ -62,10 +63,10 @@ func getExifAndCheckPhotoLogoExist(file string) (exiftool.FileMetadata, pkg.EErr
 // 根据不同的照片尺寸选择不同展示比例.
 func photoFrameResize(imageRGBA image.Image) *image.NRGBA {
 	// 默认压缩比例
-	ratio := 5
+	ratio := defaultRatio
 	// 针对4000W+像素照片特殊处理
-	if imageRGBA.Bounds().Dx() > 8000 || imageRGBA.Bounds().Dy() > 8000 {
-		ratio = 8
+	if imageRGBA.Bounds().Dx() > maxImageSize || imageRGBA.Bounds().Dy() > maxImageSize {
+		ratio = maxRatio
 	}
 
 	return imaging.Resize(imageRGBA, imageRGBA.Bounds().Dx()/ratio, imageRGBA.Bounds().Dy()/ratio, imaging.Lanczos)

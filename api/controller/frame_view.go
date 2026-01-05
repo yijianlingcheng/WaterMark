@@ -60,6 +60,7 @@ func baseCheckShowPhotoFrame(ctx *gin.Context) map[string]any {
 // @Tags Frame
 // @Produce image/jpeg,image/png
 // @Param file formData string true "照片路径"
+// @Param save formData string false "保存路径,如果为空,则不保存"
 // @Param type formData string true "返回的图片类型,border:只返回边框图,photo:返回照片+边框合成图"
 // @Param layout formData string true "布局信息,JSON字符串:必须包含frame_name字段"
 // @Router /frame/showPhotoFrame [post]
@@ -77,7 +78,6 @@ func ShowPhotoFrame(ctx *gin.Context) {
 	photoType, photoOk := checkResult["type"].(string)
 	exifInfo, exifInfoOk := checkResult["exifInfo"].(exiftool.FileMetadata)
 	layout, layoutOk := checkResult["layout"].(layout.FrameLayout)
-
 	if !fileOk || !photoOk || !exifInfoOk || !layoutOk {
 		ctx.JSON(400, pkg.InternalError)
 
@@ -87,6 +87,7 @@ func ShowPhotoFrame(ctx *gin.Context) {
 	// 获取指定照片的缩略图
 	imageRGBA, frameErr := plug.CreateFrameImageRGBA(map[string]any{
 		"sourceImageFile": file,
+		"saveImageFile":   ctx.PostForm("save"),
 		"photoType":       photoType,
 		"exif":            exifInfo,
 		"params":          layout,

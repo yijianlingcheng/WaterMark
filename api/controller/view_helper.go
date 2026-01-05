@@ -112,9 +112,7 @@ func exifInfoTranslatorCsv(exifInfo exiftool.FileMetadata) [][]string {
 	return csvData
 }
 
-// exif摘要信息生成
-// @TODO 考虑改写成结构体
-// @TODO 优化代码结构,.
+// exif摘要信息生成.
 func exifInfoAbstrGenerate(exifInfo exiftool.FileMetadata) exifInfoAbstr {
 	// 器材摘要
 	equipment := []string{
@@ -158,9 +156,8 @@ func exifInfoAbstrGenerate(exifInfo exiftool.FileMetadata) exifInfoAbstr {
 		"白平衡:" + pkg.AnyToString(exifInfo.Fields["LightSource"]),
 		"色彩空间:" + pkg.AnyToString(exifInfo.Fields["ColorSpace"]),
 	}
-	exifAbstr := exifInfoAbstr{equipment: equipment, mode: mode, params: params, focal: focal, color: color}
 
-	return exifAbstr
+	return exifInfoAbstr{equipment: equipment, mode: mode, params: params, focal: focal, color: color}
 }
 
 // 设置SSE头信息.
