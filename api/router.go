@@ -47,6 +47,11 @@ func loadRouters(router *gin.Engine) {
 	frame.POST("reloadFrameTemplate", controller.ReloadFrameTemplate)
 	// 获取边框模板信息
 	frame.GET("getFrameTemplateInfo", controller.GetFrameTemplateInfo)
+
+	// 二维码菜单接口
+	qrcode := router.Group("qrcode")
+	// 生成二维码
+	qrcode.POST("generate", controller.GenerateQRCode)
 }
 
 // 注册不需要记录日志的API接口
@@ -56,5 +61,6 @@ func getNoLogApis() []string {
 		"/view/showImage",
 		"/swagger/",
 		"/frame/showPhotoFrame",
+		"/qrcode/generate",
 	}
 }

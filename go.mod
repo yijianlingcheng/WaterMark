@@ -8,6 +8,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.4.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/sirupsen/logrus v1.9.3
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.11.1
 	github.com/wailsapp/wails/v2 v2.10.1
 	github.com/yijianlingcheng/go-exiftool v0.0.1

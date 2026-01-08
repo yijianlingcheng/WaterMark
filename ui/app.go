@@ -70,7 +70,7 @@ func (a *App) Shutdown(ctx context.Context) {
 
 // 获取后端接口的地址.
 func (a *App) GetApiServerHost() string {
-	return "http://" + viper.GetString("server.address")
+	return "http://" + viper.GetString("server.api-address")
 }
 
 // 绑定消息处理逻辑.

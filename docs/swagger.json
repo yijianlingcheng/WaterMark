@@ -330,6 +330,35 @@
                 }
             }
         },
+        "/qrcode/generate": {
+            "post": {
+                "description": "根据指定参数，生成二维码",
+                "produces": [
+                    "image/png"
+                ],
+                "tags": [
+                    "Qrcode"
+                ],
+                "summary": "生成二维码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "二维码内容",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "错误信息\".",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ErrorInfo"
+                        }
+                    }
+                }
+            }
+        },
         "/view/ExifInfoExportBySaveFile": {
             "post": {
                 "description": "导出当前展示照片的exif信息,将其保存在指定路径中",

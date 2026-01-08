@@ -1,8 +1,9 @@
 app:
   name: "水印边框"
 server:
-  address: "127.0.0.1:11079"
-  address-des: "api对应httpserver 绑定的地址"
+  address: "0.0.0.0:11079"
+  api-address: "127.0.0.1:11079"
+  address-des: "api对应httpserver绑定的地址"
 frame:
   plugin: "native"
   plugin-des: "边框插件类型,native:使用原生代码生成图片边框;vips:使用libvips库生成图片边框;vips:暂未支持"

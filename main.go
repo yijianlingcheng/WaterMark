@@ -32,7 +32,7 @@ var (
 func main() {
 	debug.SetMemoryLimit(2 * 1024 * 1024 * 1024)
 	// 设置运行模式
-	internal.SetAppMode(internal.APP_DEV)
+	internal.SetAppMode(internal.APP_RELEASE)
 	// 初始化配置与资源
 	internal.InitAppConfigsAndRes()
 	// 启动http server

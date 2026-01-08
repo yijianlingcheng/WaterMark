@@ -9,6 +9,8 @@ var (
 	paramQueryLayout = "layout"
 	// 请求参数名：preview_layout 字段（预览时使用的布局参数）.
 	paramQueryPreviewLayout = "preview_layout"
+	// 请求参数名：content 字段（用于指定二维码内容）.
+	paramQueryContent = "content"
 
 	// 错误/提示信息：file 参数为空.
 	paramFileIsEmpty = "file参数为空"
@@ -20,6 +22,8 @@ var (
 	paramSaveIsEmpty = "未选择保存的路径"
 	// 错误/提示信息：导出存放图片的路径不存在.
 	paramSaveIsNotExist = "导出存放图片的路径不存在"
+	// 错误/提示信息：content 参数为空.
+	paramContentIsEmpty = "content参数为空"
 
 	// 导出进度通道（缓冲 100）：用于异步汇报导出进度.
 	export_Progress_Chan = make(chan string, 100)

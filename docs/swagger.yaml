@@ -347,6 +347,25 @@ paths:
       summary: 获取启动页输出
       tags:
       - message
+  /qrcode/generate:
+    post:
+      description: 根据指定参数，生成二维码
+      parameters:
+      - description: 二维码内容
+        in: formData
+        name: content
+        required: true
+        type: string
+      produces:
+      - image/png
+      responses:
+        "400":
+          description: 错误信息".
+          schema:
+            $ref: '#/definitions/controller.ErrorInfo'
+      summary: 生成二维码
+      tags:
+      - Qrcode
   /view/ExifInfoExportBySaveFile:
     post:
       description: 导出当前展示照片的exif信息,将其保存在指定路径中
